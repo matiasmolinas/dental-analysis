@@ -209,6 +209,12 @@ the knowledge is latent and the work is recall, not format.
 - [x] Output schema, controller/evaluator prompts, Claude skill.
 - [x] Colab diagnostic notebook (valid JSON, self-contained).
 - [x] This plan.
+- [x] Full skill set (`skills/`): oral-systemic-analysis, record-normalization,
+      periodontal-staging, cardiometabolic-framing, oral-systemic-kb,
+      traceability-audit, non-diagnostic-guardrail (protected).
+- [x] Full subagent set (`agents/`): orchestrator + 6 runtime specialists +
+      jlens-diagnostic + skillopt-optimizer (offline). Catalog READMEs.
+- [x] SkillOpt cloned as sibling reference (`../SkillOpt/`).
 
 ### Phase 1 — Proxy diagnostic (Colab, GPU) — `IN PROGRESS`
 - [ ] Run `histora_diagnostic.ipynb` on Qwen3.6-27B (fallback 4B).

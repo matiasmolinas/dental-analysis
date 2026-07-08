@@ -43,9 +43,18 @@ dental-analysis/
   prompts/
     controller.md              # Claude input-optimizer prompt
     evaluator.md               # Claude final-analysis prompt
-  skills/
-    oral-systemic-analysis.md  # Claude skill: optimized format + output + guardrails
+  agents/                      # runtime subagents (orchestrator + specialists) + offline agents
+  skills/                      # reusable capability docs (SkillOpt-trainable; guardrail protected)
 ```
+
+See [`agents/README.md`](agents/README.md) and [`skills/README.md`](skills/README.md)
+for the full subagent + skill catalog and the skill↔subagent map.
+
+## Reference repos (siblings, not part of this repo)
+
+- `../jacobian-lens/` — Anthropic's Jacobian-lens reference (imported by the notebook).
+- `../SkillOpt/` — Microsoft Research SkillOpt: skills as trainable parameters,
+  the reference for the skill-evolution loop.
 
 ## Run
 
