@@ -13,7 +13,12 @@ auditable, imperative discipline — so it can be evolved by the `skillopt-optim
 | `cardiometabolic-framing.md` | Non-diagnostic CV/metabolic pathway framing | Yes |
 | `oral-systemic-kb.md` | Retrievable mediator-mechanism knowledge base | Reference (context) |
 | `traceability-audit.md` | Verify every claim cites input fields | Yes |
+| `claude-workspace-probe.md` | Runtime-native self-report of surfaced mediators on Claude (dual-lens inner loop) | No (instrument) |
 | `non-diagnostic-guardrail.md` | **PROTECTED INVARIANT** — never evolved; part of the gate | No |
+
+`claude-workspace-probe` is inspired by the `j-space-lens` skill in
+`Doriandarko/skirano-skills` (referenced, not vendored — no license). It is
+uninstrumented self-report, **not a measurement**; see [`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
 
 ## Evolution gate
 

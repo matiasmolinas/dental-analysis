@@ -4,9 +4,11 @@
 > the [Progress Log](#progress-log) and, when a decision changes direction, to
 > [Decisions](#decisions). Status tags: `TODO` / `IN PROGRESS` / `DONE` / `BLOCKED`.
 
-**Last updated:** 2026-07-07
+**Last updated:** 2026-07-08
 **Owner:** matias.molinas@gmail.com
-**Context:** Anthropic Life Sciences Hackathon
+**Context:** Built with Claude: Life Sciences (Anthropic × Cerebral Valley ×
+Gladstone), 2026-07-07 → 2026-07-13. See [`HACKATHON_STRATEGY.md`](HACKATHON_STRATEGY.md).
+**Method detail:** dual-lens loop — see [`DUAL_LENS.md`](DUAL_LENS.md).
 
 ---
 
@@ -21,7 +23,9 @@ that integrates otherwise-fragmented dental and medical records. The technical
 novelty is that we use **mechanistic interpretability (the Jacobian lens) on a
 small open-weights proxy to verify that our input format actually makes the
 oral-systemic mediating concepts representable**, and we let Claude close the
-optimization loop — rather than prompt-engineering blind.
+optimization loop — rather than prompt-engineering blind. We read that workspace
+with **two complementary instruments**: a fast self-report probe on Claude itself
+and the measured Jacobian lens on the proxy (see §3c and `DUAL_LENS.md`).
 
 ---
 
@@ -106,15 +110,35 @@ layers — not competing.
 | Guardrail / Verifier | Non-diagnostic, no value imputation, traceability, confidence (adversarial) | **PROTECTED — never evolved** |
 | Hypothesis Generator | Research hypotheses for follow-up | SkillOpt |
 
-Dev-time (offline): **J-lens Diagnostic** (proxy readout / controller) and
-**SkillOpt Optimizer** (skill.md evolution).
+Dev-time / in-loop: **Claude Workspace Probe** (self-report on Claude — fast
+pre-filter), **J-lens Diagnostic** (measured readout on the Qwen proxy — ground
+truth), and **SkillOpt Optimizer** (skill.md evolution).
 
 ### Skills
 
 `oral-systemic-analysis` (core), `record-normalization`, `periodontal-staging`,
 `cardiometabolic-framing`, `oral-systemic-kb` (retrievable mediator mechanisms),
-`traceability-audit`, and `non-diagnostic-guardrail`. The guardrail is a
-**protected invariant**, not a trainable skill.
+`traceability-audit`, `claude-workspace-probe` (runtime-native self-report), and
+`non-diagnostic-guardrail`. The guardrail is a **protected invariant**, not a
+trainable skill.
+
+## 3c. Dual-lens loop (two instruments on the workspace)
+
+Full detail in [`DUAL_LENS.md`](DUAL_LENS.md). Two instruments read the workspace
+our input optimization targets — different models, different epistemics:
+
+- **Claude Workspace Probe** (`claude-workspace-probe`): uninstrumented introspective
+  self-report ON CLAUDE (the real target). Fast, zero GPU, captures CoT natively,
+  runs the inner loop and sidesteps the Qwen→Claude transfer gap for optimization.
+  Inspired by `Doriandarko/skirano-skills` j-space-lens; **not a measurement**.
+- **Measured Jacobian lens** (`jlens-diagnostic` on Qwen): quantitative, causal,
+  reproducible ground truth on a proxy.
+
+**Inner loop (fast):** probe on Claude screens format/context/CoT edits. **Outer
+validation (rigorous):** measured lens on Qwen confirms it is not confabulation.
+**Correlation experiment** between the two is a reproducible Research-track finding
+(agreement → self-report predicts measured J-space; disagreement → a caveat). The
+authoritative gate stays Claude task accuracy + the protected guardrail.
 
 ### Skill evolution: SkillOpt gated by J-lens
 
@@ -180,9 +204,12 @@ codebase, if time is tight.
 
 ```
 dental-analysis/
-  docs/PLAN.md                 # this document (living)
+  docs/
+    PLAN.md                    # this document (living)
+    HACKATHON_STRATEGY.md      # tracks, named user, one-week plan, demo, judging
+    DUAL_LENS.md               # two-instrument methodology + correlation experiment
   colab/
-    histora_diagnostic.ipynb   # main GPU harness (run in Colab)
+    histora_diagnostic.ipynb   # measured J-lens GPU harness (run in Colab)
     walkthrough.ipynb          # copy of the jacobian-lens reference notebook
   src/
     bridge_concepts.py         # target mediator + shared concepts
@@ -192,7 +219,8 @@ dental-analysis/
   prompts/
     controller.md              # Claude input-optimizer prompt
     evaluator.md               # Claude final-analysis prompt
-  skills/oral-systemic-analysis.md  # Claude skill: optimized format + output + guardrails
+  agents/                      # 7 runtime subagents + claude-workspace-probe + 2 offline
+  skills/                      # 8 skills (guardrail protected) — see skills/README.md
   README.md
 ```
 
@@ -225,36 +253,47 @@ the knowledge is latent and the work is recall, not format.
       periodontal-staging, cardiometabolic-framing, oral-systemic-kb,
       traceability-audit, non-diagnostic-guardrail (protected).
 - [x] Full subagent set (`agents/`): orchestrator + 6 runtime specialists +
-      jlens-diagnostic + skillopt-optimizer (offline). Catalog READMEs.
+      claude-workspace-probe + jlens-diagnostic + skillopt-optimizer. Catalog READMEs.
 - [x] SkillOpt cloned as sibling reference (`../SkillOpt/`).
+- [x] Dual-lens methodology: `claude-workspace-probe` skill + subagent;
+      `docs/DUAL_LENS.md`; `docs/HACKATHON_STRATEGY.md`.
 
-### Phase 1 — Proxy diagnostic (Colab, GPU) — `IN PROGRESS`
-- [ ] Run `histora_diagnostic.ipynb` on Qwen3.6-27B (fallback 4B).
-- [ ] Calibrate the workspace band (cell 4 sweep) and lock [lo, hi].
+### Phase 1a — Fast inner loop on Claude (no GPU) — `IN PROGRESS`
+- [ ] Activate `claude-workspace-probe`; run the 3 formats (A/B/C) on synthetic
+      cases; log the surfaced-mediator set per format.
+- [ ] Iterate format/KB/CoT edits on Claude until mediators surface (fast, no GPU).
+- [ ] This is the primary inner loop and the demo backbone.
+
+### Phase 1b — Measured proxy diagnostic (Colab, GPU) — `IN PROGRESS`
+- [ ] Run `histora_diagnostic.ipynb` on Qwen3.5-4B (scale to 27B to revalidate).
+- [ ] Calibrate the workspace band (sweep) and lock [lo, hi].
 - [ ] Record mediator ranks for A/B/C + capacity numbers → Progress Log.
 - [ ] Prune multi-token / unmeasurable concept surfaces; expand surface lists.
 - [ ] Confirm or revise the C >= B >> A hypothesis.
-- [ ] **Instrument the chain of thought:** extend the harness to let the proxy
-      GENERATE a reasoning trace and read the J-lens over the generated span (not
-      only the static prompt tail), so the CoT part of the hypothesis is tested —
-      which mediators surface during reasoning vs. at answer time.
+- [ ] **Instrument the chain of thought:** let the proxy GENERATE a reasoning trace
+      and read the J-lens over the generated span (not only the static prompt tail).
 
-### Phase 2 — Controller loop — `TODO`
-- [ ] Feed readouts to Claude via `prompts/controller.md`.
-- [ ] Apply format/KB edits; re-measure; iterate until all mediators hit@10.
-- [ ] Log which edits moved which mediators (the reusable findings).
+### Phase 2 — Dual-lens correlation (Research-track finding) — `TODO`
+- [ ] For each format, compare Signal A (probe surfaced-mediators on Claude) vs
+      Signal B (measured ranks on Qwen). Spearman on the induced orderings +
+      per-mediator agreement. See `docs/DUAL_LENS.md`.
+- [ ] Feed readouts to Claude via `prompts/controller.md`; apply edits; re-measure
+      until all mediators hit@10. Log which edits moved which mediators.
 
 ### Phase 3 — Evaluator + transfer validation — `TODO`
 - [ ] Claude evaluator produces structured output on converged format (real-ish cases).
-- [ ] Behavioral transfer check: does the proxy's A/B/C ranking predict Claude's
-      relational reasoning quality? (list intermediate mechanisms via API).
-- [ ] Task-accuracy A/B: converged vs naive format, measured on Claude.
+- [ ] Task-accuracy A/B: converged vs naive format, measured on Claude (authoritative).
 
-### Phase 4 — Demo & narrative — `TODO`
-- [ ] End-to-end story: HISTORA data layer + interpretability-guided optimization
-      + Claude closing the loop.
-- [ ] Slice-viewer visuals for the winning vs naive format.
+### Phase 4 — Autonomous skill evolution (gated) — `TODO`
+- [ ] SkillOpt-style loop on 1–2 trainable skills; J-lens/probe as pre-filter,
+      Claude accuracy + guardrail pass-rate as the gate; human-in-the-loop promote.
+- [ ] Regression suite (clinical cases + compliance) at every gate.
+
+### Phase 5 — Demo & submission — `TODO`
+- [ ] End-to-end story: HISTORA data layer + dual-lens optimization + Claude loop
+      + gated evolution. Demo script in `docs/HACKATHON_STRATEGY.md`.
 - [ ] Guardrail walkthrough (non-diagnostic, collection-not-imputation).
+- [ ] Writeup + video; Build-track tool + Research-track correlation finding.
 
 ---
 
@@ -279,6 +318,9 @@ the knowledge is latent and the work is recall, not format.
 | Goodhart (optimizing proxy ranks, not clinical quality) | Ranks are hypothesis-generators; Claude accuracy is the objective |
 | J-space captures only verbalizable (<10% variance) | Task accuracy stays primary; lens is diagnostic, not target |
 | Non-diagnostic drift | Schema forbids value imputation; guardrails in skill + evaluator prompt |
+| Self-report confabulation (probe) | Never presented as measurement; ground-truthed by the measured lens; Claude accuracy is authority |
+| GPU/time slips in the 1-week event | Claude-first inner loop carries the demo; measured lens becomes post-hoc validation, not a blocker |
+| Scope creep across two tracks | Build track primary; the correlation finding is a bounded add-on, not a second project |
 
 ---
 
@@ -312,13 +354,29 @@ the knowledge is latent and the work is recall, not format.
   (embedded, verified identical to `src/`). No private GitHub clone / token, no
   manual upload. Google Drive mount documented as the alternative for heavy
   iteration (replace section 2 with `drive.mount` + `sys.path.append`).
+- **2026-07-08** — **Dual-lens loop adopted.** Add a runtime-native self-report
+  instrument (`claude-workspace-probe`, inspired by `Doriandarko/skirano-skills`
+  j-space-lens) as the fast inner loop on Claude, with the measured Jacobian lens on
+  Qwen as ground-truth validation. The two are complementary (different models,
+  different epistemics); their correlation is a Research-track finding. The skirano
+  skill is referenced, **not vendored** (its repo has no license); we ship our own
+  domain-adapted skill. Effort re-balanced: Claude-first inner loop is primary for
+  the 1-week event; the measured lens is validation, not a blocker.
+- **2026-07-08** — **Hackathon positioning:** Build track primary (named user =
+  perio-cardio research clinic on HISTORA); Research track secondary via the
+  correlation finding (does not need the Gladstone datasets). See
+  `docs/HACKATHON_STRATEGY.md`.
 
 ---
 
 ## Progress Log
 
-- **2026-07-07 — Phase 0 complete.** Scaffolding, harness, schema, prompts, skill,
-  and Colab notebook created and verified (modules compile/load; notebook + schema
-  valid JSON). Awaiting first Colab run of `histora_diagnostic.ipynb`.
-- **(next)** — Phase 1 results: paste mediator ranks for A/B/C, capacity, and the
-  band-calibration sweep here to continue development.
+- **2026-07-07 — Phase 0 complete.** Scaffolding, harness, schema, prompts, skills,
+  subagents, and Colab notebook created and verified (modules compile/load; notebook
+  + schema valid JSON).
+- **2026-07-08 — Dual-lens + hackathon strategy.** Added `claude-workspace-probe`
+  skill + subagent, `docs/DUAL_LENS.md`, `docs/HACKATHON_STRATEGY.md`; restructured
+  phases around the dual loop (1a fast Claude probe, 1b measured Qwen lens, 2
+  correlation finding, 4 gated evolution). SkillOpt cloned as sibling reference.
+- **(next)** — Phase 1a/1b results: paste (A) probe surfaced-mediators per format
+  and (B) measured mediator ranks + capacity + band sweep here to continue.

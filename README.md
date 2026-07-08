@@ -24,10 +24,14 @@ a self-improving, **non-diagnostic** research agent.
 
 ## How it works (the working hypothesis)
 
-The Jacobian lens reads the unspoken mediating concepts out of a model's internal
-workspace. Our hypothesis is that **Claude, by inspecting the internal workspace of
-a small proxy (Qwen), can decide what to fix at the input** — and that this
-learning transfers to Claude and drives autonomous skill evolution:
+We read the model's "workspace" with **two complementary instruments** (see
+[`docs/DUAL_LENS.md`](docs/DUAL_LENS.md)): a fast **self-report probe on Claude
+itself** (`claude-workspace-probe`, runs on the real target model, no GPU) and the
+**measured Jacobian lens on the Qwen proxy** (`jlens-diagnostic`, quantitative and
+causal ground truth). The self-report drives the fast inner loop; the measured lens
+validates it; their **correlation is a reproducible finding**. Our hypothesis is
+that **Claude, by inspecting this workspace, can decide what to fix at the input** —
+and that the learning drives autonomous skill evolution:
 
 1. **Instrument** the Qwen proxy with a pre-fitted J-lens.
 2. **Present a candidate** made of three things the hypothesis targets: the input
@@ -49,8 +53,10 @@ learning transfers to Claude and drives autonomous skill evolution:
 reasoning. Proxy ranks are directional, not absolute — they generate and prioritize
 hypotheses; Claude is the final judge (transfer validity is verified in Phase 3).
 
-**Living plan:** see [`docs/PLAN.md`](docs/PLAN.md) for the full workplan, status,
-decisions, and progress log (updated as we learn).
+**Docs:** [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status, decisions),
+[`docs/DUAL_LENS.md`](docs/DUAL_LENS.md) (two-instrument methodology + correlation
+experiment), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md) (Built with
+Claude: Life Sciences — tracks, named user, one-week plan, demo, judging).
 
 ## Layout
 
@@ -80,6 +86,10 @@ for the full subagent + skill catalog and the skill↔subagent map.
 - `../jacobian-lens/` — Anthropic's Jacobian-lens reference (imported by the notebook).
 - `../SkillOpt/` — Microsoft Research SkillOpt: skills as trainable parameters,
   the reference for the skill-evolution loop.
+- `Doriandarko/skirano-skills` (GitHub, not cloned) — Pietro Schirano's `j-space-lens`
+  self-report skill that inspired `skills/claude-workspace-probe.md`. Referenced with
+  attribution, **not vendored** (its repo has no license); install its plugin
+  separately if you want the original.
 
 ## Run
 
