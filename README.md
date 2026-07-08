@@ -6,23 +6,48 @@ base for a **non-diagnostic** research agent that relates periodontal data
 cardiovascular data (hypertension, diabetes, lipids, smoking, medications, CV
 history) and surfaces oral-systemic risk profiles and research hypotheses.
 
-## Idea
+## The problem we solve
 
-The periodontal <-> cardiovascular link is a chain of *hidden mediators*
-(inflammation, C-reactive protein, atherosclerosis, endothelial dysfunction,
-bacteremia). The Jacobian lens reads exactly those unspoken bridge concepts out
-of a model's internal workspace. So we:
+Medical and dental records live in separate silos, and the periodontal <->
+cardiovascular link runs through *hidden mediators* (inflammation, C-reactive
+protein, atherosclerosis, endothelial dysfunction, bacteremia) that no single
+record makes explicit. HISTORA supplies the missing data layer that integrates
+oral and systemic records. The open question this project answers is:
 
-1. Instrument a small open-weights proxy (Qwen) with a pre-fitted J-lens.
-2. Measure whether each candidate input format makes the mediator concepts
-   representable in the workspace band (low vocabulary rank = represented).
-3. Let a capable Claude read those readouts and edit the format, context, and KB
-   (the **controller**), iterating until the mediators are reached.
-4. Hand the converged format to the most capable Claude (the **evaluator**) for
-   the final structured output, validated by task accuracy on Claude itself.
+> Given integrated oral + systemic data, **we do not know a priori the best way to
+> present, formulate, and contextualize it** so that a model actually represents
+> the true oral-systemic relationships — which values to complete, which input
+> format to use, and which knowledge to inject.
 
-The proxy's ranks are directional, not absolute: they generate and prioritize
-format hypotheses; Claude is the final judge.
+We answer it with interpretability instead of guesswork, and turn the answer into
+a self-improving, **non-diagnostic** research agent.
+
+## How it works (the working hypothesis)
+
+The Jacobian lens reads the unspoken mediating concepts out of a model's internal
+workspace. Our hypothesis is that **Claude, by inspecting the internal workspace of
+a small proxy (Qwen), can decide what to fix at the input** — and that this
+learning transfers to Claude and drives autonomous skill evolution:
+
+1. **Instrument** the Qwen proxy with a pre-fitted J-lens.
+2. **Present a candidate** made of three things the hypothesis targets: the input
+   **data structure**, the **problem formulation**, and the **chain of thought**
+   (read the workspace over the generated reasoning, not only the static prompt),
+   plus KB context.
+3. **Claude inspects Qwen's workspace readout** to decide which **values to
+   complete** (as collection flags, never imputed), which **formats to adjust**,
+   and which **additional knowledge to inject or modify** at the input.
+4. **Iterate** the edits until the mediating concepts are represented (low
+   workspace-band rank).
+5. **Evaluate on Claude** — feed the converged, complete input to the most capable
+   Claude for the final structured output. This is the authoritative gate.
+6. **Evolve autonomously** — use that learning as the fitness signal to evolve the
+   subagents and skills (SkillOpt-style loop), gated by Claude accuracy + the
+   protected non-diagnostic guardrail, with human-in-the-loop promotion.
+
+**Load-bearing assumption:** the proxy's workspace predicts Claude's relational
+reasoning. Proxy ranks are directional, not absolute — they generate and prioritize
+hypotheses; Claude is the final judge (transfer validity is verified in Phase 3).
 
 **Living plan:** see [`docs/PLAN.md`](docs/PLAN.md) for the full workplan, status,
 decisions, and progress log (updated as we learn).

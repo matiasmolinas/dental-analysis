@@ -25,6 +25,18 @@ optimization loop — rather than prompt-engineering blind.
 
 ---
 
+## 1b. Working hypothesis (load-bearing)
+
+Claude, by inspecting the **internal workspace of a small proxy (Qwen)** via the
+J-lens — given the input **data structure**, the **problem formulation**, and the
+**chain of thought** — can decide which **values to complete** (as collection
+flags, never imputed), which **input formats to adjust**, and which **additional
+knowledge context to inject or modify**. The optimized, complete input is then
+**evaluated on the most capable Claude**, and that learning becomes the fitness
+signal for **autonomous evolution of the subagents and skills** (gated). The whole
+method is valid as a Claude-improvement technique only if the proxy's workspace
+**predicts Claude's** relational reasoning — verified in Phase 3.
+
 ## 2. Scientific rationale
 
 The periodontal <-> cardiovascular association is, clinically, a chain of
@@ -222,6 +234,10 @@ the knowledge is latent and the work is recall, not format.
 - [ ] Record mediator ranks for A/B/C + capacity numbers → Progress Log.
 - [ ] Prune multi-token / unmeasurable concept surfaces; expand surface lists.
 - [ ] Confirm or revise the C >= B >> A hypothesis.
+- [ ] **Instrument the chain of thought:** extend the harness to let the proxy
+      GENERATE a reasoning trace and read the J-lens over the generated span (not
+      only the static prompt tail), so the CoT part of the hypothesis is tested —
+      which mediators surface during reasoning vs. at answer time.
 
 ### Phase 2 — Controller loop — `TODO`
 - [ ] Feed readouts to Claude via `prompts/controller.md`.
