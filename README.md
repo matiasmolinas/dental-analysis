@@ -96,14 +96,16 @@ for the full subagent + skill catalog and the skill↔subagent map.
 ## Run
 
 Open `colab/histora_diagnostic.ipynb` in Colab (GPU runtime). It clones and
-installs `jacobian-lens`, loads the model + pre-fitted lens, and scores the three
-formats. No fitting required. The `src/` modules are imported by the notebook;
-they compile and load without a GPU (except `harness.py`, which needs `jlens`).
+installs `jacobian-lens`, loads the model + pre-fitted lens, and scores the five
+candidate input formats (A–E, see `src/record_formats.py`). No fitting required.
+The `src/` modules are imported by the notebook; they compile and load without a
+GPU (except `harness.py`, which needs `jlens`).
 
 ## Data
 
 Cases are grounded in **NHANES 2009–2010** (public, de-identified — the cycle that
-pairs the full-mouth periodontal exam with CRP), with **Synthea** for longitudinal
+pairs the full-mouth periodontal exam with CRP), plus the **NHANES Oral Microbiome
+2009–2012** mediator layer (SEQN-linked) and **Synthea** for longitudinal
 progression and shareable demo records. Mapping in [`src/nhanes_mapping.py`](src/nhanes_mapping.py),
 loader in [`src/nhanes_loader.py`](src/nhanes_loader.py), full detail in
 [`docs/DATASETS.md`](docs/DATASETS.md).
