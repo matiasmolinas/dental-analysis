@@ -80,9 +80,13 @@ accuracy measured on Claude.
   flags. **No patient-value imputation** — missing mediating data (e.g. hs-CRP)
   becomes a *collection flag*, not a guess. Encoded in `schemas/output_schema.json`
   (`non_diagnostic_disclaimer: const true`, no value-imputation field).
-- **Proxy model:** Qwen3.6-27B preferred (Qwen3.5-4B fallback). 4B may be too weak
-  to represent clinical relations -> false negatives. Pre-fitted lenses on the Hub
-  (`neuronpedia/jacobian-lens`, `qwen-n1000`) -> **no fitting step needed**.
+- **Proxy model:** **start with Qwen3.5-4B** (fits a free Colab T4 16 GB / L4 24 GB;
+  `apply()` is a forward pass in `no_grad`, memory ~= weights ~8 GB). Scale to
+  Qwen3.6-27B (~54 GB bf16 -> A100 80 GB / H100) to revalidate key findings; 4B may
+  be too weak to represent some relations -> possible false negatives. Do not
+  quantize the 27B: the lens was fit in bf16 and quantization degrades the readout.
+  Pre-fitted lenses on the Hub (`neuronpedia/jacobian-lens`, `qwen-n1000`) -> **no
+  fitting step needed**.
 - **Workspace band:** prior [0.33, 0.66] of depth, intersected with the lens's
   fitted layers; **calibrate per model** with `sweep_layers` before trusting it.
 - **Bridge concepts** live in `src/bridge_concepts.py`; mediators weighted above
