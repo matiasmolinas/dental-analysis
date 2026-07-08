@@ -37,9 +37,25 @@ Endothelial dysfunction and atherosclerotic plaque are the downstream vascular
 substrate; markers include impaired flow-mediated dilation and elevated
 inflammatory/atherogenic profiles.
 
+## Grounding / citable sources
+
+Ground snippets in these rather than free-form assertion, and mirror their
+non-causal language:
+
+- **American Heart Association scientific statement** on periodontal disease and
+  atherosclerotic cardiovascular disease — states the link is an **association, not
+  established causation**; proposed mechanisms are bacteremia and systemic
+  inflammation (CRP, IL-6, TNF-alpha). Use its framing to keep claims non-diagnostic.
+- **HOMD** (Human Oral Microbiome Database) — curated oral taxa; pairs with the
+  NHANES Oral Microbiome layer (see `docs/DATASETS.md`) to name specific
+  periodontal pathogens in the bacteremia/microbial pathway.
+- A small **PubMed/PMC** corpus (retrieved, not memorized) for case-specific
+  citations behind each hypothesized mechanism (RAG). Keep retrieved evidence
+  traceable so `traceability-audit` can check it.
+
 ## Usage notes
 
 - These are **associations and hypothesized mechanisms** for research framing, not
   causal claims about an individual patient.
 - Prefer the shortest snippet that names the mediators relevant to the case; let
-  the J-lens readout decide whether it earns its place.
+  the J-lens / probe readout decide whether it earns its place.

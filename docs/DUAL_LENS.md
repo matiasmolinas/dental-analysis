@@ -69,6 +69,24 @@ they agree.
 This experiment is the reproducible artifact that makes a strong **Research-track**
 submission, alongside the **Build-track** tool it optimizes.
 
+## Counterfactual sensitivity (behavioral analogue of the swap)
+
+The measured J-lens supports **representation swaps** (replace a concept's direction
+and see if the conclusion shifts) — a causal test not available on Claude via API.
+Its behavioral analogue **is** available: flip one input factor and check whether the
+output changes coherently.
+
+- **Probe:** toggle `smoking`, `type2_diabetes`, `hs_crp` (present vs MISSING),
+  `hypertension` one at a time in the record; re-run the agent.
+- **Expectation (non-diagnostic):** the affected relational axis and its confidence
+  should move in the mechanistically-correct direction; unrelated axes should stay
+  put. A format whose output is *insensitive* to flipping a mediator is a bad format
+  (the model is not using it) — the same signal the workspace instruments give,
+  measured at the output.
+- **Use:** a fast, API-only metric that corroborates the probe and the measured lens,
+  and a strong demo beat (flip CRP → the inflammatory axis strengthens with a
+  traceable reason). Track per format; see `docs/PLAN.md` §8.
+
 ## Guardrails on interpretation
 
 - The probe is **self-report, not measurement** — never label it otherwise in

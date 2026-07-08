@@ -22,6 +22,8 @@ diagnoses.
 
 from __future__ import annotations
 
+import json
+
 # Provenance: schema field -> data source. Real fields trace to NHANES 2009-2010
 # variables (see nhanes_mapping.SCHEMA_TO_NHANES); progression is synthetic.
 PROVENANCE = {
@@ -101,10 +103,41 @@ def format_c_narrative_mechanism(r: dict) -> str:
     )
 
 
+def format_d_structured_json(r: dict) -> str:
+    """Structured JSON record (schema-shaped), no narrative and no KB."""
+    return (
+        "Analyze this integrated oral-systemic record (non-diagnostic).\n"
+        "Record (JSON):\n" + json.dumps(r, indent=2) + "\n\n"
+        "Question: oral-systemic risk profile and relational axes?"
+    )
+
+
+def format_e_json_kb_constraints(r: dict) -> str:
+    """JSON + mechanistic KB + interpretability constraints (reason through mediators)."""
+    kb = (
+        "Knowledge base: periodontitis raises systemic inflammatory burden "
+        "(C-reactive protein, IL-6), linked to cardiovascular risk via endothelial "
+        "dysfunction and atherosclerosis; the oral microbiome mediates bacteremia and "
+        "inflammation (AHA statement; HOMD)."
+    )
+    constraints = (
+        "Constraints: reason explicitly through the mediating concepts (inflammation, "
+        "C-reactive protein, atherosclerosis, endothelial dysfunction, bacteremia); "
+        "flag any missing mediating datum as data to collect; never impute a patient "
+        "value; non-diagnostic (association/hypothesis only)."
+    )
+    return (
+        kb + "\n\nRecord (JSON):\n" + json.dumps(r, indent=2) + "\n\n" + constraints +
+        "\n\nQuestion: oral-systemic risk profile and relational axes?"
+    )
+
+
 FORMATS = {
     "A_abbrev_table": format_a_abbrev_table,
     "B_sections_glossed": format_b_sections_glossed,
     "C_narrative_mechanism": format_c_narrative_mechanism,
+    "D_structured_json": format_d_structured_json,
+    "E_json_kb_constraints": format_e_json_kb_constraints,
 }
 
 # Key patient values used by the capacity probe (single-token-friendly surfaces).

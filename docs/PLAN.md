@@ -231,16 +231,20 @@ dental-analysis/
 
 ## 6. Candidate input formats (initial)
 
-Three formats isolate the levers we optimize (see `src/record_formats.py`):
+Five formats isolate the levers we optimize (see `src/record_formats.py`):
 
 - **A — abbreviated table**, dental-first, no term glossing. *(baseline)*
 - **B — named sections + glossed terms** (e.g. "BOP = gingival inflammation
   marker"), medical-first.
 - **C — narrative prose with an explicit mechanistic KB bridge** (periodontitis
   -> systemic inflammation -> CV risk via CRP).
+- **D — structured JSON** record (schema-shaped), no narrative, no KB.
+- **E — JSON + KB + interpretability constraints** (reason explicitly through the
+  mediators; flag missing data; no imputation; non-diagnostic).
 
-**Hypothesis:** C >= B >> A on mediator ranks. If A already activates mediators,
-the knowledge is latent and the work is recall, not format.
+**Hypothesis:** E >= C >= B >> A on mediator ranks; D isolates whether structure
+alone (without glossing/KB) helps. If A already activates mediators, the knowledge
+is latent and the work is recall, not format.
 
 ---
 
@@ -312,6 +316,9 @@ the knowledge is latent and the work is recall, not format.
 - **Band location** (calibrated layer range).
 - **Claude task accuracy** (final, authoritative) and **mechanism-recall** on the
   behavioral transfer check.
+- **Counterfactual sensitivity:** flip smoking / diabetes / hs-CRP / hypertension →
+  does the affected axis move coherently (and unrelated axes stay put)? The
+  API-only, output-side analogue of the J-lens swap (see `DUAL_LENS.md`).
 
 ---
 

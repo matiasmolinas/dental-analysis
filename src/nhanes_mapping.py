@@ -14,6 +14,13 @@ from __future__ import annotations
 # NHANES 2009-2010 XPT base URL (each file is <NAME>.XPT).
 NHANES_BASE_URL = "https://wwwn.cdc.gov/Nchs/Nhanes/2009-2010"
 
+# NHANES Oral Microbiome (2009-2010 + 2011-2012): oral-rinse ASVs, alpha/beta
+# diversity, and genus-level abundance tables, SEQN-linkable to the periodontal exam
+# and phenotype. In 2009-2010 it overlaps with the full-mouth periodontal exam AND
+# CRP in the same participants -> a real, reproducible mediator chain
+# (periodontal -> oral microbiome -> systemic inflammation -> CV risk). See docs/DATASETS.md.
+NHANES_OMP_URL = "https://wwwn.cdc.gov/Nchs/Nhanes/Omp/Default.aspx"
+
 # schema path -> (NHANES file without extension, variable code(s), note)
 SCHEMA_TO_NHANES: dict[str, tuple[str, tuple[str, ...], str]] = {
     "demographics.age": ("DEMO_F", ("RIDAGEYR",), "age in years"),
@@ -37,9 +44,16 @@ SCHEMA_TO_NHANES: dict[str, tuple[str, tuple[str, ...], str]] = {
     "medical_cv.medications": ("RXQ_RX_F", ("RXDDRUG",), "prescription medication names"),
     "medical_cv.prior_cv_event": ("MCQ_F", ("MCQ160C", "MCQ160E", "MCQ160F"), "CHD / MI / stroke ever"),
     "medical_cv.family_history_mi": ("MCQ_F", ("MCQ300A",), "close relative had heart attack"),
+    # Mediator layer: oral microbiome (separate OMP files, not the 2009-2010 XPT set).
+    "mediators.oral_microbiome": ("OMP_2009-2012", ("alpha_diversity", "genus_abundance"),
+                                  "oral-rinse ASVs; SEQN-linkable; see NHANES_OMP_URL"),
 }
 
-# Unique files to download for a full case (join on SEQN, the participant id).
-NHANES_FILES = sorted({f for f, _, _ in SCHEMA_TO_NHANES.values()})
+# Unique standard 2009-2010 XPT files to download for a full case (join on SEQN).
+# The oral-microbiome layer (OMP_*) is hosted separately (NHANES_OMP_URL) and is
+# excluded here so the XPT loader does not try to fetch it as an .XPT.
+NHANES_FILES = sorted(
+    {f for f, _, _ in SCHEMA_TO_NHANES.values() if not f.startswith("OMP")}
+)
 
 JOIN_KEY = "SEQN"  # NHANES respondent sequence number; join all files on this.
