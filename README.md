@@ -56,7 +56,9 @@ hypotheses; Claude is the final judge (transfer validity is verified in Phase 3)
 **Docs:** [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status, decisions),
 [`docs/DUAL_LENS.md`](docs/DUAL_LENS.md) (two-instrument methodology + correlation
 experiment), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md) (Built with
-Claude: Life Sciences — tracks, named user, one-week plan, demo, judging).
+Claude: Life Sciences — tracks, named user, one-week plan, demo, judging),
+[`docs/DATASETS.md`](docs/DATASETS.md) (NHANES 2009–2010 real anchor + Synthea
+longitudinal; schema mapping and access).
 
 ## Layout
 
@@ -98,11 +100,19 @@ installs `jacobian-lens`, loads the model + pre-fitted lens, and scores the thre
 formats. No fitting required. The `src/` modules are imported by the notebook;
 they compile and load without a GPU (except `harness.py`, which needs `jlens`).
 
+## Data
+
+Cases are grounded in **NHANES 2009–2010** (public, de-identified — the cycle that
+pairs the full-mouth periodontal exam with CRP), with **Synthea** for longitudinal
+progression and shareable demo records. Mapping in [`src/nhanes_mapping.py`](src/nhanes_mapping.py),
+loader in [`src/nhanes_loader.py`](src/nhanes_loader.py), full detail in
+[`docs/DATASETS.md`](docs/DATASETS.md).
+
 ## Guardrails
 
 Non-diagnostic throughout. Missing mediating data becomes a **collection flag**,
 never an imputed patient value. Every relational axis cites the input fields it
-was derived from. Synthetic data only for methodology development.
+was derived from. NHANES-grounded / synthetic data only for methodology development.
 
 ## Note
 

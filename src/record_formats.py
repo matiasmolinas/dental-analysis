@@ -8,11 +8,26 @@ The three formats isolate the levers we optimize:
 
 Hypothesis: C >= B >> A in the workspace rank of the mediator concepts.
 
-This is SYNTHETIC data for methodology development. The task is non-diagnostic:
-outputs are research hypotheses and data-completeness flags, never diagnoses.
+Data grounding: values are chosen to be consistent with real NHANES 2009-2010
+distributions (the cycle that pairs the full-mouth periodontal exam with CRP);
+see docs/DATASETS.md and src/nhanes_mapping.py. `nhanes_loader.build_case` can
+replace this hand-written case with a real grounded participant row. The
+longitudinal field `ppd_18m_ago_mm` has NO NHANES source (NHANES is
+cross-sectional) — it is Synthea-style progression, flagged below.
+
+This is a NHANES-grounded SYNTHETIC case for methodology development. The task is
+non-diagnostic: outputs are research hypotheses and data-completeness flags, never
+diagnoses.
 """
 
 from __future__ import annotations
+
+# Provenance: schema field -> data source. Real fields trace to NHANES 2009-2010
+# variables (see nhanes_mapping.SCHEMA_TO_NHANES); progression is synthetic.
+PROVENANCE = {
+    "cross_sectional_fields": "NHANES 2009-2010 (grounded values; see nhanes_mapping)",
+    "ppd_18m_ago_mm": "Synthea-style longitudinal progression (no NHANES source)",
+}
 
 RECORD = {
     "demographics": {"age": 58, "sex": "M", "bmi": 29.4},
@@ -35,10 +50,10 @@ RECORD = {
         "on_statin": False,
     },
     "periodontal": {
-        "mean_ppd_mm": 5.2,
-        "ppd_18m_ago_mm": 4.1,
-        "cal_mm": 4.8,
-        "bop_pct": 62,
+        "mean_ppd_mm": 5.2,          # OHXPER_F per-site probing depth (mean)
+        "ppd_18m_ago_mm": 4.1,       # SYNTHETIC progression — no NHANES source (Synthea)
+        "cal_mm": 4.8,               # OHXPER_F per-site attachment loss (mean)
+        "bop_pct": 62,               # OHXPER_F bleeding-on-probing sites
         "radiographic_bone_loss": "moderate-to-severe, generalized",
         "diagnosis": "periodontitis stage III grade B",
         "regular_maintenance": False,

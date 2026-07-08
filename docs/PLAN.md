@@ -9,6 +9,7 @@
 **Context:** Built with Claude: Life Sciences (Anthropic × Cerebral Valley ×
 Gladstone), 2026-07-07 → 2026-07-13. See [`HACKATHON_STRATEGY.md`](HACKATHON_STRATEGY.md).
 **Method detail:** dual-lens loop — see [`DUAL_LENS.md`](DUAL_LENS.md).
+**Data:** NHANES 2009–2010 (real anchor) + Synthea (longitudinal) — see [`DATASETS.md`](DATASETS.md).
 
 ---
 
@@ -213,8 +214,10 @@ dental-analysis/
     walkthrough.ipynb          # copy of the jacobian-lens reference notebook
   src/
     bridge_concepts.py         # target mediator + shared concepts
-    record_formats.py          # one synthetic record, three candidate formats (A/B/C)
+    record_formats.py          # NHANES-grounded case, three candidate formats (A/B/C)
     harness.py                 # J-lens metrics: concept_ranks, capacity, sweep_layers
+    nhanes_mapping.py          # schema field -> NHANES 2009-2010 file+variable codes
+    nhanes_loader.py           # download XPT + build a grounded case (pandas.read_sas)
   schemas/output_schema.json   # non-diagnostic structured output contract
   prompts/
     controller.md              # Claude input-optimizer prompt
@@ -265,6 +268,10 @@ the knowledge is latent and the work is recall, not format.
 - [ ] This is the primary inner loop and the demo backbone.
 
 ### Phase 1b — Measured proxy diagnostic (Colab, GPU) — `IN PROGRESS`
+- [ ] Ground cases in real data: download NHANES 2009–2010 (`src/nhanes_loader.py`),
+      aggregate `OHXPER_F` per-site PPD/CAL/BOP, build grounded cases to replace the
+      hand-written values in `src/record_formats.py`.
+- [ ] (Optional) reproducible CRP↔periodontitis mini-analysis on 2009–2010 (Research-track).
 - [ ] Run `histora_diagnostic.ipynb` on Qwen3.5-4B (scale to 27B to revalidate).
 - [ ] Calibrate the workspace band (sweep) and lock [lo, hi].
 - [ ] Record mediator ranks for A/B/C + capacity numbers → Progress Log.
@@ -366,6 +373,14 @@ the knowledge is latent and the work is recall, not format.
   perio-cardio research clinic on HISTORA); Research track secondary via the
   correlation finding (does not need the Gladstone datasets). See
   `docs/HACKATHON_STRATEGY.md`.
+- **2026-07-08** — **Datasets: NHANES 2009–2010 as the real anchor + Synthea for
+  longitudinal.** 2009–2010 uniquely pairs the full-mouth periodontal exam with CRP
+  (public, de-identified, no DUA). NHANES is cross-sectional → Synthea (custom
+  periodontal module) supplies per-patient progression and shareable demo data.
+  Linked EDR+EHR / UK Biobank named but access-gated, not used in the event. Mapping
+  in `src/nhanes_mapping.py`, loader in `src/nhanes_loader.py`, detail in
+  `docs/DATASETS.md`. Enables a reproducible CRP↔periodontitis mini-analysis
+  (Research-track).
 
 ---
 
