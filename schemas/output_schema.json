@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "HISTORA Oral-Systemic Analysis (non-diagnostic)",
+  "description": "Structured research output relating periodontal and cardiovascular data. Generates hypotheses and data-completeness flags only. Never a diagnosis; never imputes patient-specific values.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "risk_profile",
+    "relational_axes",
+    "required_missing_data",
+    "research_hypotheses",
+    "non_diagnostic_disclaimer"
+  ],
+  "properties": {
+    "risk_profile": {
+      "type": "string",
+      "enum": ["low", "moderate", "elevated", "insufficient_to_assess"]
+    },
+    "relational_axes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "axis",
+          "oral_evidence",
+          "systemic_evidence",
+          "hypothesized_mechanism",
+          "confidence",
+          "traceability"
+        ],
+        "properties": {
+          "axis": {
+            "type": "string",
+            "enum": ["inflammatory", "metabolic", "shared_behavioral", "vascular"]
+          },
+          "oral_evidence": { "type": "array", "items": { "type": "string" } },
+          "systemic_evidence": { "type": "array", "items": { "type": "string" } },
+          "hypothesized_mechanism": { "type": "string" },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "traceability": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Exact input fields the axis was derived from."
+          }
+        }
+      }
+    },
+    "required_missing_data": {
+      "type": "array",
+      "description": "Data to COLLECT to close an axis. Never an imputed patient value.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["field", "why", "impact"],
+        "properties": {
+          "field": { "type": "string" },
+          "why": { "type": "string" },
+          "impact": { "type": "string", "enum": ["critical", "important", "optional"] }
+        }
+      }
+    },
+    "research_hypotheses": { "type": "array", "items": { "type": "string" } },
+    "non_diagnostic_disclaimer": { "const": true }
+  }
+}
