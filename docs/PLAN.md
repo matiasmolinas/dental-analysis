@@ -74,6 +74,73 @@ accuracy measured on Claude.
 
 ---
 
+## 3b. Agent architecture (runtime) and skill evolution
+
+The J-lens is a **dev-time measurement instrument**, not the runtime system. In
+production the work is done by a Claude orchestrator with subagents; the J-lens
+(on the Qwen proxy) and the skill optimizer are **offline** tools that improve the
+skills those subagents run. J-lens and agents are complementary, at different
+layers — not competing.
+
+### Runtime subagents (production pipeline)
+
+| Subagent | Function | Optimizable by |
+|---|---|---|
+| Orchestrator (main) | Plan, route, assemble final output | SkillOpt |
+| Record Normalizer | Integrate fragmented dental+medical records (HISTORA core) -> schema; flag missing fields | J-lens (format) + SkillOpt |
+| Periodontal Analyst | Staging/grading (AAP/EFP 2017), longitudinal progression | SkillOpt |
+| Cardiometabolic Analyst | Non-diagnostic framing of CV risk factors | SkillOpt |
+| Oral-Systemic Relational Reasoner | Core: inflammatory/metabolic/behavioral/vascular axes & mediators | **J-lens (primary)** + SkillOpt |
+| Guardrail / Verifier | Non-diagnostic, no value imputation, traceability, confidence (adversarial) | **PROTECTED — never evolved** |
+| Hypothesis Generator | Research hypotheses for follow-up | SkillOpt |
+
+Dev-time (offline): **J-lens Diagnostic** (proxy readout / controller) and
+**SkillOpt Optimizer** (skill.md evolution).
+
+### Skills
+
+`oral-systemic-analysis` (core), `record-normalization`, `periodontal-staging`,
+`cardiometabolic-framing`, `oral-systemic-kb` (retrievable mediator mechanisms),
+`traceability-audit`, and `non-diagnostic-guardrail`. The guardrail is a
+**protected invariant**, not a trainable skill.
+
+### Skill evolution: SkillOpt gated by J-lens
+
+Adopt **SkillOpt** (Microsoft Research) as the skill-optimization framework:
+skills as trainable parameters, optimized via rollout -> reflect -> edit -> gate
+with bounded, auditable edits accepted only on held-out improvement. Compose:
+
+```
+J-lens mediator ranks (cheap, pre-output, on Qwen)  ─►  pre-filter candidate skill edits
+        │  (valid only once proxy ranks predict Claude — Phase 3 transfer check)
+        ▼
+SkillOpt bounded edit loop  ─►  gate = Claude held-out accuracy + guardrail pass-rate
+        ▼
+human approval  ─►  versioned skill (rollback available)
+```
+
+**Dependency caveat:** SkillOpt optimizes skills for the model that *runs* them —
+in runtime that is Claude, not Qwen. So the authoritative gate runs on Claude;
+J-lens is only a cheap pre-filter, justified once transfer validity is shown.
+
+### Evolution guardrails (non-negotiable in a health context)
+
+- Evolve the **skills**, never the **guardrails**. `non-diagnostic-guardrail` and
+  the "no value imputation / full traceability" tests are invariants and part of
+  every gate (an edit that lowers guardrail pass-rate is rejected even if it
+  raises accuracy).
+- Human-in-the-loop to promote any new skill version.
+- Regression suite (clinical cases + compliance) runs at every gate.
+- Autonomous != unsupervised: the agent may propose and pre-evaluate improvements
+  on its own; promotion to production requires passing the gate.
+
+**Lightweight alternative for the hackathon:** implement the rollout->reflect->
+edit->gate loop directly on the Claude Agent SDK's native subagents + skills,
+borrowing SkillOpt's *design* (bounded edits + held-out gate) without adopting its
+codebase, if time is tight.
+
+---
+
 ## 4. Key design decisions
 
 - **Non-diagnostic, always.** Output is research hypotheses + data-completeness
@@ -211,6 +278,13 @@ the knowledge is latent and the work is recall, not format.
 - **2026-07-07** — Non-diagnostic scope is a hard constraint: collection flags,
   never patient-value imputation.
 - **2026-07-07** — Use pre-fitted Hub lenses (no fitting) to start; GPU via Colab.
+- **2026-07-07** — **J-lens is complementary to Claude agents, not a substitute:**
+  dev-time white-box instrument on a proxy vs. runtime production system. Adopt a
+  Claude orchestrator + subagents for runtime (see §3b).
+- **2026-07-07** — **Adopt SkillOpt for skill evolution, gated by J-lens.** J-lens
+  mediator ranks are a cheap pre-filter; the authoritative gate is Claude held-out
+  accuracy + guardrail pass-rate. Guardrails are protected invariants, never
+  evolved. Lightweight fallback: replicate the loop on the Claude Agent SDK.
 - **2026-07-07** — **Colab execution: self-contained notebook.** The notebook
   clones `jacobian-lens` and recreates the `src/` modules via `%%writefile`
   (embedded, verified identical to `src/`). No private GitHub clone / token, no
