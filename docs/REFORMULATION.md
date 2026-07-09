@@ -312,12 +312,18 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
       collection flags) + `tests/test_relational_signals.py` — **5/5 tests pass**. The
       computed values are the injected variables the lens re-checks.
 
-### Phase R5 — Promotion tier (T1) + gate — `DONE` (mechanism; live A/B pending data)
+### Phase R5 — Promotion tier (T1) + gate — `IN PROGRESS` (harness done; live run pending)
 - [x] Generalized `agents/skillopt-optimizer.md` to the five surfaces + the T1 gate
       (held-out accuracy + guardrail pass-rate + tests + human approval) and the A/B
       protocol.
-- [ ] Run the live A/B (reformulated vs baseline) on Claude — needs the eval batch;
-      protocol + harness are in place.
+- [x] Built the A/B harness (`src/ab_eval.py`) + protocol (`docs/AB_PROTOCOL.md`) +
+      tests (`tests/test_ab_eval.py`, 6/6). Model-agnostic `run_ab(records, model_fn)`;
+      metrics = mechanism-recall, missing-data flagging, traceability, guardrail; the
+      promotion gate = strict accuracy gain with no drop in guardrail pass-rate. Offline
+      stub run: A `0.0/0.0` vs B `1.0/1.0` → `promote_B` (proves the harness, not the
+      method).
+- [ ] Live run on Claude: wire `claude_model_fn` to the runtime agent, load real
+      participants via `nhanes_loader.build_case`, log aggregate + verdict here.
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
