@@ -33,6 +33,21 @@ sys.path.insert(0, os.path.dirname(__file__))
 from ab_eval import run_ab
 from record_formats import RECORD
 
+
+def _load_dotenv() -> None:
+    """Load KEY=VALUE lines from a local .env (repo root) into os.environ if present.
+    Tiny, dependency-free; existing env vars win. The .env is git-ignored (secrets)."""
+    path = os.path.join(os.path.dirname(__file__), "..", ".env")
+    if not os.path.exists(path):
+        return
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            os.environ.setdefault(key.strip(), val.strip().strip('"').strip("'"))
+
 # A lean, NEUTRAL agent instruction — identical for both arms so the input is the lever.
 # It does not itself gloss terms, inject the mechanistic KB, or name hs-CRP; whether the
 # mediators surface and whether missing data is flagged must come from the INPUT.
@@ -122,6 +137,7 @@ def main() -> None:
                                                    "results", "ab_live_report.json"))
     args = ap.parse_args()
 
+    _load_dotenv()
     cases = load_cases(args.cases, args.n, args.seqns)
     model_fn = make_claude_model_fn(args.model)
     report = run_ab(cases, model_fn)

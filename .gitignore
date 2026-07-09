@@ -10,3 +10,8 @@ __pycache__/
 # Live A/B run artifacts and downloaded NHANES data
 results/
 .nhanes/
+
+# Secrets — never commit. The API key lives only in a local .env.
+.env
+.env.*
+!.env.example
