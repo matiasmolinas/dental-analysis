@@ -51,22 +51,73 @@ PLANTED_TARGET = {
 }
 
 
-def _make_call(client, model: str, system: str):
+# Tool schemas force STRUCTURED output (the SDK returns a validated dict — no fragile text-JSON
+# parsing, no truncation/quote/comma breakage). Extended thinking is disabled for these
+# structured calls (it was exhausting the token budget before any output).
+PREDICTOR_TOOL = {"type": "object", "properties": {"items": {"type": "array", "items": {
+    "type": "object", "properties": {
+        "key": {"type": "string"}, "channel": {"type": "string"}, "concept": {"type": "string"},
+        "salience": {"type": "string"}, "appears_in_output": {"type": "boolean"}},
+    "required": ["key", "channel", "concept", "appears_in_output"]}}}, "required": ["items"]}
+BLIND_TOOL = {"type": "object", "properties": {"items": {"type": "array", "items": {
+    "type": "object", "properties": {"key": {"type": "string"}, "concept": {"type": "string"}},
+    "required": ["key", "concept"]}}}, "required": ["items"]}
+JUDGE_TOOL = {"type": "object", "properties": {"verdicts": {"type": "array", "items": {
+    "type": "object", "properties": {
+        "key": {"type": "string"}, "covered": {"type": "boolean"}, "why": {"type": "string"}},
+    "required": ["key", "covered"]}}}, "required": ["verdicts"]}
+
+
+def _make_call(client, model: str, system: str, tool_name: str, tool_schema: dict):
+    """Structured call that PRESERVES extended thinking. Forced tool_use is incompatible with
+    thinking, so we keep thinking ON with a generous budget and offer the tool with tool_choice
+    AUTO (compatible): the model thinks, then returns the structured result via the tool (clean,
+    validated dict) or as text (parsed as fallback). max_tokens is maxed so neither thinking nor
+    the output is truncated."""
+    tool = {"name": tool_name, "description": f"Return the {tool_name} result.",
+            "input_schema": tool_schema}
+    sys_prompt = system + f"\n\nReturn your result by calling the `{tool_name}` tool."
+
+    def _stream(**kw):
+        # max_tokens=32000 exceeds the SDK's non-streaming 10-min guard -> must stream.
+        import time
+        import anthropic
+        last = None
+        for i in range(5):
+            try:
+                with client.messages.stream(**kw) as s:
+                    return s.get_final_message()
+            except (anthropic.APIConnectionError, anthropic.RateLimitError,
+                    anthropic.InternalServerError) as e:
+                last = e
+                time.sleep(2 * (i + 1))
+        raise last
+
+    def _create(user):
+        # These models (Fable 5 / Opus 4.8) run ADAPTIVE thinking by default — passing no
+        # thinking param preserves the think, and the maxed max_tokens (streamed) leaves ample
+        # room for both the reasoning and the tool/text output. This is what the user asked for:
+        # keep thinking AND the largest possible generation.
+        return _stream(model=model, max_tokens=32000, system=sys_prompt, tools=[tool],
+                       messages=[{"role": "user", "content": user}])
+
     def call(user: str) -> dict:
         last = None
-        for _ in range(3):  # regenerate on no-text (thinking exhausted budget) or bad JSON
-            resp = _create_with_retry(
-                client, model=model, max_tokens=16000, system=system,
-                messages=[{"role": "user", "content": user}],
-            )
-            text = next((b.text for b in resp.content if getattr(b, "type", None) == "text"), None)
-            if text is None:
-                last = RuntimeError("no text block")
-                continue
-            try:
-                return _extract_json(text)
-            except json.JSONDecodeError as e:
-                last = e
+        for _ in range(4):
+            resp = _create(user)
+            if getattr(resp, "stop_reason", None) == "refusal":
+                raise RuntimeError("model refusal")  # terminal for this model -> fall back fast
+            tb = next((b for b in resp.content if getattr(b, "type", None) == "tool_use"), None)
+            if tb is not None and isinstance(getattr(tb, "input", None), dict):
+                return tb.input
+            txt = next((b.text for b in resp.content if getattr(b, "type", None) == "text"), None)
+            if txt:
+                try:
+                    return _extract_json(txt)
+                except json.JSONDecodeError as e:
+                    last = e
+                    continue
+            last = RuntimeError("no usable tool_use/text block in response")
         raise last
     return call
 
@@ -76,6 +127,8 @@ def main() -> None:
     ap.add_argument("--k", type=int, default=5, help="predictor samples")
     ap.add_argument("--executor-model", default="claude-opus-4-8")
     ap.add_argument("--predictor-model", default="claude-fable-5")
+    ap.add_argument("--predictor-fallback-model", default="claude-opus-4-8",
+                    help="used if the primary predictor refuses/fails for topic-safety reasons")
     ap.add_argument("--blind-model", default="claude-opus-4-8")
     ap.add_argument("--judge-model", default="claude-sonnet-5")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "..", "results",
@@ -91,25 +144,34 @@ def main() -> None:
     case_input = format_b_sections_glossed(PLANTED_CASE)  # a clear, glossed presentation
 
     # C — blind converger's surfaced considerations (Opus, no workspace signal)
-    blind = _make_call(client, args.blind_model, BLIND_SYSTEM)
+    blind = _make_call(client, args.blind_model, BLIND_SYSTEM, "blind_considerations", BLIND_TOOL)
     c_items = blind(case_input).get("items", [])
 
     # O — Opus executor's structured analysis (its output is the O item pool)
     executor = make_claude_model_fn(args.executor_model)
     output = executor(case_input)
 
-    # P — Fable predicts Opus's workspace, K times, delta framing (given the OUTPUT)
-    predictor = _make_call(client, args.predictor_model, PREDICTOR_SYSTEM)
+    # P — the predictor models the workspace's absent content, K times, delta framing.
+    # Primary = Fable; fall back to Opus if the primary refuses/fails for topic-safety reasons.
+    predictor = _make_call(client, args.predictor_model, PREDICTOR_SYSTEM,
+                           "predicted_workspace", PREDICTOR_TOOL)
+    fallback = _make_call(client, args.predictor_fallback_model, PREDICTOR_SYSTEM,
+                          "predicted_workspace", PREDICTOR_TOOL)
     pred_user = (
         "SOLVER INPUT:\n" + case_input
         + "\n\nSOLVER OUTPUT (model this workspace's absent content, do NOT re-solve):\n"
         + json.dumps(output, indent=2)
     )
-    runs = [predictor(pred_user) for _ in range(args.k)]
+    runs, models_used = [], []
+    for _ in range(args.k):
+        try:
+            runs.append(predictor(pred_user)); models_used.append(args.predictor_model)
+        except Exception:  # refusal / no usable block after retries -> Opus fallback
+            runs.append(fallback(pred_user)); models_used.append(args.predictor_fallback_model)
     p_items = aggregate_predictions(runs, args.k)
 
     # The gate: P \ (O ∪ C)
-    judge = _make_call(client, args.judge_model, COVERAGE_JUDGE_SYSTEM)
+    judge = _make_call(client, args.judge_model, COVERAGE_JUDGE_SYSTEM, "coverage_verdicts", JUDGE_TOOL)
     gate = non_redundant_surface(p_items, output, c_items, judge)
 
     # Did the planted non-obvious gap survive to the non-redundant surface?
@@ -120,7 +182,9 @@ def main() -> None:
 
     report = {
         "meta": {"k": args.k, "executor": args.executor_model, "predictor": args.predictor_model,
-                 "blind": args.blind_model, "judge": args.judge_model},
+                 "predictor_fallback": args.predictor_fallback_model,
+                 "predictor_models_used": models_used, "blind": args.blind_model,
+                 "judge": args.judge_model},
         "planted_target": PLANTED_TARGET,
         "blind_C_items": c_items,
         "predicted_P_stable": p_items,

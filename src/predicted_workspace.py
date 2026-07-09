@@ -20,7 +20,9 @@ from typing import Any, Callable
 
 # --------------------------------------------------------------------------- prompts
 
-# Fable predicts Opus's workspace — the DELTA framing (must not re-solve).
+# Fable predicts Opus's workspace — the DELTA framing (must not re-solve). This is the original,
+# paper-faithful prompt. It triggers a topic refusal from some models (Fable declined the medical
+# meta-analysis); run_gate falls back to Opus for the prediction when the primary refuses.
 PREDICTOR_SYSTEM = """You model what a competent solver's GLOBAL WORKSPACE (the J-space from
 Anthropic's "A global workspace in language models") SHOULD have contained while analyzing this
 oral-systemic case — the silent, non-verbalized content: things noticed but not said, considered
@@ -35,11 +37,11 @@ CRITICAL RULES:
 - Prefer non-obvious content: a confounder, a drug-tissue interaction, an internal inconsistency,
   a dropped mediator — the kind of thing the output silently omitted.
 
-Output ONLY a JSON object: {"items": [{"key": "<short_snake_case_id>", "channel":
-"<silent-assessment|considered-but-dropped|intermediate-step|error-noticed|missing-variable>",
-"concept": "<short phrase, multi-token OK>", "salience": "<strong|moderate|faint>",
-"appears_in_output": <true|false>}]}. Set appears_in_output=true if the item is already stated in
-the output you were given (it is then NOT a gap). Return the JSON and nothing else."""
+Return, via the tool, items = [{key: short_snake_case_id, channel: one of
+[silent-assessment, considered-but-dropped, intermediate-step, error-noticed, missing-variable],
+concept: short phrase (multi-token OK), salience: strong|moderate|faint, appears_in_output:
+true|false}]. Set appears_in_output=true when the item is already stated in the output you were
+given (then it is NOT a gap)."""
 
 # The blind converger — a strong model surfacing gaps WITHOUT any workspace/lens signal. Its
 # output is C: what re-derivable competence alone catches.
