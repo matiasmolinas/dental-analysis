@@ -407,11 +407,33 @@ harness/directive** (R5's hardcoded 1.0). (3) Counterfactual ≈0 for both forma
 mediator "recall" is largely **not factor-grounded reasoning** (name-echo confirmed);
 `relational_recall` and counterfactual are the honest metrics, substring recall overstates.
 
-- [ ] **Next (R6):** scale the ablation to n≥30 (overnight) to settle the relational
-      edge; evolve the reasoning-grounding (instructions surface) and the deterministic
-      missing-data enforcement (harness surface) per the Fable gap-map
-      ([`analysis/lens-impact-gap-map.md`](analysis/lens-impact-gap-map.md)); then
-      cross-session memory + offline consolidation.
+**Fable evolution + validation (2026-07-09).** From the gap-map
+([`analysis/lens-impact-gap-map.md`](analysis/lens-impact-gap-map.md)), Fable evolved the
+three gap surfaces (bounded, guardrail-protected, 29 tests green): factor-grounding rules
+in the instructions (`skills/oral-systemic-analysis.md`,
+`agents/oral-systemic-relational-reasoner.md`, `prompts/evaluator.md`), a deterministic
+`required_missing_data_entries()` in the harness, and honest primary metrics
+(relational_recall + counterfactual). Validated the instructions evolution on the
+counterfactual metric (base vs evolved evaluator, n=4):
+
+| Arm | counterfactual sensitivity_rate | mean affected-delta |
+|---|---|---|
+| A_naive | 0.00 | −0.17 |
+| B_converged (base evaluator) | 0.00 | −0.25 |
+| **B_evolved (factor-grounding rule)** | 0.00 | **+0.33** |
+
+**Reading (honest, encouraging but partial).** The factor-grounding evolution **flipped
+the mean affected-delta from −0.25 (wrong direction — removing a factor sometimes
+*strengthened* its axis) to +0.33 (correct direction — the axis now weakens when its
+driving factor is removed)**; 5/6 non-zero flips move the right way. This is the **first
+evidence** that an analysis-driven evolution improves factor-grounded reasoning. BUT the
+strict `sensitivity_rate` stayed **0.00**: the response is directionally correct yet **not
+selective** (unrelated axes also move — coarse 4-axis taxonomy, co-removed indicators like
+HbA1c, n=4). Directional win, not a clean one.
+
+- [ ] **Next (R6):** larger n (≥30) to settle the sign-flip; a targeting-aware
+      counterfactual metric (separate "correct direction" from "selective"); scale the
+      lens ablation to n≥30; then cross-session memory + offline consolidation.
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
