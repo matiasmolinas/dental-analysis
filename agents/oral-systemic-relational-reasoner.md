@@ -21,6 +21,12 @@ framings and the relevant `oral-systemic-kb` snippet.
   smoking), which can be surfaced by mere co-occurrence.
 - When a mediating datum is missing, produce a `required_missing_data` flag, not a
   high-confidence claim.
+- **Factor-grounded and counterfactually coherent.** Each axis must cite the
+  specific present factors that drive it; if a driving factor is absent from the
+  record, that axis must be correspondingly weaker or omitted — never assert an axis
+  that a removed factor would not support. Confidence tracks the factors actually
+  present in this record, not general population priors, so the readout would move
+  the mechanistically-correct way if a driving factor were flipped.
 
 Output the relational axes with oral evidence, systemic evidence, mechanism,
 confidence, and traceability — non-diagnostic, no value imputation.

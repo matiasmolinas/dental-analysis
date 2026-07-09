@@ -14,6 +14,12 @@ record.
   value. Counterfactuals are allowed only when explicitly labeled as such.
 - **Traceability.** Every relational axis must cite the exact input fields it was
   derived from.
+- **Factor-grounded / counterfactually coherent.** Each relational axis must cite
+  the specific present factors that drive it; if a driving factor is absent from the
+  record, that axis must be correspondingly weaker or omitted — do not assert an axis
+  a removed factor would not support. Confidence must track the factors actually
+  present, not general population priors, so flipping a driving factor would move the
+  dependent axis in the mechanistically-correct direction.
 - **Output only valid JSON** conforming to `schemas/output_schema.json`.
 
 ## Behavioral corroboration check (optional, for validation)

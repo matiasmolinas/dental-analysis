@@ -56,3 +56,8 @@ hypothesized mechanism, confidence, traceability), `required_missing_data[]`
 - Never impute a patient-specific value. Missing mediating data becomes a
   collection flag, not a guess.
 - Every axis cites the exact input fields it used.
+- **Factor-grounded / counterfactually coherent.** Each relational axis must cite
+  the specific present patient factors that drive it; if a driving factor is
+  absent from the record, that axis must be correspondingly weaker or omitted (do
+  not assert an axis a removed factor would not support). Confidence must track the
+  factors actually present in this record, not general population priors.

@@ -83,9 +83,11 @@ def _extract_json(text: str) -> dict:
         return json.loads(m.group(0))
 
 
-def make_claude_model_fn(model: str):
+def make_claude_model_fn(model: str, extra_system: str = ""):
     """A model_fn(prompt)->dict backed by the Anthropic API. Same system + model for
-    both arms; only the user prompt (the A or B input) differs."""
+    both arms; only the user prompt (the A or B input) differs. `extra_system` appends a
+    rule to the neutral instruction (used to test an EVOLVED instruction, e.g. the
+    factor-grounding rule, against the base — keep it out of the fair A/B evaluator)."""
     try:
         import anthropic
     except ImportError as e:  # pragma: no cover - env-dependent
@@ -97,6 +99,8 @@ def make_claude_model_fn(model: str):
         raise SystemExit("ANTHROPIC_API_KEY is not set.")
     client = anthropic.Anthropic()
     system = SYSTEM_INSTRUCTION % _load_schema()
+    if extra_system:
+        system += "\n\n" + extra_system
 
     def model_fn(prompt: str) -> dict:
         resp = client.messages.create(

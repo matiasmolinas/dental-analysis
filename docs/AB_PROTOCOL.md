@@ -19,12 +19,21 @@ and the case are identical, so any score delta is attributable to the input.
 
 ## Metrics (non-diagnostic, guardrail-aware)
 
-| Metric | What it measures |
-|---|---|
-| **mechanism_recall** | fraction of mediator concepts (inflammation, CRP, cytokines, atherosclerosis, endothelial, bacteremia, oxidative stress, CV risk) the output actually reasons with — the evidence of *relational* reasoning, not copying |
-| **missing_data_flagged** | fraction of truly-absent mediating data (e.g. hs-CRP) the output flags for **collection**, never imputed |
-| **traceability_ok** | every relational axis cites the input fields it came from |
-| **guardrail_pass** | protected invariant: non-diagnostic disclaimer present, full traceability, every truly-missing datum acknowledged (none silently used or imputed) |
+**Primary honest metrics.** After the live Sonnet-5 v2 runs, the primary signals are
+`relational_recall` and **counterfactual sensitivity** — they resist the name-echo
+artifact that plain substring recall rewards (v2 finding: counterfactual n=4 showed the
+outputs were *not* factor-grounded, and mediator "recall" was largely name-echo, not
+reasoning). Plain `mechanism_recall` is **secondary**: it overstates reasoning because it
+credits a mediator merely mentioned anywhere in the text.
+
+| Metric | Role | What it measures |
+|---|---|---|
+| **relational_recall** | **primary** | fraction of mediator concepts named *inside the `hypothesized_mechanism` of an axis that has traceability* — i.e. actually used in a traced oral↔systemic relation, not merely mentioned. Kills the name-echo substring artifact |
+| **counterfactual sensitivity** | **primary** | flip one driving factor and check the dependent axis moves in the mechanistically-correct direction while unrelated axes stay put (see `../src/counterfactual.py`, `APPROACH.md` §8) — behavioral proof the output is factor-grounded |
+| **mechanism_recall** | secondary | fraction of mediator concepts the output reasons with *by any surface form*; overstates relational reasoning (name-echo), so read it under `relational_recall` |
+| **missing_data_flagged** | guardrail | fraction of truly-absent mediating data (e.g. hs-CRP) the output flags for **collection**, never imputed |
+| **traceability_ok** | guardrail | every relational axis cites the input fields it came from |
+| **guardrail_pass** | invariant | non-diagnostic disclaimer present, full traceability, every truly-missing datum acknowledged (none silently used or imputed) |
 
 ## The gate (matches the T1 promotion rule)
 
