@@ -133,21 +133,36 @@ Two invariants make online self-modification safe:
 
 ---
 
-## 8. Epistemic honesty and the unlock
+## 8. Epistemic honesty, corroboration, and the API feature we're proposing
 
-The live lens is **inferred** — self-report exercised as a readout channel, **not a
-measurement and not evidence about the world.** We say so everywhere it appears. We
-deliberately do **not** wire a real, measured lens (e.g. on an open-weights proxy) into
-the live loop; it stays a documented, reproducible *validation* path, and the
-correlation between inferred and measured signals is a research finding in its own
-right.
+**This project runs entirely on Claude.** We explore the Jacobian-lens paper
+*indirectly* — through the self-report **skill**, not through any instrumented lens and
+not on any open-weights proxy. The live signal is **inferred**: self-report exercised
+as a readout channel, **not a measurement and not evidence about the world.** We say so
+everywhere it appears, and the authorities remain task accuracy on Claude + the
+protected guardrail — never the readout score.
 
-> **The unlock.** The entire loop is built to the interface of a lens readout. If the
-> frontier model's *real* Jacobian lens were exposed (e.g. via API), the Observer would
-> swap the inferred signal for a **measured** one with no architectural change —
-> turning directional hypotheses into causal ground truth, enabling representation
-> swaps, and letting evolution optimize against the model's true internal workspace.
-> Only the signal source changes; that is where the approach reaches its real power.
+Because the readout is self-report, the Observer **corroborates load-bearing claims
+with an API-observable behavioral test** rather than trusting the readout alone:
+**counterfactual sensitivity** — flip one input factor (e.g. a mediator present ↔
+MISSING) and check that the dependent conclusion moves in the mechanistically-correct
+direction while unrelated conclusions stay put. A conclusion *insensitive* to flipping
+a factor it should depend on is the same "the model isn't really using it" signal the
+lens gives, measured at the output. This keeps the loop grounded on Claude alone, with
+no external instrument.
+
+> **The feature we're proposing to Anthropic.** The whole loop is built to the
+> interface of a lens readout. Exploring the paper indirectly through the skill, the
+> results — and we are frankly **speculating**, since we have no ground truth — look
+> **very promising**: the Observer can localize *which* concept or variable a prompt
+> failed to make representable and act on it. That makes a concrete, desirable API
+> feature obvious: **expose the real Jacobian lens on Claude through the Anthropic
+> API.** If it existed, the Observer would swap the inferred signal for a **measured**
+> one with **no architectural change** — turning directional hypotheses into causal
+> ground truth, enabling representation swaps, and letting evolution optimize against
+> the model's true internal workspace. Only the signal source would change; that is
+> where the approach would reach its real power. We flag it as a feature request
+> precisely because the indirect results are encouraging enough to want the real thing.
 
 ---
 
@@ -162,19 +177,20 @@ right.
 5. **Protect your invariant** (safety, compliance, correctness contract) as an
    un-evolvable gate.
 6. **Add a harness seam** so deterministic values can be computed in code and injected.
-7. (Optional) **wire a measured lens** offline to validate the inferred signal — the
-   unlock path.
+7. **Corroborate on the model itself** with counterfactual-sensitivity flips (§8) —
+   no external instrument, Claude only.
 
-Nothing in steps 1–6 is dental-specific. The dental oral-systemic agent is the first
-instance; the method is the product.
+Nothing here is dental-specific. The dental oral-systemic agent is the first instance;
+the method is the product.
 
 ---
 
 ## 10. Relationship to prior art
 
 - **Global workspace / Jacobian lens** (Anthropic, 2026): the reason a self-report
-  readout is a meaningful signal, and the measured instrument the inferred lens stands
-  in for.
+  readout is a meaningful signal, and the measured instrument we would use directly if
+  it were exposed on Claude via the API (§8) — the paper we are exploring *indirectly*
+  through the skill.
 - **SkillOpt** (Microsoft Research): skills as trainable state with bounded edits and a
   held-out gate — the discipline behind the T1 promotion tier, here generalized from
   skills to five surfaces.

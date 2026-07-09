@@ -1,11 +1,14 @@
 """Target bridge concepts for the oral-systemic (periodontal <-> cardiovascular) task.
 
-These are the mediating concepts that must appear in the workspace band of the
-J-lens readout for an input format to count as "good": if the model represents
-them internally, it is *relating* oral and systemic data, not merely listing it.
+This is the **spec** the Lens Observer scores the inferred-lens readout against: the
+mediating concepts that should surface in the primary's self-report for an input
+format to count as "good". If the model surfaces them, it is *relating* oral and
+systemic data, not merely listing it; if they are absent or faint, that is the
+deficiency signal the Observer acts on. (Claude only — a self-report readout, not a
+measurement.)
 
-Each concept maps to several candidate single-token surface forms; the harness
-keeps only the ones that tokenize to a single token under the target model.
+Each concept maps to several candidate surface forms so the readout can be matched
+flexibly to how the model happens to name the concept.
 
 MEDIATORS are the unspoken, cross-domain links (inflammation, atherosclerosis,
 endothelial dysfunction, bacteremia). SHARED are common risk factors that appear

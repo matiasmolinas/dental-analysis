@@ -10,8 +10,7 @@ Hard rules (mirrors the guardrail):
   * Non-diagnostic. These are structural categorizations of *present* data, not
     diagnoses and not risk scores about the patient.
   * No imputation. A missing datum becomes a collection flag, never a computed value.
-  * Pure and dependency-light: loads without a GPU, like the rest of src/ except
-    harness.py.
+  * Pure and dependency-light: loads without a GPU, like all of src/ (Claude only).
 """
 
 from __future__ import annotations

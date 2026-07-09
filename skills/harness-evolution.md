@@ -58,5 +58,5 @@ outputs are the injected variables the lens re-checks. Tests in
   only; a missing datum is a collection flag, never a computed patient value.
 - Harness edits are **T1 promoted**: gated by held-out accuracy + guardrail pass-rate
   + tests + human approval. Never touch `skills/non-diagnostic-guardrail.md`.
-- Keep `src/` importable without a GPU; the measured-lens harness (`src/harness.py`)
-  is the only GPU-dependent module.
+- Keep `src/` pure and importable without a GPU — everything in this project runs on
+  Claude, with no GPU-dependent modules.

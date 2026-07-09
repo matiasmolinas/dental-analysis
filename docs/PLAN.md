@@ -4,13 +4,15 @@
 > the [Progress Log](#progress-log) and, when a decision changes direction, to
 > [Decisions](#decisions). Status tags: `TODO` / `IN PROGRESS` / `DONE` / `BLOCKED`.
 
-**Last updated:** 2026-07-08
+**Last updated:** 2026-07-09
 **Owner:** matias.molinas@gmail.com
+**Runs on Claude only** — no open-weights proxy, no GPU, no Colab. Canonical method
+is [`APPROACH.md`](APPROACH.md).
 **Context:** Built with Claude: Life Sciences (Anthropic × Cerebral Valley ×
 Gladstone), 2026-07-07 → 2026-07-13. See [`HACKATHON_STRATEGY.md`](HACKATHON_STRATEGY.md).
 **Method:** [`APPROACH.md`](APPROACH.md) (canonical, domain-general) · reformulation
-delta + workplan in [`REFORMULATION.md`](REFORMULATION.md) · impact analysis in
-[`IMPACT.md`](IMPACT.md) · dual-lens detail in [`DUAL_LENS.md`](DUAL_LENS.md).
+delta + R0–R6 workplan in [`REFORMULATION.md`](REFORMULATION.md) · impact analysis in
+[`IMPACT.md`](IMPACT.md).
 **Data:** NHANES 2009–2010 (real anchor) + Synthea (longitudinal) — see [`DATASETS.md`](DATASETS.md).
 
 ---
@@ -23,26 +25,30 @@ medical / cardiovascular data (hypertension, diabetes/HbA1c, lipids, smoking,
 medications, CV history) and surfaces oral-systemic risk profiles plus research
 hypotheses. The differentiator is not the model but **HISTORA as the data layer**
 that integrates otherwise-fragmented dental and medical records. The technical
-novelty is that we use **mechanistic interpretability (the Jacobian lens) on a
-small open-weights proxy to verify that our input format actually makes the
-oral-systemic mediating concepts representable**, and we let Claude close the
-optimization loop — rather than prompt-engineering blind. We read that workspace
-with **two complementary instruments**: a fast self-report probe on Claude itself
-and the measured Jacobian lens on the proxy (see §3c and `DUAL_LENS.md`).
+novelty is that we explore Anthropic's **Jacobian-lens paper indirectly, through a
+self-report skill (`claude-workspace-probe`) on Claude**, to see whether our input
+format actually makes the oral-systemic mediating concepts representable — and we
+let Claude close the optimization loop rather than prompt-engineering blind. The
+signal is an **inferred lens**: self-report exercised as a readout channel — **not
+a measurement, not clinical evidence**. Because it is self-report, load-bearing
+claims are corroborated with an **API-observable counterfactual-sensitivity** test
+(see §3c). Everything runs on Claude — no proxy, no GPU.
 
 ---
 
 ## 1b. Working hypothesis (load-bearing)
 
-Claude, by inspecting the **internal workspace of a small proxy (Qwen)** via the
-J-lens — given the input **data structure**, the **problem formulation**, and the
-**chain of thought** — can decide which **values to complete** (as collection
-flags, never imputed), which **input formats to adjust**, and which **additional
-knowledge context to inject or modify**. The optimized, complete input is then
-**evaluated on the most capable Claude**, and that learning becomes the fitness
-signal for **autonomous evolution of the subagents and skills** (gated). The whole
-method is valid as a Claude-improvement technique only if the proxy's workspace
-**predicts Claude's** relational reasoning — verified in Phase 3.
+A **second Claude instance (the Lens Observer, on Opus)**, by analyzing the primary
+model's **inferred-lens readout** — the self-report skill exercised as a readout
+channel — given the input **data structure**, the **problem formulation**, and the
+**chain of thought**, can decide which **values to complete** (as collection flags,
+never imputed), which **input formats to adjust**, and which **additional knowledge
+context to inject or modify**. The optimized, complete input is then **evaluated on
+the most capable Claude**, and that learning becomes the fitness signal for
+**autonomous evolution of the subagents and skills** (gated). Because the readout is
+self-report (not a measurement), any load-bearing claim is corroborated with an
+**API-observable counterfactual-sensitivity** test — flip one input factor and the
+dependent axis should move while unrelated axes stay put — on Claude only.
 
 ## 2. Scientific rationale
 
@@ -53,69 +59,74 @@ shared risk factors (diabetes, smoking). The paper *"Verbalizable Representation
 Form a Global Workspace in Language Models"* (transformer-circuits.pub/2026/workspace)
 defines the model's **J-space** as a small, evolving set of unspoken words naming
 the concepts it is currently reasoning with. Our task *is* finding hidden
-cross-domain mediators — so the J-lens is not decoration: it directly measures
-whether, under a given input format, the model internally represents the
-mediating mechanisms (inflammation, atherosclerosis, endothelial dysfunction,
-bacteremia) or is merely listing oral and systemic numbers side by side.
+cross-domain mediators — so the lens is not decoration. We do not measure that
+J-space directly (we have no instrument on Claude); instead we explore the idea
+**indirectly**, via a self-report skill that asks Claude to name the concepts it is
+reasoning with. This **inferred lens** is a readout channel, not a measurement: it
+gives us a per-format view of whether, under a given input format, the model
+surfaces the mediating mechanisms (inflammation, atherosclerosis, endothelial
+dysfunction, bacteremia) or is merely listing oral and systemic numbers side by
+side. Because it is self-report, we corroborate any load-bearing reading with a
+counterfactual-sensitivity test on Claude (§3c).
 
 **Optimization criterion:** a good input format is one that makes the *mediator*
-concepts appear as hits in the mid-network **workspace band** — early and at low
-vocabulary rank — not just the shared factors (diabetes, smoking), which a model
-can surface by mere copying.
+concepts appear in the inferred-lens **surfaced-mediator set** — not just the shared
+factors (diabetes, smoking), which a model can surface by mere copying.
 
 ---
 
 ## 3. Architecture
 
-Three roles, two models:
+Three roles, Claude only:
 
-| Role | Model | Function |
+| Role | Instance | Function |
 |---|---|---|
-| **Instrumented substrate** | Qwen (open-weights) + pre-fitted J-lens | White-box sensor: forward pass -> workspace-band readout of bridge concepts |
-| **Controller** | Claude (capable) | Reads readout + proxy answer + target mediators; edits format, context, KB; flags required-but-missing data |
-| **Evaluator** | Claude (most capable) | Produces the final structured output on the converged format; validated by task accuracy on Claude |
+| **Executor** | Claude (primary) | Runs the analysis and emits an **inferred-lens readout** via the self-report skill (`claude-workspace-probe`) — the concepts it is reasoning with |
+| **Lens Observer** | Claude (Opus, separate instance) | Reads the primary's inferred-lens readout + target mediators; diagnoses deficiencies; drives bounded, gated evolution across five surfaces; curates the Session Working-Consciousness ledger and injects prompts |
+| **Gate / Guardrail** | Claude + tests | Non-diagnostic invariant + held-out accuracy gate; **PROTECTED — never evolved** |
 
 ```
-candidate input ─► Qwen + J-lens ─► workspace readout (mediator ranks, capacity)
+candidate input ─► Claude executor ─► inferred-lens readout (surfaced-mediator set)
        ▲                                        │
        │                                        ▼
-   format edits ◄──── Claude controller ◄── diagnosis: which mediator is missing & why
-       │
+   format/context/KB/agent/harness edits ◄── Lens Observer (Opus) ◄── deficiency map
+       │                                        │
+       │                              corroborate via counterfactual-sensitivity (Claude)
    (converged) ─► Claude evaluator ─► structured non-diagnostic output ─► accuracy on Claude
 ```
 
-**Why this transfers:** what we optimize on the proxy is *structural
+**Why input-structure edits generalize:** what the Observer optimizes is *structural
 representability of relations* (glossing terms, co-presenting oral+systemic data,
-injecting the mechanistic KB) — these work for reasons independent of Qwen. What
-does **not** transfer: absolute ranks, exact token lists, tokenizer-specific
-tricks. Treat proxy results as directional/ordinal; final metric is always task
-accuracy measured on Claude.
+injecting the mechanistic KB, computing deterministic relations in the harness) —
+edits to the input structure that help for reasons independent of any single prompt.
+The final metric is always task accuracy measured on Claude, plus the protected
+non-diagnostic guardrail.
 
 ---
 
 ## 3b. Agent architecture (runtime) and skill evolution
 
-The J-lens is a **dev-time measurement instrument**, not the runtime system. In
-production the work is done by a Claude orchestrator with subagents; the J-lens
-(on the Qwen proxy) and the skill optimizer are **offline** tools that improve the
-skills those subagents run. J-lens and agents are complementary, at different
-layers — not competing.
+The inferred lens is a **readout channel**, not the runtime system. In production
+the work is done by a Claude orchestrator with subagents; the inferred-lens readout
+and the Lens Observer form the **in-session** loop that improves the skills those
+subagents run. Readout and agents are complementary, at different layers — not
+competing.
 
 ### Runtime subagents (production pipeline)
 
 | Subagent | Function | Optimizable by |
 |---|---|---|
 | Orchestrator (main) | Plan, route, assemble final output | SkillOpt |
-| Record Normalizer | Integrate fragmented dental+medical records (HISTORA core) -> schema; flag missing fields | J-lens (format) + SkillOpt |
+| Record Normalizer | Integrate fragmented dental+medical records (HISTORA core) -> schema; flag missing fields | inferred lens (format) + SkillOpt |
 | Periodontal Analyst | Staging/grading (AAP/EFP 2017), longitudinal progression | SkillOpt |
 | Cardiometabolic Analyst | Non-diagnostic framing of CV risk factors | SkillOpt |
-| Oral-Systemic Relational Reasoner | Core: inflammatory/metabolic/behavioral/vascular axes & mediators | **J-lens (primary)** + SkillOpt |
+| Oral-Systemic Relational Reasoner | Core: inflammatory/metabolic/behavioral/vascular axes & mediators | **inferred lens (primary)** + SkillOpt |
 | Guardrail / Verifier | Non-diagnostic, no value imputation, traceability, confidence (adversarial) | **PROTECTED — never evolved** |
 | Hypothesis Generator | Research hypotheses for follow-up | SkillOpt |
 
-Dev-time / in-loop: **Claude Workspace Probe** (self-report on Claude — fast
-pre-filter), **J-lens Diagnostic** (measured readout on the Qwen proxy — ground
-truth), and **SkillOpt Optimizer** (skill.md evolution).
+In-loop: the **Claude Workspace Probe** (self-report on Claude — emits the inferred
+lens), the **Lens Observer** (Opus — diagnoses deficiencies and drives evolution),
+and the **SkillOpt Optimizer** (skill.md evolution).
 
 ### Skills
 
@@ -125,42 +136,51 @@ truth), and **SkillOpt Optimizer** (skill.md evolution).
 `non-diagnostic-guardrail`. The guardrail is a **protected invariant**, not a
 trainable skill.
 
-## 3c. Dual-lens loop (two instruments on the workspace)
+## 3c. Inferred-lens Observer loop (self-report on Claude, corroborated)
 
-Full detail in [`DUAL_LENS.md`](DUAL_LENS.md). Two instruments read the workspace
-our input optimization targets — different models, different epistemics:
+Full detail in [`APPROACH.md`](APPROACH.md). One readout channel, one observer, all
+on Claude:
 
 - **Claude Workspace Probe** (`claude-workspace-probe`): uninstrumented introspective
-  self-report ON CLAUDE (the real target). Fast, zero GPU, captures CoT natively,
-  runs the inner loop and sidesteps the Qwen→Claude transfer gap for optimization.
-  Inspired by `Doriandarko/skirano-skills` j-space-lens; **not a measurement**.
-- **Measured Jacobian lens** (`jlens-diagnostic` on Qwen): quantitative, causal,
-  reproducible ground truth on a proxy.
+  self-report ON CLAUDE. Fast, zero GPU, captures CoT natively, runs the loop. This
+  is the **inferred lens** — a readout channel, **not a measurement**. Inspired by
+  `Doriandarko/skirano-skills` j-space-lens.
+- **Lens Observer** (`agents/lens-observer.md`, on Opus): a separate Claude instance
+  that reads the primary's inferred-lens readout, diagnoses deficiencies, and drives
+  bounded, gated evolution across five surfaces.
 
-**Inner loop (fast):** probe on Claude screens format/context/CoT edits. **Outer
-validation (rigorous):** measured lens on Qwen confirms it is not confabulation.
-**Correlation experiment** between the two is a reproducible Research-track finding
-(agreement → self-report predicts measured J-space; disagreement → a caveat). The
-authoritative gate stays Claude task accuracy + the protected guardrail.
+**The loop:** the executor emits the inferred-lens readout; the Observer screens
+format/context/CoT/agent/harness edits and injects fixes. Because it is self-report,
+any load-bearing reading is corroborated by an **API-observable counterfactual-sensitivity**
+test — flip one input factor (smoking / diabetes / hs-CRP / hypertension); the
+dependent axis should move, unrelated axes stay put — on Claude only, no external
+instrument. The authoritative gate stays Claude task accuracy + the protected
+guardrail.
 
-### Skill evolution: SkillOpt gated by J-lens
+**The unlock (speculative).** Because the indirect results look promising — and we
+are *speculating*, we have no ground truth — we propose a concrete desirable API
+feature: **expose the real Jacobian lens on Claude through the Anthropic API.** If
+exposed, this same loop swaps the inferred signal for a measured one with **no
+architectural change**.
+
+### Skill evolution: SkillOpt gated on Claude accuracy (the T1 tier)
 
 Adopt **SkillOpt** (Microsoft Research) as the skill-optimization framework:
 skills as trainable parameters, optimized via rollout -> reflect -> edit -> gate
 with bounded, auditable edits accepted only on held-out improvement. Compose:
 
 ```
-J-lens mediator ranks (cheap, pre-output, on Qwen)  ─►  pre-filter candidate skill edits
-        │  (valid only once proxy ranks predict Claude — Phase 3 transfer check)
+inferred-lens surfaced-mediator set (cheap, pre-output, on Claude)  ─►  pre-filter candidate skill edits
         ▼
-SkillOpt bounded edit loop  ─►  gate = Claude held-out accuracy + guardrail pass-rate
+SkillOpt bounded edit loop  ─►  gate = Claude held-out accuracy + guardrail pass-rate + tests
         ▼
 human approval  ─►  versioned skill (rollback available)
 ```
 
-**Dependency caveat:** SkillOpt optimizes skills for the model that *runs* them —
-in runtime that is Claude, not Qwen. So the authoritative gate runs on Claude;
-J-lens is only a cheap pre-filter, justified once transfer validity is shown.
+Tiers: **T0 ephemeral** edits live only in-session; **T1 promoted** edits must pass
+held-out accuracy + guardrail + tests + human approval. SkillOpt optimizes skills
+for the model that *runs* them — here that is Claude — so the authoritative gate
+runs on Claude; the inferred lens is only a cheap pre-filter.
 
 ### Evolution guardrails (non-negotiable in a health context)
 
@@ -186,20 +206,15 @@ codebase, if time is tight.
   flags. **No patient-value imputation** — missing mediating data (e.g. hs-CRP)
   becomes a *collection flag*, not a guess. Encoded in `schemas/output_schema.json`
   (`non_diagnostic_disclaimer: const true`, no value-imputation field).
-- **Proxy model:** **start with Qwen3.5-4B** (fits a free Colab T4 16 GB / L4 24 GB;
-  `apply()` is a forward pass in `no_grad`, memory ~= weights ~8 GB). Scale to
-  Qwen3.6-27B (~54 GB bf16 -> A100 80 GB / H100) to revalidate key findings; 4B may
-  be too weak to represent some relations -> possible false negatives. Do not
-  quantize the 27B: the lens was fit in bf16 and quantization degrades the readout.
-  Pre-fitted lenses on the Hub (`neuronpedia/jacobian-lens`, `qwen-n1000`) -> **no
-  fitting step needed**.
-- **Workspace band:** prior [0.33, 0.66] of depth, intersected with the lens's
-  fitted layers; **calibrate per model** with `sweep_layers` before trusting it.
+- **Claude only.** No open-weights proxy, no GPU, no external instrument. The lens
+  is explored indirectly via the self-report skill; corroboration is the
+  API-observable counterfactual-sensitivity test on Claude.
+- **English-only** across all code, artifacts, prompts, and skills.
 - **Bridge concepts** live in `src/bridge_concepts.py`; mediators weighted above
   shared factors.
-- **Metric:** min vocabulary rank of each concept over the workspace band and the
-  answer/question span; `hit@10` = rank < 10.
-- **jacobian-lens repo stays unmodified**; this project only imports from it.
+- **Metric:** the inferred-lens **surfaced-mediator set** per format (does each
+  mediator appear?), corroborated by counterfactual sensitivity; Claude task
+  accuracy is authoritative.
 
 ---
 
@@ -210,22 +225,27 @@ dental-analysis/
   docs/
     PLAN.md                    # this document (living)
     HACKATHON_STRATEGY.md      # tracks, named user, one-week plan, demo, judging
-    DUAL_LENS.md               # two-instrument methodology + correlation experiment
-  colab/
-    histora_diagnostic.ipynb   # measured J-lens GPU harness (run in Colab)
-    walkthrough.ipynb          # copy of the jacobian-lens reference notebook
+    APPROACH.md                # canonical method (indirect inferred-lens Observer loop)
+    REFORMULATION.md           # reformulation delta + R0–R6 workplan
+    IMPACT.md                  # impact analysis
   src/
     bridge_concepts.py         # target mediator + shared concepts
-    record_formats.py          # NHANES-grounded case, three candidate formats (A/B/C)
-    harness.py                 # J-lens metrics: concept_ranks, capacity, sweep_layers
+    record_formats.py          # NHANES-grounded case, candidate formats (A–E)
+    relational_signals.py      # deterministic structural signals injected into the input
     nhanes_mapping.py          # schema field -> NHANES 2009-2010 file+variable codes
     nhanes_loader.py           # download XPT + build a grounded case (pandas.read_sas)
-  schemas/output_schema.json   # non-diagnostic structured output contract
+  schemas/
+    output_schema.json         # non-diagnostic structured output contract
+    lens_readout_schema.json   # inferred-lens readout contract
+    deficiency_map_schema.json # Lens Observer deficiency-map contract
+    examples/                  # worked readout + deficiency-map examples
   prompts/
-    controller.md              # Claude input-optimizer prompt
+    observer.md                # Lens Observer prompt (diagnose + drive evolution)
     evaluator.md               # Claude final-analysis prompt
-  agents/                      # 7 runtime subagents + claude-workspace-probe + 2 offline
+  agents/                      # runtime subagents + claude-workspace-probe + lens-observer
   skills/                      # 8 skills (guardrail protected) — see skills/README.md
+  tests/                       # guardrail + regression + relational-signal tests
+  .session/                    # Session Working-Consciousness ledger (per case)
   README.md
 ```
 
@@ -244,83 +264,76 @@ Five formats isolate the levers we optimize (see `src/record_formats.py`):
 - **E — JSON + KB + interpretability constraints** (reason explicitly through the
   mediators; flag missing data; no imputation; non-diagnostic).
 
-**Hypothesis:** E >= C >= B >> A on mediator ranks; D isolates whether structure
-alone (without glossing/KB) helps. If A already activates mediators, the knowledge
-is latent and the work is recall, not format.
+**Hypothesis:** E >= C >= B >> A on the surfaced-mediator set; D isolates whether
+structure alone (without glossing/KB) helps. If A already surfaces the mediators,
+the knowledge is latent and the work is recall, not format.
 
 ---
 
 ## 7. Workplan & status
 
 ### Phase 0 — Scaffolding — `DONE`
-- [x] Separate `dental-analysis` project; `jacobian-lens` left intact.
-- [x] Bridge concepts, three record formats, harness metrics (compile + load verified).
-- [x] Output schema, controller/evaluator prompts, Claude skill.
-- [x] Colab diagnostic notebook (valid JSON, self-contained).
+- [x] Separate `dental-analysis` project.
+- [x] Bridge concepts, record formats, relational signals (compile + load verified).
+- [x] Output schema, observer/evaluator prompts, Claude skill.
 - [x] This plan.
 - [x] Full skill set (`skills/`): oral-systemic-analysis, record-normalization,
       periodontal-staging, cardiometabolic-framing, oral-systemic-kb,
       traceability-audit, non-diagnostic-guardrail (protected).
 - [x] Full subagent set (`agents/`): orchestrator + 6 runtime specialists +
-      claude-workspace-probe + jlens-diagnostic + skillopt-optimizer. Catalog READMEs.
+      claude-workspace-probe + lens-observer + skillopt-optimizer. Catalog READMEs.
 - [x] SkillOpt cloned as sibling reference (`../SkillOpt/`).
-- [x] Dual-lens methodology: `claude-workspace-probe` skill + subagent;
-      `docs/DUAL_LENS.md`; `docs/HACKATHON_STRATEGY.md`.
+- [x] Inferred-lens methodology: `claude-workspace-probe` skill + subagent;
+      `docs/APPROACH.md`; `docs/HACKATHON_STRATEGY.md`.
 
-### Phase 1a — Fast inner loop on Claude (no GPU) — `IN PROGRESS`
-- [ ] Activate `claude-workspace-probe`; run the 3 formats (A/B/C) on synthetic
-      cases; log the surfaced-mediator set per format.
-- [ ] Iterate format/KB/CoT edits on Claude until mediators surface (fast, no GPU).
-- [ ] This is the primary inner loop and the demo backbone.
-
-### Phase 1b — Measured proxy diagnostic (Colab, GPU) — `IN PROGRESS`
+### Phase 1 — Inferred-lens inner loop on Claude — `IN PROGRESS`
+- [ ] Activate `claude-workspace-probe`; run the formats on synthetic cases; log the
+      surfaced-mediator set per format.
 - [ ] Ground cases in real data: download NHANES 2009–2010 (`src/nhanes_loader.py`),
       aggregate `OHXPER_F` per-site PPD/CAL/BOP, build grounded cases to replace the
       hand-written values in `src/record_formats.py`.
-- [ ] (Optional) reproducible CRP↔periodontitis mini-analysis on 2009–2010 (Research-track).
-- [ ] Run `histora_diagnostic.ipynb` on Qwen3.5-4B (scale to 27B to revalidate).
-- [ ] Calibrate the workspace band (sweep) and lock [lo, hi].
-- [ ] Record mediator ranks for A/B/C + capacity numbers → Progress Log.
-- [ ] Prune multi-token / unmeasurable concept surfaces; expand surface lists.
-- [ ] Confirm or revise the C >= B >> A hypothesis.
-- [ ] **Instrument the chain of thought:** let the proxy GENERATE a reasoning trace
-      and read the J-lens over the generated span (not only the static prompt tail).
+- [ ] (Optional) reproducible CRP↔periodontitis mini-analysis on 2009–2010.
+- [ ] Iterate format/KB/CoT edits on Claude until mediators surface. This is the
+      primary inner loop and the demo backbone.
 
-### Phase 2 — Dual-lens correlation (Research-track finding) — `TODO`
-- [ ] For each format, compare Signal A (probe surfaced-mediators on Claude) vs
-      Signal B (measured ranks on Qwen). Spearman on the induced orderings +
-      per-mediator agreement. See `docs/DUAL_LENS.md`.
-- [ ] Feed readouts to Claude via `prompts/controller.md`; apply edits; re-measure
-      until all mediators hit@10. Log which edits moved which mediators.
+### Phase 2 — Lens Observer loop + counterfactual corroboration — `TODO`
+- [ ] The Lens Observer (Opus) reads the inferred-lens readout, returns a deficiency
+      map, and injects T0 fixes across the five surfaces; re-run until all mediators
+      surface. Log which edits moved which mediators in `.session/`.
+- [ ] Corroborate each load-bearing reading with a counterfactual-sensitivity test on
+      Claude (flip one factor; dependent axis moves, unrelated axes stay put).
+- [ ] **Document the unlock:** propose exposing the real Jacobian lens on Claude via
+      the Anthropic API — same loop, measured signal, no architectural change.
 
-### Phase 3 — Evaluator + transfer validation — `TODO`
+### Phase 3 — Evaluator + validation — `TODO`
 - [ ] Claude evaluator produces structured output on converged format (real-ish cases).
-- [ ] Task-accuracy A/B: converged vs naive format, measured on Claude (authoritative).
+- [ ] Task-accuracy A/B: Observer-converged vs naive input, measured on Claude
+      (authoritative).
 
 ### Phase 4 — Autonomous skill evolution (gated) — `TODO`
-- [ ] SkillOpt-style loop on 1–2 trainable skills; J-lens/probe as pre-filter,
-      Claude accuracy + guardrail pass-rate as the gate; human-in-the-loop promote.
+- [ ] SkillOpt-style loop on 1–2 trainable skills; inferred lens as pre-filter,
+      Claude accuracy + guardrail pass-rate + tests as the gate; human-in-the-loop
+      promote (T1).
 - [ ] Regression suite (clinical cases + compliance) at every gate.
 
 ### Phase 5 — Demo & submission — `TODO`
-- [ ] End-to-end story: HISTORA data layer + dual-lens optimization + Claude loop
+- [ ] End-to-end story: HISTORA data layer + inferred-lens Observer loop + Claude
       + gated evolution. Demo script in `docs/HACKATHON_STRATEGY.md`.
 - [ ] Guardrail walkthrough (non-diagnostic, collection-not-imputation).
-- [ ] Writeup + video; Build-track tool + Research-track correlation finding.
+- [ ] Writeup + video; Build-track tool + the API-feature proposal (the unlock).
 
 ---
 
 ## 8. Metrics we track
 
-- **Mediator hit@10 count** per format (primary proxy signal).
-- **Mediator rank vector** (sorted) per format.
-- **Capacity:** reachable data items / measured, per format.
-- **Band location** (calibrated layer range).
-- **Claude task accuracy** (final, authoritative) and **mechanism-recall** on the
-  behavioral transfer check.
+- **Surfaced-mediator set** per format (primary inferred-lens signal, on Claude):
+  which target mediators the self-report surfaces under each input format.
 - **Counterfactual sensitivity:** flip smoking / diabetes / hs-CRP / hypertension →
   does the affected axis move coherently (and unrelated axes stay put)? The
-  API-only, output-side analogue of the J-lens swap (see `DUAL_LENS.md`).
+  API-observable corroboration of a self-report reading (Claude only, no external
+  instrument).
+- **Claude task accuracy** (final, authoritative) and **mechanism-recall** on the
+  behavioral check.
 
 ---
 
@@ -328,24 +341,19 @@ is latent and the work is recall, not format.
 
 | Risk | Mitigation |
 |---|---|
-| Multi-token mediators (atherosclerosis, hs-CRP, endothelial) unmeasurable | Alt single-token surfaces; else measure first token, documented as approximation |
-| Band mis-located | `sweep_layers` calibration before scoring |
-| Proxy too weak (no format helps) | Calibrate case difficulty to the 27B; use mid-difficulty cases |
-| Goodhart (optimizing proxy ranks, not clinical quality) | Ranks are hypothesis-generators; Claude accuracy is the objective |
-| J-space captures only verbalizable (<10% variance) | Task accuracy stays primary; lens is diagnostic, not target |
-| Non-diagnostic drift | Schema forbids value imputation; guardrails in skill + evaluator prompt |
-| Self-report confabulation (probe) | Never presented as measurement; ground-truthed by the measured lens; Claude accuracy is authority |
-| GPU/time slips in the 1-week event | Claude-first inner loop carries the demo; measured lens becomes post-hoc validation, not a blocker |
-| Scope creep across two tracks | Build track primary; the correlation finding is a bounded add-on, not a second project |
+| Goodhart (optimizing surfaced-mediators, not clinical quality) | The surfaced set is a hypothesis-generator; Claude accuracy is the objective |
+| Self-report captures only verbalizable | Task accuracy stays primary; the inferred lens is diagnostic, not the target |
+| Non-diagnostic drift | Schema forbids value imputation; guardrails in skill + evaluator prompt; protected invariant, never evolved |
+| Self-report confabulation (inferred lens) | Never presented as measurement; corroborated by the counterfactual-sensitivity test; Claude accuracy is authority |
+| Scope creep | Build track primary; the API-feature proposal (the unlock) is a bounded, speculative add-on, not a second project |
 
 ---
 
 ## 10. Open questions
 
-- Exact workspace band for Qwen3.6-27B?
-- Which mediators are single-token in Qwen's vocabulary?
-- Does the mechanistic KB (format C) actually raise mediator ranks, or is it redundant?
-- Does the proxy format ranking predict Claude's behavior (transfer validity)?
+- Does the mechanistic KB (format C) actually enlarge the surfaced-mediator set, or is it redundant?
+- How reliably does counterfactual sensitivity corroborate a self-report reading?
+- If the real Jacobian lens were exposed on the Anthropic API, how closely would the measured signal track the inferred one?
 - Best real (de-identified) case sources via HISTORA for Phase 3?
 
 ---
@@ -357,31 +365,23 @@ is latent and the work is recall, not format.
 - **2026-07-07** — All code, artifacts, prompts, and skills in English.
 - **2026-07-07** — Non-diagnostic scope is a hard constraint: collection flags,
   never patient-value imputation.
-- **2026-07-07** — Use pre-fitted Hub lenses (no fitting) to start; GPU via Colab.
-- **2026-07-07** — **J-lens is complementary to Claude agents, not a substitute:**
-  dev-time white-box instrument on a proxy vs. runtime production system. Adopt a
+- **2026-07-07** — **Interpretability is complementary to Claude agents, not a
+  substitute:** a dev-time readout channel vs. runtime production system. Adopt a
   Claude orchestrator + subagents for runtime (see §3b).
-- **2026-07-07** — **Adopt SkillOpt for skill evolution, gated by J-lens.** J-lens
-  mediator ranks are a cheap pre-filter; the authoritative gate is Claude held-out
-  accuracy + guardrail pass-rate. Guardrails are protected invariants, never
-  evolved. Lightweight fallback: replicate the loop on the Claude Agent SDK.
-- **2026-07-07** — **Colab execution: self-contained notebook.** The notebook
-  clones `jacobian-lens` and recreates the `src/` modules via `%%writefile`
-  (embedded, verified identical to `src/`). No private GitHub clone / token, no
-  manual upload. Google Drive mount documented as the alternative for heavy
-  iteration (replace section 2 with `drive.mount` + `sys.path.append`).
-- **2026-07-08** — **Dual-lens loop adopted.** Add a runtime-native self-report
+- **2026-07-07** — **Adopt SkillOpt for skill evolution, gated on Claude accuracy.**
+  The inferred-lens surfaced-mediator set is a cheap pre-filter; the authoritative
+  gate is Claude held-out accuracy + guardrail pass-rate + tests. Guardrails are
+  protected invariants, never evolved. Lightweight fallback: replicate the loop on
+  the Claude Agent SDK.
+- **2026-07-08** — **Inferred-lens loop adopted.** Add a runtime-native self-report
   instrument (`claude-workspace-probe`, inspired by `Doriandarko/skirano-skills`
-  j-space-lens) as the fast inner loop on Claude, with the measured Jacobian lens on
-  Qwen as ground-truth validation. The two are complementary (different models,
-  different epistemics); their correlation is a Research-track finding. The skirano
-  skill is referenced, **not vendored** (its repo has no license); we ship our own
-  domain-adapted skill. Effort re-balanced: Claude-first inner loop is primary for
-  the 1-week event; the measured lens is validation, not a blocker.
+  j-space-lens) as the inner loop on Claude — the inferred lens, a readout channel,
+  not a measurement. The skirano skill is referenced, **not vendored** (its repo has
+  no license); we ship our own domain-adapted skill.
 - **2026-07-08** — **Hackathon positioning:** Build track primary (named user =
-  perio-cardio research clinic on HISTORA); Research track secondary via the
-  correlation finding (does not need the Gladstone datasets). See
-  `docs/HACKATHON_STRATEGY.md`.
+  perio-cardio research clinic on HISTORA); the differentiator is the method plus a
+  humble, speculative API-feature proposal to Anthropic (does not need the Gladstone
+  datasets). See `docs/HACKATHON_STRATEGY.md`.
 - **2026-07-08** — **Datasets: NHANES 2009–2010 as the real anchor + Synthea for
   longitudinal.** 2009–2010 uniquely pairs the full-mouth periodontal exam with CRP
   (public, de-identified, no DUA). NHANES is cross-sectional → Synthea (custom
@@ -394,25 +394,37 @@ is latent and the work is recall, not format.
 - **2026-07-08** — **Reformulation adopted (see [`REFORMULATION.md`](REFORMULATION.md)).**
   Move from an offline dev-time pipeline to a live, in-session self-evolving system:
   (1) a **separate Lens Observer instance (Opus)** analyzes the executor's *inferred*
-  Jacobian-lens readout and drives evolution; (2) the **inferred lens is the only live
-  signal** — the real Colab/Qwen lens is demoted to the documented "unlock" (offline
-  correlation only); (3) a **Session Working-Consciousness** ledger is the closed
-  in-session evolutionary loop; (4) evolution targets five surfaces incl. **harness
-  code**. Guardrail stays protected; edits are tiered (T0 ephemeral / T1 promoted +
-  human gate). R1 artifacts landed: `agents/lens-observer.md`, `prompts/observer.md`,
+  lens readout and drives evolution; (2) the **inferred lens is the only live
+  signal** — exposing the real Jacobian lens on the Anthropic API is documented as the
+  "unlock"; (3) a **Session Working-Consciousness** ledger is the closed in-session
+  evolutionary loop; (4) evolution targets five surfaces incl. **harness code**.
+  Guardrail stays protected; edits are tiered (T0 ephemeral / T1 promoted + human
+  gate). R1 artifacts landed: `agents/lens-observer.md`, `prompts/observer.md`,
   `skills/lens-deficiency-analysis.md`, `schemas/lens_readout_schema.json`,
   `schemas/deficiency_map_schema.json`.
+
+- **2026-07-09** — **Pivot to Claude-only.** Removed the Qwen proxy, the measured
+  Jacobian lens, Colab, and the dual-lens correlation experiment (deleted `colab/`,
+  `agents/jlens-diagnostic.md`, `prompts/controller.md`, `src/harness.py`,
+  `docs/DUAL_LENS.md`). We now explore the Jacobian-lens paper indirectly via the
+  self-report skill on Claude; corroborate with counterfactual-sensitivity; and
+  propose exposing the real Jacobian lens on the Anthropic API as the unlock.
 
 ---
 
 ## Progress Log
 
-- **2026-07-07 — Phase 0 complete.** Scaffolding, harness, schema, prompts, skills,
-  subagents, and Colab notebook created and verified (modules compile/load; notebook
-  + schema valid JSON).
-- **2026-07-08 — Dual-lens + hackathon strategy.** Added `claude-workspace-probe`
-  skill + subagent, `docs/DUAL_LENS.md`, `docs/HACKATHON_STRATEGY.md`; restructured
-  phases around the dual loop (1a fast Claude probe, 1b measured Qwen lens, 2
-  correlation finding, 4 gated evolution). SkillOpt cloned as sibling reference.
-- **(next)** — Phase 1a/1b results: paste (A) probe surfaced-mediators per format
-  and (B) measured mediator ranks + capacity + band sweep here to continue.
+- **2026-07-07 — Phase 0 complete.** Scaffolding, schema, prompts, skills, and
+  subagents created and verified (modules compile/load; schema valid JSON).
+- **2026-07-08 — Inferred-lens + hackathon strategy.** Added `claude-workspace-probe`
+  skill + subagent, `docs/APPROACH.md`, `docs/HACKATHON_STRATEGY.md`; structured the
+  phases around the inferred-lens Observer loop and gated evolution. SkillOpt cloned
+  as sibling reference.
+- **2026-07-09 — Pivot to Claude-only.** Removed the Qwen proxy, the measured
+  Jacobian lens, Colab, and the dual-lens correlation experiment (deleted `colab/`,
+  `agents/jlens-diagnostic.md`, `prompts/controller.md`, `src/harness.py`,
+  `docs/DUAL_LENS.md`). The project now explores the Jacobian-lens paper indirectly
+  via the self-report skill on Claude, corroborates with counterfactual-sensitivity,
+  and proposes exposing the real Jacobian lens on the Anthropic API as the unlock.
+- **(next)** — Phase 1/2 results: paste the inferred-lens surfaced-mediator set per
+  format and the counterfactual-sensitivity outcomes here to continue.

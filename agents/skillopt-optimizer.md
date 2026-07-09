@@ -30,8 +30,8 @@ implementation: the sibling `SkillOpt/` repo (Microsoft Research). See
    bounded, auditable edit proposals (add/delete/replace).
 3. **Pre-filter (inferred lens)** — for edits that change input representation,
    cheaply screen candidates by whether the mediator/variable surfaces in the readout
-   before spending full Claude rollouts. (The measured Qwen lens, if available, is the
-   stronger pre-filter — see the README "unlock" note.)
+   before spending full Claude rollouts. (If the real Jacobian lens were exposed on the
+   Anthropic API, it would be the stronger pre-filter — see the README API-feature note.)
 4. **Gate** — accept an edit ONLY if it **strictly improves** the held-out score AND
    does **not lower** the `guardrail-verifier` pass-rate AND (for `harness_code`) the
    generated + existing **tests pass**. Run the guardrail + regression suite every gate.

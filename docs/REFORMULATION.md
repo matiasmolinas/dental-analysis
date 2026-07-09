@@ -1,13 +1,21 @@
 # Reformulation — Inferred-Lens Observer & Session Working-Consciousness
 
 > **Status:** implemented (R0–R6; live A/B pending data). Written 2026-07-08. This
-> document is the **delta** from the project's earlier baseline
-> ([`PLAN.md`](PLAN.md), [`DUAL_LENS.md`](DUAL_LENS.md)) and the R0–R6 workplan. For
-> the standalone, domain-general description of the method itself, read
-> [`APPROACH.md`](APPROACH.md); for where it generates large impact a priori, read
-> [`IMPACT.md`](IMPACT.md). Guardrails in
+> document is the **delta** from the project's earlier baseline ([`PLAN.md`](PLAN.md))
+> and the R0–R6 workplan. For the standalone, domain-general description of the method
+> itself, read [`APPROACH.md`](APPROACH.md); for where it generates large impact a
+> priori, read [`IMPACT.md`](IMPACT.md). Guardrails in
 > [`../skills/non-diagnostic-guardrail.md`](../skills/non-diagnostic-guardrail.md)
 > remain protected invariants throughout.
+>
+> **2026-07-09 pivot (supersedes parts of this doc):** the project now runs on **Claude
+> only**. The measured Qwen lens, Colab, and the dual-lens correlation experiment were
+> **removed** (deleted `colab/`, `agents/jlens-diagnostic.md`, `prompts/controller.md`,
+> `src/harness.py`, `docs/DUAL_LENS.md`). We explore the Jacobian-lens paper *indirectly*
+> via the self-report skill and corroborate with counterfactual-sensitivity on Claude;
+> the "unlock" is reframed as an API feature we propose to Anthropic (expose the real
+> lens on Claude). Where this doc describes the *baseline* two-instrument setup below,
+> read it as history; the current state is single inferred lens, Claude only.
 
 ---
 
@@ -22,10 +30,11 @@ self-evolving multi-agent system** built around three ideas:
    self-report the primary emits while it processes prompts, skills, context, and
    sub-agent definitions), detects deficiencies (missing/incorrect input variables,
    uncovered chain-of-thought steps, unrepresented mediators), and drives evolution.
-2. **The inferred lens is the only live signal.** We deliberately do **not** wire
-   the real Colab/Qwen Jacobian lens into the loop. We keep it documented as the
-   *unlock*: if the frontier model's real Jacobian lens were exposed, this exact
-   architecture would jump from inferred to measured signal and reach its true power.
+2. **The inferred lens is the only signal, on Claude only.** There is no proxy, no
+   Colab, no measured lens — we explore the paper *indirectly* via the self-report
+   skill. We reframe the *unlock* as an **API feature we propose to Anthropic**: if the
+   real Jacobian lens were exposed on Claude, this exact architecture would jump from
+   inferred to measured signal and reach its true power.
 3. **A Session Working-Consciousness (SWC) ledger** — a cumulative, evolving
    session variable that the Observer owns, uses as its own context, and consolidates
    turn over turn. It is the closed evolutionary loop of "working consciousness
@@ -42,9 +51,10 @@ deterministic relational analyzers, and any code tool the agents rely on).
 
 ### 1.1 Baseline (today)
 
-- **Two instruments, offline**: `claude-workspace-probe` (self-report on Claude,
-  fast inner loop) + measured Jacobian lens on Qwen in Colab (`jlens-diagnostic`,
-  ground truth). Their **correlation** is a Research-track finding.
+- **Two instruments, offline** *(baseline — removed in the 2026-07-09 pivot)*:
+  `claude-workspace-probe` (self-report on Claude) + a measured Jacobian lens on a Qwen
+  proxy in Colab, with their correlation as a research finding. The current project
+  keeps only the self-report instrument, on Claude.
 - **SkillOpt** evolves *skills only*, offline, gated by Claude held-out accuracy +
   guardrail pass-rate.
 - The runtime is a Claude orchestrator + specialist sub-agents; the lens and the
@@ -156,7 +166,7 @@ For each deficiency, the Observer chooses **where** the fix belongs and emits a
 **Anti-Goodhart rule:** every edit must cite the lens-grounded deficiency that
 justifies it. An edit with no readout evidence is rejected. Where possible, the
 Observer corroborates a lens claim with the **counterfactual-sensitivity** test
-already in [`DUAL_LENS.md`](DUAL_LENS.md) (flip one input factor; the affected axis
+(see [`APPROACH.md`](APPROACH.md) §8) (flip one input factor; the affected axis
 should move, unrelated axes should not) — an API-observable check that is not pure
 self-report.
 
@@ -242,19 +252,21 @@ Online self-modification in a health context requires strict tiers:
 - `skills/claude-workspace-probe.md` → framed explicitly as the **inferred Jacobian
   lens readout source** consumed by the Observer (content largely unchanged; the
   "not a measurement" rules stay).
-- `agents/jlens-diagnostic.md` + `colab/` → **demoted to the aspirational "real-lens
-  unlock" path** and the offline correlation experiment; no longer a live dependency.
 - `agents/skillopt-optimizer.md` → generalized from *skills only* to the **five
   surfaces incl. harness code**, and split into T0 (ephemeral) vs T1 (promoted).
-- `prompts/controller.md` → generalized from "Qwen-J-lens input-format optimizer" to
-  "Observer evolution controller reading the inferred lens."
 - `agents/orchestrator.md` → adds the Observer hand-off (emit readout; receive
   injected/modified prompt) and the SWC read/write step.
 
+### Removed in the 2026-07-09 pivot
+- `agents/jlens-diagnostic.md`, `colab/`, `src/harness.py`, `prompts/controller.md`,
+  `docs/DUAL_LENS.md` — the measured Qwen lens, Colab, and the correlation experiment.
+  The self-report inferred lens on Claude is the only signal; `prompts/observer.md` is
+  the sole (inferred-lens) controller.
+
 ### README
-Add a section: **"Inferred vs. measured Jacobian lens."** State plainly that the live
-loop uses the *inferred* lens (self-report), that we deliberately do not wire the real
-Colab/Qwen lens into the runtime, and that **if the frontier model's real Jacobian
+Add a section: **"Exploring the Jacobian lens indirectly (and the API feature we're
+proposing)."** State plainly that the loop uses the *inferred* lens (self-report) on
+Claude only, that there is no proxy/Colab/measured lens, and that **if the real Jacobian
 lens were exposed (e.g. via API), this same architecture would swap the inferred
 signal for a measured one — turning directional hypotheses into causal ground truth,
 enabling representation swaps — and reach its true power.** Keep the epistemic-honesty
@@ -289,9 +301,9 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
       injection → confirmed next turn → three beliefs consolidated, one carried forward.
 
 ### Phase R3 — Evolution across the five surfaces (T0) — `DONE`
-- [x] Wired the executor↔Observer loop into `agents/orchestrator.md`; generalized
-      `prompts/controller.md` (measured variant) with a pointer to `prompts/observer.md`
-      (inferred/live variant). Edits are ephemeral, logged in the SWC, guardrail-safe.
+- [x] Wired the executor↔Observer loop into `agents/orchestrator.md`; `prompts/observer.md`
+      is the sole inferred-lens controller. Edits are ephemeral, logged in the SWC,
+      guardrail-safe.
 - [x] Demo: mediator absent in Turn 1 surfaces by Turn 2/3 in `.session/example_case01.md`.
 
 ### Phase R4 — Harness evolution (S4) — `DONE`
@@ -308,9 +320,10 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
       protocol + harness are in place.
 
 ### Phase R6 — README + docs + demo — `DONE`
-- [x] README "Inferred vs. measured Jacobian lens (and the unlock)" section.
-- [x] Updated `PLAN.md`, `DUAL_LENS.md`, `HACKATHON_STRATEGY.md`, and the `agents/`
-      + `skills/` catalog READMEs to reflect the loop.
+- [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
+      proposing)" section.
+- [x] Updated `PLAN.md`, `HACKATHON_STRATEGY.md`, and the `agents/` + `skills/` catalog
+      READMEs to reflect the loop; added `APPROACH.md` + `IMPACT.md`.
 - [ ] Demo beat: watch the Observer diagnose, inject, evolve, and consolidate live.
 
 ---
@@ -319,7 +332,7 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
 
 | Risk (new/changed) | Mitigation |
 |---|---|
-| Removing the measured lens from the live loop weakens the "not confabulation" defense | Keep the offline correlation experiment; corroborate every lens claim with the API-observable counterfactual-sensitivity test; keep the honesty framing |
+| Self-report has no ground truth ("not confabulation" defense) | Corroborate every load-bearing lens claim with the API-observable counterfactual-sensitivity test on Claude; keep the honesty framing; Claude task accuracy + guardrail are the authorities |
 | Online self-modification drifts or destabilizes in a health context | Two tiers (T0 ephemeral / T1 promoted); protected guardrail in every gate; bounded edits; per-turn edit cap; test-before-use for code |
 | Observer over-trusts self-report and Goodharts on the readout | Anti-Goodhart rule: every edit needs readout evidence; final authority is Claude task accuracy + guardrail, not readout scores |
 | SWC bloats / becomes noisy transcript | Consolidation step (promote stable beliefs, drop stale hypotheses); the SWC is a curated optimization state, not a log dump |

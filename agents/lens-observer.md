@@ -65,11 +65,13 @@ Run on a capable model (Opus). The executor runs the task; you observe its lens.
 
 Where a claim is load-bearing, corroborate with the API-observable
 **counterfactual-sensitivity** test (flip one input factor; the affected axis should
-move, unrelated axes should not — see `docs/DUAL_LENS.md`). Mark it in the edit's
+move, unrelated axes should not — see `docs/APPROACH.md` §8). Mark it in the edit's
 `corroboration` field.
 
 ## Note on the real lens
 
-You operate on the **inferred** lens by design. If the frontier model's real Jacobian
-lens were exposed, the same loop would consume a *measured* signal instead — see the
-README "inferred vs measured" section. Until then: directional, gated, honest.
+You operate on the **inferred** lens by design — Claude only, no proxy, no measured
+lens. If the real Jacobian lens were exposed on Claude via the Anthropic API, the same
+loop would consume a *measured* signal instead — see the README "Exploring the Jacobian
+lens indirectly (and the API feature we're proposing)" section. Until then: directional,
+gated, honest.

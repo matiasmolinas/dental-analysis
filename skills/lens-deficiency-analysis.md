@@ -65,12 +65,12 @@ the concrete `change`, a `rationale` that **cites the deficiency evidence**, and
 
 For load-bearing claims, set `corroboration: counterfactual_sensitivity` and describe
 the flip (toggle one factor, e.g. `hs_crp` present↔MISSING; the affected axis should
-move, unrelated axes should not — see `docs/DUAL_LENS.md`). Use `reread_next_turn` to
+move, unrelated axes should not — see `docs/APPROACH.md` §8). Use `reread_next_turn` to
 verify a T0 edit actually surfaced the mediator on the following turn.
 
 ## Hard rules
 
 - No edit without readout evidence (anti-Goodhart).
 - Never edit `skills/non-diagnostic-guardrail.md`; never impute a patient value.
-- The authoritative gate is Claude accuracy + guardrail pass-rate; readout ranks are a
-  cheap pre-filter, exactly as the measured J-lens was in the baseline plan.
+- The authoritative gate is Claude accuracy + guardrail pass-rate; the inferred-lens
+  readout is a cheap, directional pre-filter — self-report, never a measurement.

@@ -21,7 +21,8 @@ auditable, imperative discipline — so it can be evolved by the `skillopt-optim
 
 `claude-workspace-probe` is inspired by the `j-space-lens` skill in
 `Doriandarko/skirano-skills` (referenced, not vendored — no license). It is
-uninstrumented self-report, **not a measurement**; see [`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
+uninstrumented self-report, **not a measurement** — the only lens signal, on Claude
+only; see [`../docs/APPROACH.md`](../docs/APPROACH.md).
 
 ## Evolution gate
 
