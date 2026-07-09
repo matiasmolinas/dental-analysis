@@ -43,15 +43,71 @@ concept: short phrase (multi-token OK), salience: strong|moderate|faint, appears
 true|false}]. Set appears_in_output=true when the item is already stated in the output you were
 given (then it is NOT a gap)."""
 
-# The blind converger — a strong model surfacing gaps WITHOUT any workspace/lens signal. Its
-# output is C: what re-derivable competence alone catches.
+# The blind converger — surfaces gaps WITHOUT any workspace/lens signal. Its output is C: what
+# re-derivable competence alone catches. Kept LEAN (top considerations only) so C does not
+# trivially cover the whole space — a leaner C is a fairer test of whether the predictor adds
+# something non-redundant (an exhaustive C stacks the gate toward "circular").
 BLIND_SYSTEM = """You are a careful oral-systemic (periodontal + cardiovascular) research analyst.
-Non-diagnostic. From the record below, list every GAP, missing datum, confounder, drug-tissue
-interaction, internal inconsistency, or non-obvious consideration that a thorough analyst should
-investigate. Do not produce the full analysis — only the list of considerations.
+Non-diagnostic. From the record below, list the MOST IMPORTANT considerations to investigate —
+the key gaps, missing data, confounders, drug-tissue interactions, or inconsistencies. Be
+selective: list your top ~8 considerations, not an exhaustive dump. Do not produce the full
+analysis — only the list.
 
-Output ONLY a JSON object: {"items": [{"key": "<short_snake_case_id>", "concept": "<short phrase>"}]}.
-Return the JSON and nothing else."""
+Return, via the tool, items = [{key: short_snake_case_id, concept: short phrase}]."""
+
+
+# Semantic clustering of predictions across the K runs: groups synonymous items so stability is
+# counted per-CONCEPT, not per-(differently-worded)-key. The exact-key shortcut fragmented
+# recurring items and biased the gate toward "circular" — this fixes that.
+CLUSTER_SYSTEM = """You are given a numbered list of candidate items, each produced in one of
+several independent runs (its run index is shown). Group items that express the SAME underlying
+consideration (synonyms/paraphrases of the same point) into clusters. Every index belongs to
+exactly one cluster; a unique point forms a singleton cluster. For each cluster give a canonical
+concept, its channel, and the member indices.
+
+Return, via the tool, clusters = [{concept: canonical short phrase, channel: the dominant channel,
+member_indices: [int, ...]}]."""
+
+
+def cluster_predictions(
+    runs: list[dict],
+    k: int,
+    cluster_fn: Callable[[str], dict],
+    stability_min: float = 0.6,
+) -> list[dict]:
+    """Semantic version of aggregate_predictions: cluster synonymous items across runs (via
+    cluster_fn), then keep clusters that are stable (span >= stability_min of the K runs) AND
+    confidently absent from the output. stability = distinct runs the cluster spans / k."""
+    flat = []  # (global_index, run_index, item)
+    for run_i, run in enumerate(runs):
+        for it in run.get("items", []):
+            flat.append((len(flat), run_i, it))
+    if not flat:
+        return []
+    listing = "\n".join(
+        f"{gi}: [run {ri}] ({it.get('channel','')}) {it.get('concept','')}"
+        for gi, ri, it in flat
+    )
+    clusters = cluster_fn("ITEMS:\n" + listing).get("clusters", [])
+    out = []
+    for cl in clusters:
+        idxs = [i for i in cl.get("member_indices", []) if 0 <= i < len(flat)]
+        if not idxs:
+            continue
+        runs_covered = {flat[i][1] for i in idxs}
+        members = [flat[i][2] for i in idxs]
+        stability = len(runs_covered) / k if k else 0.0
+        appears_rate = (sum(bool(m.get("appears_in_output")) for m in members) / len(members))
+        if stability >= stability_min and appears_rate < 0.5:
+            key = (cl.get("concept", "") or members[0].get("concept", ""))[:40]
+            key = "_".join(key.lower().split())
+            out.append({
+                "key": key, "channel": cl.get("channel", members[0].get("channel", "")),
+                "concept": cl.get("concept", members[0].get("concept", "")),
+                "stability": round(stability, 3), "appears_in_output_rate": round(appears_rate, 3),
+                "n_members": len(members),
+            })
+    return out
 
 # Coverage judge: is each predicted item already covered by the output (O) or the blind list (C)?
 COVERAGE_JUDGE_SYSTEM = """You decide, for each candidate item, whether its content is ALREADY

@@ -25,9 +25,10 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from predicted_workspace import (
     BLIND_SYSTEM,
+    CLUSTER_SYSTEM,
     COVERAGE_JUDGE_SYSTEM,
     PREDICTOR_SYSTEM,
-    aggregate_predictions,
+    cluster_predictions,
     non_redundant_surface,
 )
 from record_formats import RECORD, format_b_sections_glossed
@@ -66,6 +67,11 @@ JUDGE_TOOL = {"type": "object", "properties": {"verdicts": {"type": "array", "it
     "type": "object", "properties": {
         "key": {"type": "string"}, "covered": {"type": "boolean"}, "why": {"type": "string"}},
     "required": ["key", "covered"]}}}, "required": ["verdicts"]}
+CLUSTER_TOOL = {"type": "object", "properties": {"clusters": {"type": "array", "items": {
+    "type": "object", "properties": {
+        "concept": {"type": "string"}, "channel": {"type": "string"},
+        "member_indices": {"type": "array", "items": {"type": "integer"}}},
+    "required": ["concept", "member_indices"]}}}, "required": ["clusters"]}
 
 
 def _make_call(client, model: str, system: str, tool_name: str, tool_schema: dict):
@@ -125,12 +131,16 @@ def _make_call(client, model: str, system: str, tool_name: str, tool_schema: dic
 def main() -> None:
     ap = argparse.ArgumentParser(description="Circularity-gate experiment (mode 4)")
     ap.add_argument("--k", type=int, default=5, help="predictor samples")
-    ap.add_argument("--executor-model", default="claude-opus-4-8")
-    ap.add_argument("--predictor-model", default="claude-fable-5")
+    # Strong = Opus 4.8 (the executor, the workspace we care about). Light = Sonnet 5. Predictor
+    # is DIFFERENT from the executor (restores model diversity) and its blind is LEAN, so C does
+    # not trivially cover everything.
+    ap.add_argument("--executor-model", default="claude-opus-4-8")     # strong
+    ap.add_argument("--predictor-model", default="claude-sonnet-5")    # light, != executor
     ap.add_argument("--predictor-fallback-model", default="claude-opus-4-8",
                     help="used if the primary predictor refuses/fails for topic-safety reasons")
-    ap.add_argument("--blind-model", default="claude-opus-4-8")
-    ap.add_argument("--judge-model", default="claude-sonnet-5")
+    ap.add_argument("--blind-model", default="claude-sonnet-5")        # light, lean blind
+    ap.add_argument("--judge-model", default="claude-sonnet-5")        # light
+    ap.add_argument("--cluster-model", default="claude-sonnet-5")      # light
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "..", "results",
                                                   "gate_report.json"))
     args = ap.parse_args()
@@ -168,7 +178,9 @@ def main() -> None:
             runs.append(predictor(pred_user)); models_used.append(args.predictor_model)
         except Exception:  # refusal / no usable block after retries -> Opus fallback
             runs.append(fallback(pred_user)); models_used.append(args.predictor_fallback_model)
-    p_items = aggregate_predictions(runs, args.k)
+    # Semantic clustering across runs (fixes the exact-key fragmentation that biased -> circular)
+    cluster = _make_call(client, args.cluster_model, CLUSTER_SYSTEM, "clusters", CLUSTER_TOOL)
+    p_items = cluster_predictions(runs, args.k, cluster)
 
     # The gate: P \ (O ∪ C)
     judge = _make_call(client, args.judge_model, COVERAGE_JUDGE_SYSTEM, "coverage_verdicts", JUDGE_TOOL)
