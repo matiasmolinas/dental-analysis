@@ -8,7 +8,9 @@
 **Owner:** matias.molinas@gmail.com
 **Context:** Built with Claude: Life Sciences (Anthropic × Cerebral Valley ×
 Gladstone), 2026-07-07 → 2026-07-13. See [`HACKATHON_STRATEGY.md`](HACKATHON_STRATEGY.md).
-**Method detail:** dual-lens loop — see [`DUAL_LENS.md`](DUAL_LENS.md).
+**Method:** [`APPROACH.md`](APPROACH.md) (canonical, domain-general) · reformulation
+delta + workplan in [`REFORMULATION.md`](REFORMULATION.md) · impact analysis in
+[`IMPACT.md`](IMPACT.md) · dual-lens detail in [`DUAL_LENS.md`](DUAL_LENS.md).
 **Data:** NHANES 2009–2010 (real anchor) + Synthea (longitudinal) — see [`DATASETS.md`](DATASETS.md).
 
 ---

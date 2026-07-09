@@ -22,43 +22,48 @@ oral and systemic records. The open question this project answers is:
 We answer it with interpretability instead of guesswork, and turn the answer into
 a self-improving, **non-diagnostic** research agent.
 
-## How it works (the working hypothesis)
+## How it works (the loop)
 
-We read the model's "workspace" with **two complementary instruments** (see
-[`docs/DUAL_LENS.md`](docs/DUAL_LENS.md)): a fast **self-report probe on Claude
-itself** (`claude-workspace-probe`, runs on the real target model, no GPU) and the
-**measured Jacobian lens on the Qwen proxy** (`jlens-diagnostic`, quantitative and
-causal ground truth). The self-report drives the fast inner loop; the measured lens
-validates it; their **correlation is a reproducible finding**. Our hypothesis is
-that **Claude, by inspecting this workspace, can decide what to fix at the input** —
-and that the learning drives autonomous skill evolution:
+Full method in [`docs/APPROACH.md`](docs/APPROACH.md). A **second model instance — the
+Lens Observer** (`agents/lens-observer.md`, Opus) reads the **inferred Jacobian lens**
+of the primary model — the workspace self-report the primary emits while it processes
+a prompt (`claude-workspace-probe` → `schemas/lens_readout_schema.json`) — and drives
+the loop:
 
-1. **Instrument** the Qwen proxy with a pre-fitted J-lens.
-2. **Present a candidate** made of three things the hypothesis targets: the input
-   **data structure**, the **problem formulation**, and the **chain of thought**
-   (read the workspace over the generated reasoning, not only the static prompt),
-   plus KB context.
-3. **Claude inspects Qwen's workspace readout** to decide which **values to
-   complete** (as collection flags, never imputed), which **formats to adjust**,
-   and which **additional knowledge to inject or modify** at the input.
-4. **Iterate** the edits until the mediating concepts are represented (low
-   workspace-band rank).
-5. **Evaluate on Claude** — feed the converged, complete input to the most capable
-   Claude for the final structured output. This is the authoritative gate.
-6. **Evolve autonomously** — use that learning as the fitness signal to evolve the
-   subagents and skills (SkillOpt-style loop), gated by Claude accuracy + the
-   protected non-diagnostic guardrail, with human-in-the-loop promotion.
+1. **Run** the task on the Executor with the inferred-lens readout active; emit the
+   output **plus** the readout.
+2. **Diagnose** — the Observer compares the readout to the spec (required mediators,
+   variables, procedure steps) and returns a typed deficiency map
+   (`schemas/deficiency_map_schema.json`): missing/incorrect variables, uncovered
+   chain-of-thought steps, unrepresented mediators, under-specified framing.
+3. **Evolve** — route each deficiency to the cheapest of five surfaces (work prompt,
+   skill, KB context, sub-agent def + injected variables, **harness code**) as a
+   bounded, readout-grounded edit. Values to complete become **collection flags, never
+   imputed**.
+4. **Consolidate + inject** — update the cumulative **Session Working-Consciousness**
+   ledger and, from it, inject/modify the next prompt. Lessons compound across turns.
+5. **Gate** — T0 edits are ephemeral (in-session); durable T1 edits are gated by
+   Claude held-out accuracy + the protected non-diagnostic guardrail + tests + human
+   approval. The final authority is task accuracy + guardrail, never the readout score.
 
-**Load-bearing assumption:** the proxy's workspace predicts Claude's relational
-reasoning. Proxy ranks are directional, not absolute — they generate and prioritize
-hypotheses; Claude is the final judge (transfer validity is verified in Phase 3).
+**The measured Jacobian lens on the Qwen proxy** (`jlens-diagnostic`, quantitative and
+causal) is **not** wired into the live loop: it is the reproducible *validation* path,
+and the correlation between the inferred and measured signals is a research finding.
+See "Inferred vs. measured Jacobian lens (and the unlock)" below.
 
-**Docs:** [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status, decisions),
-[`docs/REFORMULATION.md`](docs/REFORMULATION.md) (the inferred-lens Observer +
-Session Working-Consciousness reformulation — the current build direction),
-[`docs/DUAL_LENS.md`](docs/DUAL_LENS.md) (two-instrument methodology + correlation
-experiment), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md) (Built with
-Claude: Life Sciences — tracks, named user, one-week plan, demo, judging),
+**Epistemic status:** the inferred lens is self-report exercised as a readout channel —
+directional, never a measurement and never clinical evidence; task accuracy on Claude
+plus the protected guardrail are the authorities.
+
+**Docs:** [`docs/APPROACH.md`](docs/APPROACH.md) (**the canonical, domain-general
+description of the method** — inferred-lens Observer + Session Working-Consciousness),
+[`docs/IMPACT.md`](docs/IMPACT.md) (where/when the approach generates large impact a
+priori — predictors, archetypes, and a scoring rubric),
+[`docs/REFORMULATION.md`](docs/REFORMULATION.md) (the delta from the earlier baseline +
+the R0–R6 workplan), [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status,
+decisions), [`docs/DUAL_LENS.md`](docs/DUAL_LENS.md) (two-instrument methodology +
+correlation experiment), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md)
+(Built with Claude: Life Sciences — tracks, named user, one-week plan, demo, judging),
 [`docs/DATASETS.md`](docs/DATASETS.md) (NHANES 2009–2010 real anchor + Synthea
 longitudinal; schema mapping and access).
 

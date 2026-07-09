@@ -1,9 +1,11 @@
 # Reformulation — Inferred-Lens Observer & Session Working-Consciousness
 
-> **Status:** proposal / analysis. Written 2026-07-08. This document reformulates
-> the technical challenge described in [`PLAN.md`](PLAN.md) and [`DUAL_LENS.md`](DUAL_LENS.md)
-> to reach a stronger implemented result. It does not yet change the runtime;
-> it is the design + workplan to get there. Guardrails in
+> **Status:** implemented (R0–R6; live A/B pending data). Written 2026-07-08. This
+> document is the **delta** from the project's earlier baseline
+> ([`PLAN.md`](PLAN.md), [`DUAL_LENS.md`](DUAL_LENS.md)) and the R0–R6 workplan. For
+> the standalone, domain-general description of the method itself, read
+> [`APPROACH.md`](APPROACH.md); for where it generates large impact a priori, read
+> [`IMPACT.md`](IMPACT.md). Guardrails in
 > [`../skills/non-diagnostic-guardrail.md`](../skills/non-diagnostic-guardrail.md)
 > remain protected invariants throughout.
 
