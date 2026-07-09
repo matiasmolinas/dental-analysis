@@ -26,6 +26,7 @@ import sys
 sys.path.insert(0, os.path.dirname(__file__))
 
 from ab_eval import score
+from ablation import _bootstrap_ci
 from counterfactual import counterfactual_report
 from record_formats import format_b_sections_glossed
 from run_gate import PLANTED_CASE, PREDICTOR_TOOL, PREDICTOR_SYSTEM, _make_call
@@ -105,15 +106,33 @@ def main() -> None:
 
     aggregate = {arm: {m: agg(arm, m) for m in ("cf_mean_affected_delta", "relational_recall")}
                  for arm in ("base", "append_all", "targeted")}
+
+    # Significance-aware: a bootstrap 90% CI on the PAIRED per-case (targeted − base) deltas, so
+    # a point gain on few cases cannot fire "useful" (the n=1 risk: rel_recall 0.62>0.50 but the
+    # counterfactual regressed). This matches ablation.py's discipline — required before the
+    # powered n>=30 read is trustworthy.
+    METRICS = ("cf_mean_affected_delta", "relational_recall")
+    ci = {m: _bootstrap_ci([c["targeted"][m] - c["base"][m] for c in per_case]) for m in METRICS}
+    sig_gain = [m for m in METRICS if ci[m]["lo"] > 0]
+    sig_loss = [m for m in METRICS if ci[m]["hi"] < 0]
     report = {"meta": {"cases": args.cases, "n": len(cases), "model": args.model},
               "per_case": per_case, "aggregate": aggregate,
               "targeted_minus_base": {
-                  m: round(aggregate["targeted"][m] - aggregate["base"][m], 3)
-                  for m in ("cf_mean_affected_delta", "relational_recall")}}
-    report["verdict"] = ("targeted_useful"
-                         if report["targeted_minus_base"]["cf_mean_affected_delta"] > 0
-                         or report["targeted_minus_base"]["relational_recall"] > 0
-                         else "targeted_neutral_or_negative")
+                  m: round(aggregate["targeted"][m] - aggregate["base"][m], 3) for m in METRICS},
+              "ci_90_targeted_minus_base": ci,
+              "significant_gain_metrics": sig_gain,
+              "significant_loss_metrics": sig_loss}
+    # Useful only if a delta's CI EXCLUDES 0 (a real effect) with no significant regression.
+    # Point-positive-but-CI-straddles-0 is honestly inconclusive, not a win.
+    if sig_gain and not sig_loss:
+        report["verdict"] = "targeted_useful"
+    elif sig_loss:
+        report["verdict"] = "targeted_regresses"
+    elif (report["targeted_minus_base"]["cf_mean_affected_delta"] > 0
+          or report["targeted_minus_base"]["relational_recall"] > 0):
+        report["verdict"] = "targeted_directional_inconclusive"  # point-positive, CI straddles 0
+    else:
+        report["verdict"] = "targeted_neutral_or_negative"
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as f:
@@ -121,8 +140,9 @@ def main() -> None:
     for arm in ("base", "append_all", "targeted"):
         a = aggregate[arm]
         print(f"{arm:11s} cf_delta={a['cf_mean_affected_delta']:+.2f}  rel_recall={a['relational_recall']:.2f}")
-    print("targeted-base:", report["targeted_minus_base"], "| VERDICT:", report["verdict"])
-    print("wrote:", args.out)
+    print("targeted-base:", report["targeted_minus_base"])
+    print("CI90 targeted-base:", json.dumps(report["ci_90_targeted_minus_base"]))
+    print("VERDICT:", report["verdict"], "| wrote:", args.out)
 
 
 if __name__ == "__main__":

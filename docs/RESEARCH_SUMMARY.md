@@ -96,6 +96,28 @@ Claude-only runtime), #1 is Anthropic's feature to expose, #6's *live* training 
 rollouts. The bounded live results (#2, #4) are single-case and directional; the powered n≥30 runs and
 the measured lens remain the two verdict-changing doors (§6).
 
+### 4c. Forward-plan execution — the sensible paths, built + offline-tested (2026-07-09)
+
+Following the gut-checked plan in [`FORWARD_PLAN.md`](FORWARD_PLAN.md) (Fable), the paths that can
+honestly move — or honestly make-true — a claim were implemented. All offline pieces are tested; the
+live experiments are wired and pending a run.
+
+| Path | Verdict | Status | Artifact |
+|---|---|---|---|
+| **A. Lens as MONITOR/QA** (top) | reframes the one genuine positive into the paper's *demonstrated* use (detection, not optimization) | **Built + tested (offline); live run pending** | `src/qa_monitor.py` (monitor vs blind-read + eval), `src/inject_defects.py` (deterministic labeled defects), `src/run_qa_eval.py` (live Opus), `tests/test_qa_monitor.py` (8). Headline = monitor_recall − blind_recall on injected defects, bootstrap CI, matched control FP rate. **The one path that can upgrade the §0 verdict — to a demonstrated DETECTION payoff, not optimization.** |
+| **C. Measured-lens readiness adapter** | makes "consumer built and waiting" literal code | **Built + tested (offline)** | `src/lens_source.py` (`get_lens_readout(source=inferred\|measured)`, same schema), `--lens-source` wired into `run_ablation.py`, `tests/test_lens_source.py` (8). `measured` raises the documented `NotImplementedError`; the day the API ships the swap is one flag + one function body. |
+| **memory-value** (folds in the useful slice of the "wire the autonomous loop" path) | the value hypothesis behind the loop; first caller of the orphan functions | **Built + tested (offline); live A/B pending** | `src/run_memory_value.py` — the **first caller of `lever_ledger.consolidate` + `suggest_levers`** (both wired to nothing before). Seed → sleep-consolidate → COLD vs WARM held-out A/B with bootstrap CI. `tests/test_memory_value.py` (6). Closes the loop as a running system + measures its value. |
+| **D. Targeted actuator, powered** (demoted, gated) | can only close the ours-to-run optimization door | **Made significance-aware; powered run gated on A** | `src/run_targeted.py` now computes a bootstrap 90% CI on paired `targeted − base` deltas and only says `targeted_useful` when a CI excludes 0 with no regression (point-positive-but-CI-straddles-0 is now honestly `targeted_directional_inconclusive`). Run n≥30 only **if A shows the surfaced gaps are behaviorally real**. |
+| **coordinator live training** | optimizing a possibly-flat objective is premature | **CUT / deferred** | `src/coordinator.py` scaffold unchanged; revisit only if A or D show a non-flat actuator objective. |
+
+**What this changes about the headline:** by default, nothing — these paths do not resurrect the
+optimizer claim. The only path that can upgrade §0 is **A**, and it would upgrade it to *"no
+optimization payoff, but a demonstrated **detection** payoff"* — the paper's actually-demonstrated use
+and the more defensible claim the evidence has pointed to all along. C and memory-value make two
+existing claims literally true and testable without moving the verdict (unless memory-value surprises
+positive on cross-case guardrail reliability). Sequencing: **C (done, offline) → A → memory-value → D
+(if A confirms)**. Test count: **65 green** (was 44; +21).
+
 ## 5. Hackathon positioning (honest)
 
 - **Build track:** working software — the Observer loop, five-surface evolution, the guardrail-protected

@@ -63,8 +63,10 @@ def _text_block(resp) -> str:
     return t
 
 
-def make_fns(model: str):
+def make_fns(model: str, lens_source: str = "inferred"):
     import anthropic
+
+    from lens_source import get_lens_readout
 
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY is not set.")
@@ -87,8 +89,15 @@ def make_fns(model: str):
         )
         return _text_block(resp)
 
-    def readout_fn(naive_input: str) -> str:
+    # The readout goes through the source adapter (Path C): `inferred` runs the self-report
+    # probe and validates it to the schema; `measured` raises the documented NotImplementedError
+    # (the API does not exist yet). Downstream (observer/converge) still receives text.
+    def _probe(naive_input: str) -> str:
         return call(readout_system, naive_input)
+
+    def readout_fn(naive_input: str) -> str:
+        readout = get_lens_readout(naive_input, source=lens_source, probe_fn=_probe)
+        return json.dumps(readout, indent=2)
 
     def observer_fn(naive_input: str, readout: str, spec: str) -> str:
         user = (f"Prompt package (naive input):\n{naive_input}\n\n"
@@ -118,14 +127,18 @@ def main() -> None:
     ap.add_argument("--n", type=int, default=4)
     ap.add_argument("--seqns", type=int, nargs="*")
     ap.add_argument("--model", default="claude-sonnet-5")
+    ap.add_argument("--lens-source", choices=["inferred", "measured"], default="inferred",
+                    help="inferred = self-report probe (today); measured = the Anthropic API "
+                         "feature (raises NotImplementedError until it ships) — see Path C")
     ap.add_argument("--out", default=os.path.join(_HERE, "..", "results", "ablation_report.json"))
     args = ap.parse_args()
 
     _load_dotenv()
     cases = load_cases(args.cases, args.n, args.seqns)
-    readout_fn, observer_fn, converge_fn, eval_fn = make_fns(args.model)
+    readout_fn, observer_fn, converge_fn, eval_fn = make_fns(args.model, args.lens_source)
     report = run_ablation(cases, readout_fn, observer_fn, converge_fn, eval_fn)
-    report["meta"] = {"cases": args.cases, "model": args.model, "n": len(cases)}
+    report["meta"] = {"cases": args.cases, "model": args.model, "n": len(cases),
+                      "lens_source": args.lens_source}
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as f:
