@@ -17,9 +17,10 @@ relations representable.
 > language models." That skill is referenced, not vendored (its repo has no
 > license). This is **uninstrumented self-report**: no activation access, no
 > Jacobian, no measurement, no ground truth. It exercises the *reportability*
-> channel, it is NOT the Jacobian lens. Ground truth comes from the measured
-> J-lens on the Qwen proxy (`agents/jlens-diagnostic.md`); the correlation between
-> the two is a deliverable, not an assumption.
+> channel, it is NOT the Jacobian lens. We explore the paper *indirectly* through
+> this skill, on Claude only — there is no measured lens; load-bearing readings are
+> corroborated with a counterfactual-sensitivity test (see `docs/APPROACH.md` §8),
+> and the authorities are Claude task accuracy + the protected guardrail.
 
 ## Absolute rules
 
@@ -72,9 +73,9 @@ Then a horizontal rule, then the normal oral-systemic analysis. Keep it compact.
 
 Run the candidate input (data structure + problem formulation + CoT + KB) through
 Claude with this probe active. If the target mediators are absent or faint, that
-is the signal to fix the format/context — the same decision the `controller` makes
-from the Qwen J-lens, but measured on Claude directly. Log the surfaced-mediator
-set per format for the correlation study against the measured J-lens.
+is the signal to fix the format/context — the decision the Lens Observer makes from
+this readout (`prompts/observer.md`). Log the surfaced-mediator set per format so the
+Observer can track which edit moved which mediator across turns.
 
 ## Turning off
 

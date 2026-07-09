@@ -19,16 +19,18 @@ Code agent format (frontmatter `name` / `description` / `tools`). See
 Flow: normalize -> (periodontal ‖ cardiometabolic) -> relate -> hypotheses ->
 verify -> assemble. The verifier can block; nothing failing the guardrail is emitted.
 
-## Dual-lens & offline (dev-time / in-loop)
+## Inferred-lens Observer loop (in-session / dev-time) — Claude only
 
 | File | Role |
 |---|---|
-| `claude-workspace-probe.md` | Fast in-loop self-report ON CLAUDE (real target, no GPU); surfaces mediators per format. Not a measurement |
-| `jlens-diagnostic.md` | Measured Jacobian-lens harness on the Qwen proxy (ground truth, causal); proposes format/KB edits |
-| `skillopt-optimizer.md` | Evolves trainable skills via bounded rollout->reflect->edit->gate |
+| `lens-observer.md` | **Secondary instance (Opus).** Analyzes the primary's inferred-lens readout, diagnoses deficiencies, curates the Session Working-Consciousness, drives bounded gated evolution of five surfaces + injects prompts |
+| `claude-workspace-probe.md` | The inferred-lens readout source ON CLAUDE (real target, no GPU); surfaces mediators per format. Self-report, not a measurement |
+| `skillopt-optimizer.md` | **T1 promotion tier.** Evolves the five surfaces (prompts/skills/KB/sub-agent defs+variables/harness code) via bounded rollout->reflect->edit->gate |
 
-The probe and the measured lens are the two instruments of the dual-lens loop; see
-[`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
+The method is in [`../docs/APPROACH.md`](../docs/APPROACH.md) (canonical) and
+[`../docs/REFORMULATION.md`](../docs/REFORMULATION.md) (delta + workplan). **Claude
+only** — no proxy, no Colab, no measured lens; the paper is explored indirectly via the
+self-report skill, corroborated with counterfactual-sensitivity on Claude.
 
 ## Skill ↔ subagent map
 

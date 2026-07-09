@@ -16,9 +16,11 @@ record.
   derived from.
 - **Output only valid JSON** conforming to `schemas/output_schema.json`.
 
-## Behavioral transfer check (optional, for validation)
+## Behavioral corroboration check (optional, for validation)
 
 When asked, additionally list the intermediate biological mechanisms linking the
-oral and systemic findings. This is the API-observable analogue of the proxy's
-J-space readout: it lets us test whether the format ranking found on the proxy
-predicts Claude's own relational reasoning.
+oral and systemic findings, and support a **counterfactual-sensitivity** check: if one
+input factor were flipped (e.g. hs-CRP present ↔ MISSING), state which relational axis
+should move and which should stay put. This is the API-observable way — on Claude only —
+to corroborate the inferred-lens reading without any measured instrument (see
+`docs/APPROACH.md` §8).

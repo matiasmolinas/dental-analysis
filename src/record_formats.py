@@ -1,12 +1,15 @@
 """One synthetic combined medical + periodontal record, rendered in three
 candidate input formats.
 
-The three formats isolate the levers we optimize:
+The formats isolate the levers we optimize (A–E below):
   A  abbreviated table, dental-first, no glossing of clinical terms
   B  named sections + glossed terms, medical-first
   C  narrative prose with an explicit mechanistic knowledge-base bridge
+  D  structured JSON, no narrative, no KB
+  E  JSON + KB + interpretability constraints
 
-Hypothesis: C >= B >> A in the workspace rank of the mediator concepts.
+Hypothesis: E >= C >= B >> A in whether the mediator concepts surface in the primary's
+inferred-lens readout (self-report on Claude, not a measurement).
 
 Data grounding: values are chosen to be consistent with real NHANES 2009-2010
 distributions (the cycle that pairs the full-mouth periodontal exam with CRP);
@@ -139,6 +142,3 @@ FORMATS = {
     "D_structured_json": format_d_structured_json,
     "E_json_kb_constraints": format_e_json_kb_constraints,
 }
-
-# Key patient values used by the capacity probe (single-token-friendly surfaces).
-DATA_ITEMS = ["58", "20", "8.1", "155", "38", "210", "140", "62", "5.2", "4.8"]

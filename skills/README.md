@@ -13,12 +13,16 @@ auditable, imperative discipline — so it can be evolved by the `skillopt-optim
 | `cardiometabolic-framing.md` | Non-diagnostic CV/metabolic pathway framing | Yes |
 | `oral-systemic-kb.md` | Retrievable mediator-mechanism knowledge base | Reference (context) |
 | `traceability-audit.md` | Verify every claim cites input fields | Yes |
-| `claude-workspace-probe.md` | Runtime-native self-report of surfaced mediators on Claude (dual-lens inner loop) | No (instrument) |
+| `claude-workspace-probe.md` | Inferred-lens readout source on Claude (self-report; the live signal) | No (instrument) |
+| `lens-deficiency-analysis.md` | Observer instrument: readout → deficiency map + bounded gated edits across five surfaces | No (instrument) |
+| `session-working-consciousness.md` | Observer instrument: the cumulative in-session ledger + prompt injection | No (instrument) |
+| `harness-evolution.md` | Observer instrument: lens-driven code evolution + prompt-vs-code boundary + test-before-use | No (instrument) |
 | `non-diagnostic-guardrail.md` | **PROTECTED INVARIANT** — never evolved; part of the gate | No |
 
 `claude-workspace-probe` is inspired by the `j-space-lens` skill in
 `Doriandarko/skirano-skills` (referenced, not vendored — no license). It is
-uninstrumented self-report, **not a measurement**; see [`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
+uninstrumented self-report, **not a measurement** — the only lens signal, on Claude
+only; see [`../docs/APPROACH.md`](../docs/APPROACH.md).
 
 ## Evolution gate
 

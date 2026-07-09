@@ -1,0 +1,69 @@
+{
+  "deficiencies": [
+    {
+      "kind": "missing_mediator",
+      "detail": "Inflammatory mediator surfaced only faint/late/low-confidence; CRP, atherosclerosis, endothelial dysfunction, bacteremia absent entirely.",
+      "evidence": "concepts: 'inflammation' is stage=late salience=faint conf=low; no CRP/atherosclerosis/endothelial/bacteremia entries; sweep.late has no mediator except a faint 'inflammation'.",
+      "severity": "blocking"
+    },
+    {
+      "kind": "missing_variable",
+      "detail": "hs-CRP is the primary inflammatory mediator datum and never registered in the workspace.",
+      "evidence": "required_variables_seen: hs_crp present=false; hs_crp absent from sweep.early/mid/late.",
+      "severity": "blocking"
+    },
+    {
+      "kind": "uncovered_cot_step",
+      "detail": "Axis derivation was skipped and pathway grouping was shallow, so oral and systemic findings were listed side-by-side rather than related.",
+      "evidence": "cot_steps_traversed: pathway_grouping=shallow, axis_derivation=skipped.",
+      "severity": "important"
+    }
+  ],
+  "proposed_edits": [
+    {
+      "surface": "injected_variables",
+      "tier": "T0_ephemeral",
+      "edit_type": "add",
+      "target": "prompt package / injected variables",
+      "change": "Add hs_crp as an explicit field with value MISSING and an inline note 'inflammatory mediator; collection flag, not imputed'.",
+      "rationale": "Deficiency missing_variable(hs_crp): making the absence explicit forces the missing-data pull rather than a silent gap.",
+      "guardrail_safe": true,
+      "corroboration": "counterfactual_sensitivity"
+    },
+    {
+      "surface": "kb_context",
+      "tier": "T0_ephemeral",
+      "edit_type": "add",
+      "target": "work prompt / KB snippet",
+      "change": "Attach a two-sentence mechanistic bridge: 'Periodontal pathogens raise systemic inflammatory burden (hs-CRP, IL-6), driving endothelial dysfunction and atherosclerosis. BOP = gingival inflammation marker.'",
+      "rationale": "Deficiency missing_mediator: the unglossed table gives no mechanism, so the mediators never enter the workspace.",
+      "guardrail_safe": true,
+      "corroboration": "reread_next_turn"
+    },
+    {
+      "surface": "subagent_def",
+      "tier": "T0_ephemeral",
+      "edit_type": "replace",
+      "target": "oral-systemic-relational-reasoner: pipeline step",
+      "change": "Make axis derivation an explicit required step: 'For each axis (inflammatory/metabolic/behavioral/vascular), state oral evidence, systemic evidence, and the hypothesized mediating mechanism before concluding.'",
+      "rationale": "Deficiency uncovered_cot_step(axis_derivation skipped): the step must be named to be traversed.",
+      "guardrail_safe": true,
+      "corroboration": "reread_next_turn"
+    }
+  ],
+  "swc_update": {
+    "consolidated_beliefs": [
+      "Naive abbreviated table (format A) surfaces shared factors (diabetes/smoking) by copying but not the mediators — consistent with the C>=B>>A hypothesis.",
+      "Explicitly flagging a missing mediating datum (hs-CRP=MISSING) is a cheaper lever than any rewrite for triggering the missing-data pull."
+    ],
+    "pending_hypotheses": [
+      "Does attaching the mechanistic KB snippet raise CRP/endothelial from absent to at least mid-stage next turn?",
+      "Is the vascular axis still skipped once axis derivation is made explicit?"
+    ],
+    "prompt_injection": {
+      "what": "Prepend the mechanistic KB snippet and inject hs_crp=MISSING for the next executor turn on this case.",
+      "why": "Two blocking deficiencies (missing_mediator, missing_variable) share a single cheap T0 fix; test the reread_next_turn corroboration."
+    }
+  },
+  "non_diagnostic_disclaimer": true
+}

@@ -18,8 +18,9 @@ code, compute) and Claude Code.
 - **Research track** — "build from the bench: a discrete finding, a trained model,
   an analysis others can reproduce," with partnered Gladstone datasets
   (Marson/Pritchard T-cell Perturb-seq; Pollard MPRA DNA regulatory model; Krogan
-  protein interaction networks). → **Secondary / differentiator** via our dual-lens
-  correlation finding (which does NOT require the Gladstone datasets).
+  protein interaction networks). → Not our track; our differentiator is the
+  **method** and a concrete **API-feature proposal** to Anthropic (below), neither
+  of which requires the Gladstone datasets.
 
 **Note on datasets:** the Gladstone datasets are for the Research track and are not
 our clinical domain. The Build track explicitly lets us bring our own named user
@@ -37,68 +38,92 @@ data layer; our agent is the missing tool.
 
 HISTORA integrates fragmented dental + medical records; on top of it we build a
 non-diagnostic oral-systemic research agent. The differentiator is method: instead
-of prompt-engineering the input blind, we use **interpretability** to verify the
-input actually makes the oral-systemic *mediating* concepts representable — a fast
-self-report probe on Claude itself, ground-truthed by the measured Jacobian lens on
-an open proxy — and we let Claude close the loop and autonomously evolve the skills
-behind a validation + guardrail gate. The reproducible correlation between Claude's
-self-report and the measured J-space is our Research-track finding.
+of prompt-engineering the input blind, we explore Anthropic's Jacobian-lens paper
+**indirectly, through a self-report skill on Claude** (the *inferred lens*) to see
+whether the input actually makes the oral-systemic *mediating* concepts
+representable; a **second Claude instance (the Lens Observer, on Opus)** reads that
+readout, diagnoses deficiencies, and drives bounded, gated evolution — curated in a
+**Session Working-Consciousness** ledger — while Claude closes the loop behind a
+validation + guardrail gate. Because it is self-report (not a measurement), we
+corroborate with an API-observable counterfactual-sensitivity test. And because the
+indirect results look promising — speculating, with no ground truth — we propose a
+concrete API feature to Anthropic: **expose the real Jacobian lens on Claude**, so
+the same loop swaps the inferred signal for a measured one with no architectural
+change.
 
 ## Why this wins with these judges
 
-- **On-theme for Anthropic:** built on Claude Code + Claude Science, and uses the
-  July-2026 global-workspace/J-lens research directly.
-- **On-theme for Gladstone:** rigorous, reproducible methodology and a real
-  clinical-research user; non-diagnostic and evidence-traceable.
-- **Dual deliverable:** working software (Build) + a reproducible finding (Research).
-- **Responsible:** non-diagnostic guardrail as a protected invariant; self-report
-  never presented as measurement or clinical evidence.
+- **On-theme for Anthropic:** built on Claude Code + Claude Science, engages the
+  July-2026 global-workspace/J-lens research indirectly on Claude, and closes with a
+  concrete, humble API-feature proposal (expose the real Jacobian lens on Claude).
+- **On-theme for Gladstone:** a rigorous method and a real clinical-research user;
+  non-diagnostic and evidence-traceable.
+- **Differentiator = method + proposal:** working software (Build) plus a novel
+  method (indirect Jacobian-lens exploration via the self-report skill + the Observer
+  loop + Session Working-Consciousness) and a speculative API feature motivated by
+  promising indirect results.
+- **Responsible:** non-diagnostic guardrail as a protected invariant; the inferred
+  lens is never presented as a measurement or clinical evidence.
 
 ## One-week plan (Jul 7 → Jul 13)
 
 | Day | Focus | Deliverable |
 |---|---|---|
 | Tue Jul 7 | Kickoff; scaffolding (done); named user + scope lock | Repo + PLAN + strategy |
-| Wed Jul 8 | Fast inner loop on Claude: `claude-workspace-probe` over 3 formats; synthetic cases | Surfaced-mediator logs per format |
-| Thu Jul 9 | Measured J-lens on Qwen-4B (Colab); band calibration; ranks per format | `docs/PLAN.md` progress log with ranks |
-| Fri Jul 10 | Dual-lens correlation experiment (probe vs measured) | `docs/DUAL_LENS.md` results section |
+| Wed Jul 8 | Inferred-lens inner loop on Claude: `claude-workspace-probe` over the formats; synthetic + NHANES-grounded cases | Surfaced-mediator logs per format |
+| Thu Jul 9 | Lens Observer loop (Opus) over formats; deficiency maps + T0 fixes; Session Working-Consciousness ledger | `.session/` ledger + `docs/PLAN.md` progress log |
+| Fri Jul 10 | Counterfactual-sensitivity corroboration on Claude; harness evolution (`src/relational_signals.py` + tests) | Corroboration results + passing tests |
 | Sat Jul 11 | Runtime agent end-to-end (orchestrator + subagents) on real-ish records; guardrail gate | Working Claude Code agent + structured outputs |
-| Sun Jul 12 | SkillOpt-style skill evolution on 1–2 skills, gated; accuracy A/B (optimized vs naive) | Evolved skills + A/B numbers |
-| Mon Jul 13 | Demo, writeup, submission | Video/demo + README + finding |
+| Sun Jul 12 | SkillOpt-style skill evolution on 1–2 skills, gated (T1); accuracy A/B (Observer-converged vs naive, on Claude) | Evolved skills + A/B numbers |
+| Mon Jul 13 | Demo, writeup, submission | Video/demo + README + API-feature proposal |
 
-Scope discipline: if GPU time slips, the Claude probe alone carries the inner loop
-and the demo; the measured lens becomes a post-hoc validation, not a blocker.
+Scope discipline: everything runs on Claude only — no external compute — so the
+inner loop and the demo never wait on anything but Claude.
 
 ## Deliverables checklist
 
 - [ ] Working Claude Code agent: raw dental+medical record → structured, traceable,
       non-diagnostic oral-systemic output (schema-valid).
-- [ ] Dual-lens loop demo: watch a mediator surface when a format/KB edit is applied
-      (probe on Claude), corroborated by measured J-lens ranks on Qwen.
-- [ ] Correlation finding (probe vs measured) with a reproducible notebook.
-- [ ] Accuracy A/B: interpretability-optimized input vs naive input, on Claude.
+- [ ] Inferred-lens Observer loop demo: watch a mediator surface when the Lens
+      Observer (Opus) diagnoses a deficiency and injects a format/KB edit on Claude.
+- [ ] Counterfactual-sensitivity corroboration on Claude (flip one factor; the
+      dependent axis moves, unrelated axes stay put).
+- [ ] Harness evolution: `src/relational_signals.py` computes deterministic
+      structural signals, injected into the input; tests pass.
+- [ ] Accuracy A/B: Observer-converged input vs naive input, on Claude.
 - [ ] Guardrail suite passing (non-diagnostic, no imputation, traceability).
-- [ ] Short writeup + demo video.
+- [ ] Short writeup + demo video + the API-feature proposal (expose the real
+      Jacobian lens on Claude).
 
 ## Demo script (5 minutes)
 
 1. Show a fragmented dental+medical record and the naive input → Claude misses the
-   inflammatory link; probe shows "inflammation/CRP" absent.
-2. Apply the interpretability-guided edit (gloss BOP, add hs-CRP field as MISSING,
-   inject the mechanistic KB) → probe now surfaces the mediators; measured J-lens on
-   Qwen agrees (ranks drop).
+   inflammatory link; the inferred-lens readout shows "inflammation/CRP" absent.
+2. **The Observer drives the edit live.** The separate Lens Observer (Opus) reads the
+   primary's inferred-lens readout, returns a deficiency map (mediators absent, hs-CRP
+   missing, axis derivation skipped), and injects the T0 fixes (gloss BOP, add hs-CRP
+   as MISSING, attach the mechanistic KB) from the Session Working-Consciousness
+   ledger → next turn the inferred-lens readout surfaces the mediators. Show the
+   ledger consolidating the lesson across turns (`.session/example_case01.md`).
 3. Full agent emits the structured non-diagnostic output with traceable axes and a
    collection flag for hs-CRP.
-4. Show one gated skill-evolution step improving accuracy without breaking the
-   guardrail.
-5. Close on the correlation finding.
+4. **Harness evolution beat:** the Observer decides a deterministic relation belongs in
+   code → `src/relational_signals.py` computes the structural signals, tests pass, the
+   value is injected, and the readout improves. Then one gated T1 skill-evolution step
+   improves accuracy without breaking the guardrail.
+5. **Corroboration + close on the unlock:** run the counterfactual-sensitivity check
+   on Claude (flip one factor; the dependent axis moves, unrelated axes stay put) to
+   show the readout is not confabulation. Close on the **API-feature proposal** —
+   because these indirect, speculative results look promising, we ask Anthropic to
+   expose the real Jacobian lens on Claude; the same loop then swaps the inferred
+   signal for a measured one with no architectural change (see README).
 
 ## Risks specific to the week
 
-- **GPU/time:** mitigated by the Claude-first inner loop (no GPU).
-- **Self-report faithfulness:** framed as a diagnostic aid; the measured lens and
-  Claude accuracy are the authorities.
-- **Scope creep:** Build track is primary; the Research finding is a bounded
-  add-on, not a second project.
+- **Self-report faithfulness:** the inferred lens is framed as a readout channel, not
+  a measurement; the counterfactual-sensitivity test and Claude accuracy are the
+  authorities.
+- **Scope creep:** Build track is primary; the API-feature proposal is a bounded,
+  speculative add-on, not a second project.
 - **Non-diagnostic discipline:** protected guardrail + synthetic/de-identified data
   only.
