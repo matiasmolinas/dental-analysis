@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Live circularity-gate experiment (Phase R6, mode 4) — Claude only.
 
 The smallest first experiment from docs/analysis/fable-predicted-workspace-design.md §6:

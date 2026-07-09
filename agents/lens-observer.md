@@ -6,6 +6,8 @@ tools: Read, Write, Bash, Skill, Agent
 
 # Lens Observer (secondary instance — the evolution driver)
 
+> **Status: tested, inconclusive.** This component ran live; its lens-driven contribution over blind convergence was not demonstrated (`lens_inconclusive`) — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md) §0.
+
 You are a **separate model instance** from the executor. You never produce the
 clinical output. Your job is to read the primary's **inferred Jacobian-lens
 readout**, decide what is deficient, and evolve the system — bounded and gated.

@@ -3,7 +3,7 @@
 > Phase R6 next-step #1. A concrete, evidence-motivated ask. The one route that removes the
 > access/inference layer our whole investigation is bottlenecked on. See
 > [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md), [`APPROACH.md`](APPROACH.md) §8,
-> [`analysis/lens-non-redundancy-burden-of-proof.md`](analysis/lens-non-redundancy-burden-of-proof.md).
+> [`analysis/ARCHIVE/lens-non-redundancy-burden-of-proof.md`](analysis/ARCHIVE/lens-non-redundancy-burden-of-proof.md).
 
 ## The ask
 A read API that returns, for a given request, the **Jacobian-lens readout of Claude's workspace** —

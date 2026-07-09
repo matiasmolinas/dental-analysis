@@ -1,3 +1,4 @@
+# EXTERNAL / scaffold — not run in the Claude-only pipeline; speculative (see docs/RESEARCH_SUMMARY.md)
 """Learned coordinator scaffold (Phase R6 next-step #6) — Trinity/Conductor-style, offline.
 
 The mechanism/burden-of-proof analyses concluded the bottleneck is a HAND-DESIGNED actuator, and that

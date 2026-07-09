@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Live counterfactual-sensitivity run on Claude (Phase R6 v2).
 
 Tests whether the converged input (B = ab_eval.build_inputs) makes the model actually

@@ -1,5 +1,7 @@
 # Where This Generates Large Impact — a priori
 
+> **Read as a hypothesis-scoring tool, not a result.** This rubric predicts *where* the method could pay off. The one instance we actually ran (dental oral-systemic, scored 15/16 in §7) did **not** demonstrate a payoff — a high a-priori score ≠ a demonstrated gain (see [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0).
+
 > **The particular case for the method.** [`APPROACH.md`](APPROACH.md) describes *what*
 > the inferred-lens Observer + Session Working-Consciousness architecture is. This
 > document answers *when it is worth it* — which problem characteristics predict a

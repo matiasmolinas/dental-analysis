@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Behavioral validation of the gate's non-redundant surface (Phase R6, mode 4, step 4).
 
 The gate showed the predictor surfaces a NON-EMPTY non-redundant surface P\\(O∪C) (7 items). But

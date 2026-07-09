@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Live Session Working-Consciousness session (Phase R6 next-step #4) — Claude only.
 
 The SWC thesis (a turn-1 deficiency measurably improves turn-2, and the lesson persists) has never

@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Live A/B run on Claude with real NHANES cases (Phase R5).
 
 Wires the model-agnostic harness in `ab_eval.py` to (1) a real Claude call and (2) real

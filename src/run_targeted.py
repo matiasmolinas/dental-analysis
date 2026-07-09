@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Targeted actuator on a non-obvious-gap task (Phase R6, next-step #2) — Claude only.
 
 The behavioral test (`run_gate_behavioral`) grounded ALL surfaced gaps as one checklist and it HURT

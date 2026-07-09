@@ -1,99 +1,73 @@
 # dental-analysis — HISTORA Oral-Systemic Intelligence Agent
 
-Interpretability-guided optimization of the input format, context, and knowledge
-base for a **non-diagnostic** research agent that relates periodontal data
-(probing, bleeding, bone loss, treatments, radiographs) to medical /
-cardiovascular data (hypertension, diabetes, lipids, smoking, medications, CV
-history) and surfaces oral-systemic risk profiles and research hypotheses.
+> **What this is (honest, post-investigation).** An **apparatus and a rigorous negative.**
+> We built a Claude-only system to ask whether reading a model's internal *workspace* helps
+> optimize its inputs — an inferred-lens Observer loop, five-surface evolution, a
+> session-consciousness ledger, a guardrail-protected gate — and a tested experimental
+> apparatus (A/B with bootstrap CIs, an ablation, a counterfactual-sensitivity test), run
+> live on real NHANES cases. The finding: the workspace signal is genuinely **non-redundant
+> with the output**, but **no actuator we built turns it into an outcome gain over a strong
+> blind baseline** on this task. The one clean, repeated win — reliable missing-data flagging
+> (0.00→1.00, 6/6) — is a **deterministic directive, not the lens.** Canonical conclusions:
+> [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) and [`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md).
 
-## The problem we solve
+A **non-diagnostic** research agent that relates periodontal data (probing, bleeding, bone
+loss, treatments, radiographs) to medical / cardiovascular data (hypertension, diabetes,
+lipids, smoking, medications, CV history) and surfaces oral-systemic risk profiles and
+research hypotheses — used as the domain instance for the methodology above.
 
-Medical and dental records live in separate silos, and the periodontal <->
-cardiovascular link runs through *hidden mediators* (inflammation, C-reactive
-protein, atherosclerosis, endothelial dysfunction, bacteremia) that no single
-record makes explicit. HISTORA supplies the missing data layer that integrates
-oral and systemic records. The open question this project answers is:
+## What works (the validated pieces)
 
-> Given integrated oral + systemic data, **we do not know a priori the best way to
-> present, formulate, and contextualize it** so that a model actually represents
-> the true oral-systemic relationships — which values to complete, which input
-> format to use, and which knowledge to inject.
+- **Deterministic missing-data flagging → guardrail reliability.** `missing_data_flagged`
+  and `guardrail_pass` go **0.00 → 1.00 (6/6)** on real NHANES cases — the single clean,
+  repeated win. It comes from a **hardcoded data-completeness directive**
+  (`src/relational_signals.py`, `src/ab_eval.py`), *not* the lens: free-form convergers handed
+  the same directive fell back to 0.00.
+- **The protected non-diagnostic invariant.** Never evolved; part of every gate; enforced at
+  *write time* where it could leak cross-patient (`src/lever_ledger.py` rejects any numeric
+  patient value). Held across every experiment.
+- **The honest experimental apparatus** — `src/ab_eval.py`, `src/ablation.py` (bootstrap CIs),
+  `src/counterfactual.py`. Domain-general, 44 tests green; it is what produced a rigorous
+  `lens_inconclusive` instead of a false positive.
 
-We answer it with interpretability instead of guesswork, and turn the answer into
-a self-improving, **non-diagnostic** research agent.
+## What was tried and is inconclusive
 
-## How it works (the loop)
+The **Observer-lens loop** (below) ran as software, but its lens-driven contribution over
+*blind* convergence was **not demonstrated** (`lens_inconclusive`; the whole gain was blind
+prompt engineering). The Session Working-Consciousness ran live once (n=1); cross-session
+memory and targeted injection show a small, single-case signal without demonstrated payoff.
+Details + the one number for each: [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) §2,
+[`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md).
 
-Full method in [`docs/APPROACH.md`](docs/APPROACH.md). A **second model instance — the
-Lens Observer** (`agents/lens-observer.md`, Opus) reads the **inferred Jacobian lens**
-of the primary model — the workspace self-report the primary emits while it processes
-a prompt (`claude-workspace-probe` → `schemas/lens_readout_schema.json`) — and drives
-the loop:
+**The loop (tested, inconclusive).** A second model instance — the **Lens Observer**
+(`agents/lens-observer.md`) — reads the primary's **inferred Jacobian-lens** self-report
+(`claude-workspace-probe` → `schemas/lens_readout_schema.json`), diagnoses deficiencies
+(`schemas/deficiency_map_schema.json`), and drives bounded, gated edits across five surfaces
+(work prompt, skill, KB, sub-agent def + injected variables, **harness code**), curating a
+Session Working-Consciousness ledger. Claude only — no proxy, no GPU, no measured lens; the
+inferred lens is **self-report, never a measurement or clinical evidence**, corroborated by
+counterfactual-sensitivity flips. The final authority is task accuracy + the protected
+guardrail, never the readout score. Full method: [`docs/APPROACH.md`](docs/APPROACH.md).
 
-1. **Run** the task on the Executor with the inferred-lens readout active; emit the
-   output **plus** the readout.
-2. **Diagnose** — the Observer compares the readout to the spec (required mediators,
-   variables, procedure steps) and returns a typed deficiency map
-   (`schemas/deficiency_map_schema.json`): missing/incorrect variables, uncovered
-   chain-of-thought steps, unrepresented mediators, under-specified framing.
-3. **Evolve** — route each deficiency to the cheapest of five surfaces (work prompt,
-   skill, KB context, sub-agent def + injected variables, **harness code**) as a
-   bounded, readout-grounded edit. Values to complete become **collection flags, never
-   imputed**.
-4. **Consolidate + inject** — update the cumulative **Session Working-Consciousness**
-   ledger and, from it, inject/modify the next prompt. Lessons compound across turns.
-5. **Gate** — T0 edits are ephemeral (in-session); durable T1 edits are gated by
-   Claude held-out accuracy + the protected non-diagnostic guardrail + tests + human
-   approval. The final authority is task accuracy + guardrail, never the readout score.
+## The measured-lens API feature (the forward claim)
 
-**Claude only.** This project runs entirely on Claude — there is no proxy model, no GPU,
-and no measured lens. We explore the Jacobian-lens paper *indirectly*, through the
-self-report **skill**. Because the readout is self-report, the Observer corroborates
-load-bearing claims with an API-observable behavioral test — **counterfactual
-sensitivity** (flip one input factor; the dependent axis should move, unrelated axes
-should not) — so the loop stays grounded on Claude alone.
+The evidence-motivated ask — and the one route that removes the access layer everything is
+bottlenecked on: **expose the real Jacobian lens on Claude through the Anthropic API.** This
+repo is the **consumer built and waiting for it** — swapping the inferred signal for a
+measured one is a signal-source change with no redesign (`schemas/lens_readout_schema.json`
+is the contract). This is a *forward claim*, not a finding. See
+[`docs/API_FEATURE_REQUEST.md`](docs/API_FEATURE_REQUEST.md).
 
-**Epistemic status:** the inferred lens is self-report exercised as a readout channel —
-directional, never a measurement and never clinical evidence; task accuracy on Claude
-plus the protected guardrail are the authorities.
-
-**Docs:** [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) (**executive summary of the
-whole research arc** — every hypothesis answered + prioritized next steps),
-[`docs/APPROACH.md`](docs/APPROACH.md) (**the canonical, domain-general
-description of the method** — inferred-lens Observer + Session Working-Consciousness),
-[`docs/IMPACT.md`](docs/IMPACT.md) (where/when the approach generates large impact a
-priori — predictors, archetypes, and a scoring rubric),
-[`docs/REFORMULATION.md`](docs/REFORMULATION.md) (the delta from the earlier baseline +
-the R0–R6 workplan), [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status,
-decisions), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md)
-(Built with Claude: Life Sciences — tracks, named user, one-week plan, demo, judging),
-[`docs/DATASETS.md`](docs/DATASETS.md) (NHANES 2009–2010 real anchor + Synthea
-longitudinal; schema mapping and access).
-
-## Exploring the Jacobian lens indirectly (and the API feature we're proposing)
-
-We explore Anthropic's Jacobian-lens paper **indirectly, through the self-report
-skill** — never an instrumented lens, never a proxy model, only Claude. The primary
-emits a workspace self-report (`claude-workspace-probe` →
-`schemas/lens_readout_schema.json`); the Lens Observer analyzes that readout of the
-*primary* model, diagnoses deficiencies (missing/incorrect input variables, uncovered
-chain-of-thought steps, unrepresented mediators), and drives bounded, gated evolution
-of five surfaces — work prompts, skills, KB context, sub-agent definitions + injected
-variables, and **harness code** — while curating the **Session Working-Consciousness**
-ledger it injects prompts from. This is an honest limit: the inferred lens is
-**self-report exercised as a readout channel — never a measurement and never clinical
-evidence** (we corroborate load-bearing claims with counterfactual-sensitivity flips).
-
-> **The feature we're proposing to Anthropic.** Exploring the paper this indirectly,
-> the results — and we are frankly **speculating**, since we have no ground truth — look
-> **very promising**: the Observer can localize *which* concept or variable a prompt
-> failed to make representable, and act on it. That makes one API feature obviously
-> desirable: **expose the real Jacobian lens on Claude through the Anthropic API.** If
-> it existed, this exact architecture would swap the inferred signal for a **measured**
-> one with **no change to the loop** — turning directional hypotheses into causal ground
-> truth, enabling representation swaps, and letting the Observer optimize against the
-> model's true internal workspace. That is where this would reach its real power; we
-> raise it as a feature request precisely because the indirect results are encouraging.
+**Docs:** [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) (**canonical** — the whole
+arc, every hypothesis answered + next steps), [`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md)
+(what worked / was inconclusive / failed), [`docs/APPROACH.md`](docs/APPROACH.md) (the method,
+domain-general), [`docs/API_FEATURE_REQUEST.md`](docs/API_FEATURE_REQUEST.md) (the ask),
+[`docs/AB_PROTOCOL.md`](docs/AB_PROTOCOL.md) (the apparatus),
+[`docs/DATASETS.md`](docs/DATASETS.md) (NHANES + Synthea). Historical / hypothesis-status:
+[`docs/REFORMULATION.md`](docs/REFORMULATION.md), [`docs/PLAN.md`](docs/PLAN.md),
+[`docs/IMPACT.md`](docs/IMPACT.md), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md).
+The full research trail is archived under
+[`docs/analysis/ARCHIVE/`](docs/analysis/ARCHIVE/README.md).
 
 ## Layout
 

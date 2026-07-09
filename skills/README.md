@@ -1,5 +1,9 @@
 # Skills
 
+> **Status:** the lens-evolution loop these skills feed was tested and came out
+> **inconclusive** over blind convergence — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md)
+> §0. The `non-diagnostic-guardrail` (protected invariant) and the runtime clinical skills stand.
+
 Reusable capability documents (Claude Code skill format: frontmatter + procedural
 body). The body of each trainable skill is a SkillOpt-style artifact — compact,
 auditable, imperative discipline — so it can be evolved by the `skillopt-optimizer`
