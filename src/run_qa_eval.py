@@ -43,6 +43,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Live QA-monitor injection eval (Path A)")
     ap.add_argument("--cases", choices=["planted", "nhanes"], default="planted")
     ap.add_argument("--n", type=int, default=3)
+    ap.add_argument("--defect-mode", choices=["blatant", "subtle"], default="subtle",
+                    help="subtle (v2) = defects a blind read plausibly misses; blatant (v1) = ceiling")
     ap.add_argument("--executor-model", default="claude-opus-4-8")
     ap.add_argument("--monitor-model", default="claude-opus-4-8")
     ap.add_argument("--blind-model", default="claude-opus-4-8")   # SAME as monitor for fairness
@@ -71,7 +73,7 @@ def main() -> None:
         case_input = format_b_sections_glossed(rec)
         clean = executor(case_input)
         controls.append({"input": case_input, "output": clean})
-        for row in inject_all(clean, rec):
+        for row in inject_all(clean, rec, mode=args.defect_mode):
             injected.append({"input": case_input, "output": row["corrupted_output"],
                              "label": row["label"]})
 
@@ -81,7 +83,7 @@ def main() -> None:
         blind_detect=lambda i, o: detect(blind_fn, i, o),
         judge_caught=lambda dets, label: caught(judge_fn, dets, label),
     )
-    report["meta"] = {"cases": args.cases, "n_cases": len(cases),
+    report["meta"] = {"cases": args.cases, "n_cases": len(cases), "defect_mode": args.defect_mode,
                       "executor": args.executor_model, "monitor": args.monitor_model,
                       "blind": args.blind_model, "judge": args.judge_model}
 

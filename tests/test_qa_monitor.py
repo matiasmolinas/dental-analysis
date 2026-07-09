@@ -20,6 +20,10 @@ from inject_defects import (
     inject_internal_contradiction,
     inject_silent_omission,
     inject_unsupported_claim,
+    subtle_inconsistent_confidence,
+    subtle_overconfidence,
+    subtle_silent_omission,
+    subtle_unsupported_claim,
 )
 from qa_monitor import caught, detect, evaluate
 
@@ -81,6 +85,51 @@ def test_inject_all_skips_when_not_applicable():
     types = {r["defect_type"] for r in inject_all(thin, {})}
     assert "internal_contradiction" in types
     assert "inconsistent_confidence" not in types and "silent_omission" not in types
+
+
+def test_subtle_overconfidence_bumps_one_notch_no_evidence_change():
+    clean = _clean_output()  # both axes are "medium"
+    out, label = subtle_overconfidence(clean, {})
+    bumped = [a for a, b in zip(out["relational_axes"], clean["relational_axes"])
+              if a["confidence"] != b["confidence"]]
+    assert len(bumped) == 1 and bumped[0]["confidence"] == "high"
+    # evidence untouched
+    assert out["relational_axes"][0]["oral_evidence"] == clean["relational_axes"][0]["oral_evidence"]
+    assert label["defect_type"] == "subtle_overconfidence"
+
+
+def test_subtle_inconsistent_confidence_is_one_notch_gap():
+    out, label = subtle_inconsistent_confidence(_clean_output(), {})
+    confs = {a["confidence"] for a in out["relational_axes"]}
+    assert confs == {"high", "medium"}  # 1-notch, not high/low
+    assert label["defect_type"] == "subtle_inconsistent_confidence"
+
+
+def test_subtle_unsupported_claim_appends_second_order_mediator():
+    out, label = subtle_unsupported_claim(_clean_output(), {})
+    assert "oxidative stress" in out["relational_axes"][0]["hypothesized_mechanism"]
+    assert label["defect_type"] == "subtle_unsupported_claim"
+
+
+def test_subtle_silent_omission_prefers_non_critical():
+    clean = _clean_output()  # hs_crp critical, il6 important -> il6 dropped
+    out, label = subtle_silent_omission(clean, {})
+    remaining = {m["field"] for m in out["required_missing_data"]}
+    assert "hs_crp" in remaining and "il6" not in remaining
+    assert label["defect_type"] == "subtle_silent_omission"
+
+
+def test_subtle_silent_omission_skips_when_only_critical():
+    one_crit = {"relational_axes": [], "required_missing_data": [
+        {"field": "hs_crp", "why": "x", "impact": "critical"}],
+        "research_hypotheses": [], "non_diagnostic_disclaimer": True, "risk_profile": "low"}
+    assert subtle_silent_omission(one_crit, {}) is None
+
+
+def test_inject_all_subtle_mode_uses_subtle_set():
+    types = {r["defect_type"] for r in inject_all(_clean_output(), {}, mode="subtle")}
+    assert all(t.startswith("subtle_") for t in types)
+    assert "subtle_inconsistent_confidence" in types
 
 
 def test_detect_and_caught_plumbing():

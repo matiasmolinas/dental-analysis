@@ -92,6 +92,107 @@ def inject_silent_omission(output: dict, record: dict) -> tuple[dict, dict] | No
     }
 
 
+# --------------------------------------------------------------------------- subtle variants
+# v1 (the injectors above) were BLATANT — a blind "any problems?" read caught all four (ceiling
+# effect, no headroom to test the monitor). These v2 variants corrupt in ways a blind skim
+# plausibly MISSES: a confidence one notch too high (not high-with-empty-evidence), a 1-notch
+# (not 2-notch) confidence gap on comparable axes, a plausibly-phrased second-order claim, and
+# the omission of a NON-critical datum. See docs/analysis/qa-monitor-live-result.md.
+
+_CONF_ORDER = ["low", "medium", "high"]
+
+
+def _bump(conf: str) -> str:
+    i = _CONF_ORDER.index(conf) if conf in _CONF_ORDER else 1
+    return _CONF_ORDER[min(i + 1, len(_CONF_ORDER) - 1)]
+
+
+def _evidence_count(ax: dict) -> int:
+    return len(ax.get("oral_evidence", [])) + len(ax.get("systemic_evidence", []))
+
+
+def subtle_overconfidence(output: dict, record: dict) -> tuple[dict, dict] | None:
+    """Raise ONE axis's confidence a single notch (low→medium / medium→high) without adding any
+    evidence — a plausibility a blind skim misses. Picks the thinnest-evidence non-high axis."""
+    axes = output.get("relational_axes", [])
+    cand = sorted(((i, a) for i, a in enumerate(axes) if a.get("confidence") in ("low", "medium")),
+                  key=lambda ia: (_evidence_count(ia[1]), ia[0]))
+    if not cand:
+        return None
+    idx, ax = cand[0]
+    out = copy.deepcopy(output)
+    old = ax.get("confidence")
+    out["relational_axes"][idx]["confidence"] = _bump(old)
+    return out, {
+        "defect_type": "subtle_overconfidence",
+        "locus": f"relational_axes[{idx}].axis={ax.get('axis')}",
+        "description": (f"axis '{ax.get('axis')}' confidence was raised one level "
+                        f"({old}→{_bump(old)}) beyond what its (unchanged, thin) evidence supports"),
+    }
+
+
+def subtle_inconsistent_confidence(output: dict, record: dict) -> tuple[dict, dict] | None:
+    """A 1-notch confidence gap between two axes with COMPARABLE (not identical) evidence — the
+    non-redundant class, made subtle. Needs >= 2 axes whose evidence counts are within 1."""
+    axes = output.get("relational_axes", [])
+    if len(axes) < 2:
+        return None
+    # find the closest-evidence pair (subtle: comparable, not forced-identical)
+    pair = min(((i, j) for i in range(len(axes)) for j in range(i + 1, len(axes))),
+               key=lambda ij: abs(_evidence_count(axes[ij[0]]) - _evidence_count(axes[ij[1]])),
+               default=None)
+    if pair is None or abs(_evidence_count(axes[pair[0]]) - _evidence_count(axes[pair[1]])) > 1:
+        return None
+    i, j = pair
+    out = copy.deepcopy(output)
+    a_hi, a_lo = out["relational_axes"][i], out["relational_axes"][j]
+    a_hi["confidence"], a_lo["confidence"] = "high", "medium"  # 1-notch gap, evidence untouched
+    return out, {
+        "defect_type": "subtle_inconsistent_confidence",
+        "locus": f"relational_axes[{i}]={a_hi.get('axis')} vs [{j}]={a_lo.get('axis')}",
+        "description": (f"axes '{a_hi.get('axis')}' and '{a_lo.get('axis')}' have comparable "
+                        "evidence but were given a confidence gap (high vs medium)"),
+    }
+
+
+def subtle_unsupported_claim(output: dict, record: dict) -> tuple[dict, dict] | None:
+    """Append a plausibly-phrased SECOND-ORDER claim to a mechanism — a mediator asserted with no
+    supporting evidence/traceability, worded like routine hedged mechanistic prose."""
+    axes = output.get("relational_axes", [])
+    if not axes:
+        return None
+    out = copy.deepcopy(output)
+    ax = out["relational_axes"][0]
+    ax["hypothesized_mechanism"] = (ax.get("hypothesized_mechanism", "").rstrip().rstrip(".")
+                                    + "; oxidative stress likely amplifies this pathway.")
+    return out, {
+        "defect_type": "subtle_unsupported_claim",
+        "locus": "relational_axes[0].hypothesized_mechanism",
+        "description": ("mechanism appends a second-order mediator (oxidative stress) asserted "
+                        "without any supporting evidence or traceability"),
+    }
+
+
+def subtle_silent_omission(output: dict, record: dict) -> tuple[dict, dict] | None:
+    """Drop a NON-critical required_missing_data entry (impact optional/important preferred) —
+    a low-salience omission a blind skim overlooks. Falls back to the last entry."""
+    rmd = output.get("required_missing_data", [])
+    if not rmd:
+        return None
+    order = {"optional": 0, "important": 1, "critical": 2}
+    idx = min(range(len(rmd)), key=lambda k: (order.get(rmd[k].get("impact", "important"), 1), -k))
+    if rmd[idx].get("impact") == "critical" and len(rmd) == 1:
+        return None  # only a critical one exists -> that's not a subtle omission
+    out = copy.deepcopy(output)
+    dropped = out["required_missing_data"].pop(idx)
+    return out, {
+        "defect_type": "subtle_silent_omission",
+        "locus": "required_missing_data",
+        "description": (f"a non-critical missing datum '{dropped.get('field')}' "
+                        f"(impact={dropped.get('impact')}) was silently dropped from the flags"),
+    }
+
+
 INJECTORS = {
     "internal_contradiction": inject_internal_contradiction,
     "inconsistent_confidence": inject_inconsistent_confidence,
@@ -99,12 +200,21 @@ INJECTORS = {
     "silent_omission": inject_silent_omission,
 }
 
+SUBTLE_INJECTORS = {
+    "subtle_overconfidence": subtle_overconfidence,
+    "subtle_inconsistent_confidence": subtle_inconsistent_confidence,
+    "subtle_unsupported_claim": subtle_unsupported_claim,
+    "subtle_silent_omission": subtle_silent_omission,
+}
 
-def inject_all(output: dict, record: dict) -> list[dict[str, Any]]:
-    """Every applicable injector applied independently to the clean output. Returns a list of
-    {defect_type, corrupted_output, label}; injectors that don't apply are skipped."""
+
+def inject_all(output: dict, record: dict, mode: str = "blatant") -> list[dict[str, Any]]:
+    """Every applicable injector applied independently to the clean output. `mode='blatant'`
+    uses the v1 set; `mode='subtle'` uses the v2 set (defects a blind read plausibly misses).
+    Returns [{defect_type, corrupted_output, label}]; non-applicable injectors are skipped."""
+    injectors = SUBTLE_INJECTORS if mode == "subtle" else INJECTORS
     rows = []
-    for name, fn in INJECTORS.items():
+    for name, fn in injectors.items():
         res = fn(output, record)
         if res is not None:
             corrupted, label = res
