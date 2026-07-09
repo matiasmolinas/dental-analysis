@@ -15,3 +15,6 @@ results/
 .env
 .env.*
 !.env.example
+
+# Live cross-session lever ledger (may reflect run data); schema + module are committed
+.knowledge/lever_ledger.jsonl
