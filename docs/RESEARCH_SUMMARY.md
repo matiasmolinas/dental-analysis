@@ -79,6 +79,23 @@ a counterfactual-sensitivity reasoning test, a "predict-the-workspace" gate, and
 experiment that can still turn "non-redundant" into "useful," it uses harness we already have, and its
 result is decisive either way.
 
+### 4b. Implementation status — all six built (2026-07-09)
+
+| # | Step | Status | Artifact |
+|---|---|---|---|
+| #2 | Targeted actuator, non-obvious task | **Built + bounded live run** | `src/run_targeted.py`. Planted n=1: targeted `relational_recall` 0.62 > base/append_all 0.50 (selectivity helps), but counterfactual regressed → **mixed, n=1, needs n≥30**. |
+| #3 | Cross-session memory + offline consolidation | **Built + tested (offline)** | `src/lever_ledger.py`, `schemas/lever_record_schema.json`, 4 tests. Structural-signature ledger with write-time guardrail (rejects any numeric patient value), `suggest_levers`, `consolidate`. |
+| #4 | Run the SWC live | **Built + live** | `src/run_swc_session.py` — 2-turn session that persists a working lever to the ledger (wires SWC ↔ #3). |
+| #5 | Scoped Qwen correlation probe | **Built (artifact; GPU-gated)** | `probes/qwen_correlation_probe.py` — pre-fitted Hub lens, single-token ranks + Δrank + Spearman. Not in the Claude-only pipeline. |
+| #1 | Measured-lens API feature | **Documented + consumer seam** | `docs/API_FEATURE_REQUEST.md` — the ask + why swapping inferred→measured needs no redesign. |
+| #6 | Learned coordinator (Trinity/Conductor) | **Scaffold + tested** | `src/coordinator.py` (tiny head + separable ES, not RL) + 4 tests; converges on a mock objective. Live fitness (bounded Claude rollout) is the pluggable next piece. |
+
+**What "built" does and doesn't mean:** the *runnable* pieces (#2, #3, #4, #6) are implemented and
+tested/run; the *resource-gated* pieces are delivered as artifacts — #5 needs a GPU + jlens (not the
+Claude-only runtime), #1 is Anthropic's feature to expose, #6's *live* training needs many bounded
+rollouts. The bounded live results (#2, #4) are single-case and directional; the powered n≥30 runs and
+the measured lens remain the two verdict-changing doors (§6).
+
 ## 5. Hackathon positioning (honest)
 
 - **Build track:** working software — the Observer loop, five-surface evolution, the guardrail-protected
