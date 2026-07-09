@@ -6,7 +6,7 @@
 > using only general expertise; **B_lens** = the *same* converger also handed the
 > inferred-lens readout + the Observer's deficiency map. The only difference between the
 > B arms is the lens signal. No cheerleading. Companion to
-> [`is-the-lens-working.md`](is-the-lens-working.md) and [`../REFORMULATION.md`](../REFORMULATION.md) §R5.
+> [`is-the-lens-working.md`](is-the-lens-working.md) and [`../REFORMULATION.md`](../../REFORMULATION.md) §R5.
 
 ## 1. What the ablation actually shows about the lens
 

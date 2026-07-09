@@ -3,7 +3,7 @@
 > 2026-07-09, live Claude (Opus executor/reviewer, Sonnet selector). Results of next-steps **#4**
 > (`results/swc_session.json`) and **#2** (`results/targeted_report.json`). Closes the "implement all
 > six next-steps" task; retires the "the SWC never ran live" caveat from
-> [`RESEARCH_SUMMARY.md`](../RESEARCH_SUMMARY.md) §2 (H5). Written directly (Fable refuses this topic).
+> [`RESEARCH_SUMMARY.md`](../../RESEARCH_SUMMARY.md) §2 (H5). Written directly (Fable refuses this topic).
 
 ## #4 — the Session Working-Consciousness ran end-to-end, live, for the first time
 

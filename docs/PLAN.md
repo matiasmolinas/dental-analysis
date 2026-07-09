@@ -15,6 +15,8 @@ delta + R0–R6 workplan in [`REFORMULATION.md`](REFORMULATION.md) · impact ana
 [`IMPACT.md`](IMPACT.md).
 **Data:** NHANES 2009–2010 (real anchor) + Synthea (longitudinal) — see [`DATASETS.md`](DATASETS.md).
 
+> **Outcome (2026-07-09):** the load-bearing hypothesis (§1b) came out **inconclusive** — see [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0. This remains the living decisions/progress ledger.
+
 ---
 
 ## 1. One-paragraph summary
@@ -428,3 +430,17 @@ the knowledge is latent and the work is recall, not format.
   and proposes exposing the real Jacobian lens on the Anthropic API as the unlock.
 - **(next)** — Phase 1/2 results: paste the inferred-lens surfaced-mediator set per
   format and the counterfactual-sensitivity outcomes here to continue.
+
+---
+
+## Outcome
+
+The one clean, repeated win is the **deterministic missing-data directive** — it
+flags absent required fields reliably (guardrail 0.00 → 1.00, 6/6) and belongs to
+that directive, not the lens. The **inferred lens's** causal contribution over a
+blind-convergence baseline was **not demonstrated** (`lens_inconclusive`): the
+workspace signal is non-redundant with the output, but no actuator we built turns it
+into an outcome gain on this largely re-derivable task. Canonical write-up:
+[`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0. Next doors worth opening: a targeted
+actuator tested at n ≥ 30, and the **measured lens** (see
+[`API_FEATURE_REQUEST.md`](API_FEATURE_REQUEST.md)).

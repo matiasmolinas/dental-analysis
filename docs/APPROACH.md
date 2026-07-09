@@ -1,10 +1,13 @@
 # The Approach — Inferred-Lens Observer & Session Working-Consciousness
 
-> **Canonical, domain-general description of the method.** This is the *what* and
-> *why* of the architecture, independent of the dental oral-systemic instance.
-> [`REFORMULATION.md`](REFORMULATION.md) is the delta from the project's earlier
-> baseline; this document is the method itself. Where it generates large impact and
-> where it does not is in [`IMPACT.md`](IMPACT.md).
+> **Domain-general description of the method.** The *what* and *why* of the architecture,
+> independent of the dental instance.
+>
+> **Status: the loop is validated as software; its lens-driven contribution is inconclusive.**
+> When we tested whether reading the inferred lens improves outcomes *over blind convergence*,
+> the result was `lens_inconclusive` — see [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0. Read
+> this doc as the method's design, not as a demonstrated win. The one clean win (missing-data
+> flagging 0→1.0) is the **deterministic harness**, not the lens.
 
 ---
 
@@ -156,17 +159,16 @@ showed unadorned recall is largely name-echo, not factor-grounded reasoning (see
 `AB_PROTOCOL.md`).
 
 > **The feature we're proposing to Anthropic.** The whole loop is built to the
-> interface of a lens readout. Exploring the paper indirectly through the skill, the
-> results — and we are frankly **speculating**, since we have no ground truth — look
-> **very promising**: the Observer can localize *which* concept or variable a prompt
-> failed to make representable and act on it. That makes a concrete, desirable API
-> feature obvious: **expose the real Jacobian lens on Claude through the Anthropic
-> API.** If it existed, the Observer would swap the inferred signal for a **measured**
-> one with **no architectural change** — turning directional hypotheses into causal
-> ground truth, enabling representation swaps, and letting evolution optimize against
-> the model's true internal workspace. Only the signal source would change; that is
-> where the approach would reach its real power. We flag it as a feature request
-> precisely because the indirect results are encouraging enough to want the real thing.
+> interface of a lens readout. On the evidence we gathered, the *inferred* signal is
+> non-redundant with the output but did **not** improve outcomes over blind convergence
+> (`lens_inconclusive`; [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0) — the access we
+> have is the weak link, not the concept. That motivates a concrete, honest API ask:
+> **expose the real Jacobian lens on Claude through the Anthropic API.** If it existed,
+> the Observer would swap the inferred signal for a **measured** one with **no
+> architectural change** — turning a directional, uncorroborated hint into causal ground
+> truth and enabling representation swaps. Only the signal source would change. We raise
+> it as a **forward claim to test, not a demonstrated result** — full case in
+> [`API_FEATURE_REQUEST.md`](API_FEATURE_REQUEST.md).
 
 ---
 

@@ -1,5 +1,9 @@
 # Subagents
 
+> **Status:** the lens-driven Observer loop these subagents form was tested and came out
+> **inconclusive** over blind convergence — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md)
+> §0. The runtime clinical subagents and the protected guardrail are unaffected.
+
 Subagent definitions for the HISTORA Oral-Systemic Intelligence Agent, in Claude
 Code agent format (frontmatter `name` / `description` / `tools`). See
 [`docs/PLAN.md` §3b](../docs/PLAN.md) for the architecture rationale.

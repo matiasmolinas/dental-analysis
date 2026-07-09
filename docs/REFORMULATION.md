@@ -1,5 +1,7 @@
 # Reformulation — Inferred-Lens Observer & Session Working-Consciousness
 
+> **Historical.** This is the reformulation workplan + R5/R6 result log. Canonical conclusions are in [`RESEARCH_SUMMARY.md`](RESEARCH_SUMMARY.md) §0 and [`RETROSPECTIVE.md`](RETROSPECTIVE.md); the load-bearing "the lens drives evolution" hypothesis came out **inconclusive**.
+
 > **Status:** implemented (R0–R6; live A/B pending data). Written 2026-07-08. This
 > document is the **delta** from the project's earlier baseline ([`PLAN.md`](PLAN.md))
 > and the R0–R6 workplan. For the standalone, domain-general description of the method
@@ -408,7 +410,7 @@ mediator "recall" is largely **not factor-grounded reasoning** (name-echo confir
 `relational_recall` and counterfactual are the honest metrics, substring recall overstates.
 
 **Fable evolution + validation (2026-07-09).** From the gap-map
-([`analysis/lens-impact-gap-map.md`](analysis/lens-impact-gap-map.md)), Fable evolved the
+([`analysis/ARCHIVE/lens-impact-gap-map.md`](analysis/ARCHIVE/lens-impact-gap-map.md)), Fable evolved the
 three gap surfaces (bounded, guardrail-protected, 29 tests green): factor-grounding rules
 in the instructions (`skills/oral-systemic-analysis.md`,
 `agents/oral-systemic-relational-reasoner.md`, `prompts/evaluator.md`), a deterministic

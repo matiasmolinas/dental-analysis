@@ -37,19 +37,19 @@ data layer; our agent is the missing tool.
 ## The pitch (one paragraph)
 
 HISTORA integrates fragmented dental + medical records; on top of it we build a
-non-diagnostic oral-systemic research agent. The differentiator is method: instead
-of prompt-engineering the input blind, we explore Anthropic's Jacobian-lens paper
-**indirectly, through a self-report skill on Claude** (the *inferred lens*) to see
-whether the input actually makes the oral-systemic *mediating* concepts
-representable; a **second Claude instance (the Lens Observer, on Opus)** reads that
-readout, diagnoses deficiencies, and drives bounded, gated evolution — curated in a
-**Session Working-Consciousness** ledger — while Claude closes the loop behind a
-validation + guardrail gate. Because it is self-report (not a measurement), we
-corroborate with an API-observable counterfactual-sensitivity test. And because the
-indirect results look promising — speculating, with no ground truth — we propose a
-concrete API feature to Anthropic: **expose the real Jacobian lens on Claude**, so
-the same loop swaps the inferred signal for a measured one with no architectural
-change.
+non-diagnostic oral-systemic research agent. What we submit is an **honest, tested
+apparatus** and a **rigorous negative-with-nuance**, not a claimed win. The apparatus
+is real: an inferred-lens Observer loop, five-surface evolution, a Session
+Working-Consciousness ledger, and a guardrail-protected gate — Claude-only, 44 tests
+green, run live on real NHANES. The finding is honest: the workspace self-report
+signal is **genuinely non-redundant** with the output, but **no actuator we built
+converts it into an outcome gain** over a strong blind baseline on this largely
+re-derivable task. The one clean, repeated win — reliable missing-data flagging
+(0.00 → 1.00, 6/6) — belongs to a **deterministic directive, not the lens**. That
+honest result directly motivates the strongest *forward* ask: a concrete API feature
+to Anthropic — **expose the real (measured) Jacobian lens on Claude** — so the same
+loop swaps the inferred signal for a measured one with no architectural change, and
+the project is the consumer already built for it.
 
 ## Why this wins with these judges
 
@@ -58,10 +58,13 @@ change.
   concrete, humble API-feature proposal (expose the real Jacobian lens on Claude).
 - **On-theme for Gladstone:** a rigorous method and a real clinical-research user;
   non-diagnostic and evidence-traceable.
-- **Differentiator = method + proposal:** working software (Build) plus a novel
-  method (indirect Jacobian-lens exploration via the self-report skill + the Observer
-  loop + Session Working-Consciousness) and a speculative API feature motivated by
-  promising indirect results.
+- **Credible because it is honest:** working software (Build) — a tested apparatus,
+  Claude-only, 44 tests green, run live on real NHANES — plus a **rigorous
+  negative-with-nuance**: a real, non-redundant workspace signal with **no
+  demonstrated payoff** over a strong blind baseline. A believable negative beats an
+  overclaimed win, and it is exactly what motivates the measured-lens API ask.
+- **The one clean win is named honestly:** reliable missing-data flagging (guardrail
+  0.00 → 1.00, 6/6) — and it belongs to a **deterministic directive, not the lens**.
 - **Responsible:** non-diagnostic guardrail as a protected invariant; the inferred
   lens is never presented as a measurement or clinical evidence.
 
@@ -99,23 +102,25 @@ inner loop and the demo never wait on anything but Claude.
 
 1. Show a fragmented dental+medical record and the naive input → Claude misses the
    inflammatory link; the inferred-lens readout shows "inflammation/CRP" absent.
-2. **The Observer drives the edit live.** The separate Lens Observer (Opus) reads the
-   primary's inferred-lens readout, returns a deficiency map (mediators absent, hs-CRP
-   missing, axis derivation skipped), and injects the T0 fixes (gloss BOP, add hs-CRP
-   as MISSING, attach the mechanistic KB) from the Session Working-Consciousness
-   ledger → next turn the inferred-lens readout surfaces the mediators. Show the
-   ledger consolidating the lesson across turns (`.session/example_case01.md`).
+2. **Here is the apparatus, and here is the honest result.** Show the separate Lens
+   Observer (Opus) reading the primary's inferred-lens readout, returning a deficiency
+   map, and injecting T0 fixes from the Session Working-Consciousness ledger — the loop
+   is real and it runs. Then state the honest outcome plainly: the workspace signal is
+   **non-redundant** with the output, but the lens-driven contribution over a blind
+   baseline was **not demonstrated** (`lens_inconclusive`). No claimed mediator-surfacing
+   win. Show the ledger consolidating across turns (`.session/example_case01.md`).
 3. Full agent emits the structured non-diagnostic output with traceable axes and a
    collection flag for hs-CRP.
-4. **Harness evolution beat:** the Observer decides a deterministic relation belongs in
-   code → `src/relational_signals.py` computes the structural signals, tests pass, the
-   value is injected, and the readout improves. Then one gated T1 skill-evolution step
-   improves accuracy without breaking the guardrail.
+4. **The one clean, deterministic win.** The **deterministic missing-data directive**
+   flags absent required fields reliably — guardrail **0.00 → 1.00 (6/6)**. Name it
+   honestly: this win belongs to a deterministic directive, **not the lens**. Show
+   `src/relational_signals.py` computing the structural signals, tests passing (44
+   green), and the value injected behind the guardrail gate.
 5. **Corroboration + close on the unlock:** run the counterfactual-sensitivity check
    on Claude (flip one factor; the dependent axis moves, unrelated axes stay put) to
-   show the readout is not confabulation. Close on the **API-feature proposal** —
-   because these indirect, speculative results look promising, we ask Anthropic to
-   expose the real Jacobian lens on Claude; the same loop then swaps the inferred
+   show the readout is not confabulation. Close on the **API-feature proposal** — the
+   honest negative-with-nuance is exactly what motivates it: we ask Anthropic to expose
+   the real (measured) Jacobian lens on Claude, so the same loop swaps the inferred
    signal for a measured one with no architectural change (see README).
 
 ## Risks specific to the week

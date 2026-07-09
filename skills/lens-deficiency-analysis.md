@@ -5,6 +5,8 @@ description: How the Lens Observer reads the executor's inferred Jacobian-lens r
 
 # Lens Deficiency Analysis (Observer instrument)
 
+> **Status: tested, inconclusive.** This component ran live; its lens-driven contribution over blind convergence was not demonstrated (`lens_inconclusive`) — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md) §0.
+
 Turn the primary's inferred-lens readout into a deficiency map and bounded edits.
 Self-report is a readout channel, **not a measurement**; never a claim about the
 patient. Return `schemas/deficiency_map_schema.json`.

@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Live three-arm ablation on Claude (Phase R6): A vs B_blind vs B_lens.
 
 Isolates the inferred lens's causal contribution. B_blind and B_lens are produced by the

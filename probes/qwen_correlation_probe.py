@@ -1,3 +1,4 @@
+# EXTERNAL / scaffold — not run in the Claude-only pipeline; speculative (see docs/RESEARCH_SUMMARY.md)
 """Scoped Qwen measured-lens correlation probe (Phase R6 next-step #5) — GPU / offline only.
 
 NOT part of the Claude-only runtime. This is the one bounded experiment from

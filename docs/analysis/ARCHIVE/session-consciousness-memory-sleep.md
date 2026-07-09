@@ -3,7 +3,7 @@
 > Produced 2026-07-09 with the **Fable** model. Scope: the non-diagnostic oral-systemic
 > agent in this repo — Claude only, via the **inferred** (self-report) lens, never a
 > measured Jacobian lens. Claims resting on self-report are flagged as such. Companion
-> to [`../APPROACH.md`](../APPROACH.md), [`../REFORMULATION.md`](../REFORMULATION.md).
+> to [`../APPROACH.md`](../../APPROACH.md), [`../REFORMULATION.md`](../../REFORMULATION.md).
 
 ---
 
@@ -36,8 +36,8 @@ itself is not managed. Below, "sleep" means **offline consolidation in general
 
 ## 1. How the Session Working-Consciousness (SWC) actually works
 
-The SWC is the load-bearing novelty of the reformulation ([`../REFORMULATION.md`](../REFORMULATION.md)
-§2.5, [`../APPROACH.md`](../APPROACH.md) §6). Its mechanism is a **two-tier memory
+The SWC is the load-bearing novelty of the reformulation ([`../REFORMULATION.md`](../../REFORMULATION.md)
+§2.5, [`../APPROACH.md`](../../APPROACH.md) §6). Its mechanism is a **two-tier memory
 split** across two model instances.
 
 **Ephemeral per-call lens (Executor).** The primary model runs with the

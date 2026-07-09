@@ -1,3 +1,4 @@
+# write-time guardrail is a VALIDATED invariant (W2); cross-session transfer *value* is UNTESTED — see docs/RESEARCH_SUMMARY.md §4b #3
 """Cross-session memory: the lever ledger (Phase R6, next-step #3).
 
 The Session Working-Consciousness is per-session and amnesiac across sessions. This is the persistent

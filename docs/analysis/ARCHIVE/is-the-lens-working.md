@@ -3,7 +3,7 @@
 > Produced 2026-07-09 with the **Fable** model. Scope: Claude Sonnet-5, live A/B of
 > 2026-07-09. Inferred lens = self-report only; no measured lens, no proxy. Numbers from
 > `results/ab_live_report.json` (n=3), `results/ab_live_improved.json` (n=6), and the
-> grounded n=1 run in [`../REFORMULATION.md`](../REFORMULATION.md) §R5.
+> grounded n=1 run in [`../REFORMULATION.md`](../../REFORMULATION.md) §R5.
 
 ## 1. Is it working? — the honest verdict
 

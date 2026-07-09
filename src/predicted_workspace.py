@@ -1,3 +1,4 @@
+# EXPERIMENTAL / inconclusive result — see docs/RESEARCH_SUMMARY.md §0 and RETROSPECTIVE.md
 """Fable-predicts-Opus's-workspace: the circularity-gate primitives (Phase R6, mode 4).
 
 Design + rationale: docs/analysis/fable-predicted-workspace-design.md. This is NOT the
