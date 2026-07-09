@@ -53,14 +53,21 @@ PLANTED_TARGET = {
 
 def _make_call(client, model: str, system: str):
     def call(user: str) -> dict:
-        resp = _create_with_retry(
-            client, model=model, max_tokens=8000, system=system,
-            messages=[{"role": "user", "content": user}],
-        )
-        text = next((b.text for b in resp.content if getattr(b, "type", None) == "text"), None)
-        if text is None:
-            raise RuntimeError("no text block")
-        return _extract_json(text)
+        last = None
+        for _ in range(3):  # regenerate on no-text (thinking exhausted budget) or bad JSON
+            resp = _create_with_retry(
+                client, model=model, max_tokens=16000, system=system,
+                messages=[{"role": "user", "content": user}],
+            )
+            text = next((b.text for b in resp.content if getattr(b, "type", None) == "text"), None)
+            if text is None:
+                last = RuntimeError("no text block")
+                continue
+            try:
+                return _extract_json(text)
+            except json.JSONDecodeError as e:
+                last = e
+        raise last
     return call
 
 
