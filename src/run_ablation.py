@@ -77,7 +77,9 @@ def make_fns(model: str):
     )
     observer_system = _read("prompts/observer.md")
 
-    def call(system: str, user: str, max_tokens: int = 4000) -> str:
+    def call(system: str, user: str, max_tokens: int = 8000) -> str:
+        # 8000 so extended thinking (on by default for this model) can't exhaust the
+        # budget before a text block is emitted — the v1 failure was "no text block".
         resp = client.messages.create(
             model=model, max_tokens=max_tokens, system=system,
             messages=[{"role": "user", "content": user}],
@@ -103,7 +105,7 @@ def make_fns(model: str):
                 f"produce.\n\nInferred-lens readout:\n{diagnosis['readout']}\n\n"
                 f"Deficiency map:\n{diagnosis['deficiency_map']}"
             )
-        return call(CONVERGE_SYSTEM, user, max_tokens=3000)
+        return call(CONVERGE_SYSTEM, user, max_tokens=6000)
 
     eval_fn = make_claude_model_fn(model)  # the neutral evaluator (input is the only lever)
     return readout_fn, observer_fn, converge_fn, eval_fn

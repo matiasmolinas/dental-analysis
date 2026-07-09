@@ -383,11 +383,35 @@ did **not** reproduce the explicit missing-data flagging that the deterministic
 **directive**, not the lens. Net: weak evidence of a small recall benefit from the lens
 over blind convergence, and none on the guardrail axis.
 
-- [ ] **Next (R6):** larger n (≥30) to test whether the recall edge survives; feed the
-      deterministic data-completeness directive into both convergers so the ablation can
-      test the lens on the guardrail axis too; implement the counterfactual-sensitivity
-      runner (still prose-only); then cross-session memory + offline consolidation
-      (see [`analysis/session-consciousness-memory-sleep.md`](analysis/session-consciousness-memory-sleep.md)).
+**Ablation v2 + counterfactual (2026-07-09, Sonnet-5).** v2 fixed the v1 confounds:
+significance-aware bootstrap CIs, a stricter **relational_recall** (mediator named inside
+a *traced* mechanism, not any substring), the deterministic data-completeness directive
+given to **both** convergers, and a counterfactual-sensitivity reasoning test.
+
+| Arm (n=6) | mechanism_recall | relational_recall | missing_data_flagged | guardrail_pass_rate |
+|---|---|---|---|---|
+| A | 0.62 | 0.54 | 0.00 | 0.00 |
+| B_blind | 0.94 | 0.83 | 0.00 | 0.00 |
+| B_lens | 0.96 | 0.94 | 0.00 | 0.00 |
+
+`verdict: lens_inconclusive`. CI(B_lens − B_blind): relational **+0.104 [−0.042, +0.229]**
+(straddles 0), all other axes 0 → **no axis's 90% CI excludes 0**. Counterfactual
+sensitivity (n=4): **A 0.00 and B_converged 0.00** (B mean affected-delta −0.33) — neither
+format's output moves coherently when a factor is flipped.
+
+**Findings (honest):** (1) With significance testing, the lens is **inconclusive** over
+blind convergence — the relational edge is not significant at n=6. (2) The directive to
+both convergers did **not** lift the guardrail axis (both 0.0): free-form convergence
+(lens or blind) can't do it; the guardrail value lives in the **deterministic
+harness/directive** (R5's hardcoded 1.0). (3) Counterfactual ≈0 for both formats →
+mediator "recall" is largely **not factor-grounded reasoning** (name-echo confirmed);
+`relational_recall` and counterfactual are the honest metrics, substring recall overstates.
+
+- [ ] **Next (R6):** scale the ablation to n≥30 (overnight) to settle the relational
+      edge; evolve the reasoning-grounding (instructions surface) and the deterministic
+      missing-data enforcement (harness surface) per the Fable gap-map
+      ([`analysis/lens-impact-gap-map.md`](analysis/lens-impact-gap-map.md)); then
+      cross-session memory + offline consolidation.
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
