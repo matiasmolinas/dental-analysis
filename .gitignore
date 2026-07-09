@@ -6,3 +6,7 @@ __pycache__/
 # end). Keep the committed template and the worked example; ignore live sessions.
 .session/working_consciousness.md
 .session/session_*.md
+
+# Live A/B run artifacts and downloaded NHANES data
+results/
+.nhanes/

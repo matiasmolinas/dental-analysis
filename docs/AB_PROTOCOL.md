@@ -57,9 +57,20 @@ report = run_ab(default_cases(), claude_model_fn)   # -> aggregate + verdict
   verdict logic against a deterministic stub (naive-A vs converged-B canned outputs).
   6/6 pass; the report shows A `mechanism_recall 0.0 / guardrail 0.0` vs B `1.0 / 1.0` →
   `promote_B`. This proves the harness discriminates; it is **not** a model result.
-- **Live run (next):** replace `default_cases()` with real participants via
-  `nhanes_loader.build_case(...)` (NHANES 2009–2010) and wire `claude_model_fn` to the
-  runtime agent. Log the aggregate + verdict to `REFORMULATION.md` §R5.
+- **Live run:** [`../src/run_live_ab.py`](../src/run_live_ab.py) wires it end to end —
+  a real Claude call (Anthropic SDK, neutral fixed system prompt so the input is the
+  only lever) over real NHANES 2009–2010 participants (`nhanes_loader.build_case`):
+
+  ```bash
+  pip install -r requirements-live.txt        # anthropic + pandas
+  export ANTHROPIC_API_KEY=...
+  python src/run_live_ab.py --cases nhanes --n 5 --model claude-sonnet-5
+  # or a no-network smoke test on the grounded case:
+  python src/run_live_ab.py --cases grounded
+  ```
+
+  It writes `results/ab_live_report.json` (git-ignored). Paste the aggregate + verdict
+  into `REFORMULATION.md` §R5 Progress Log.
 
 ## Honesty
 

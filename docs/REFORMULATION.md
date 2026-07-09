@@ -322,8 +322,15 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
       promotion gate = strict accuracy gain with no drop in guardrail pass-rate. Offline
       stub run: A `0.0/0.0` vs B `1.0/1.0` → `promote_B` (proves the harness, not the
       method).
-- [ ] Live run on Claude: wire `claude_model_fn` to the runtime agent, load real
-      participants via `nhanes_loader.build_case`, log aggregate + verdict here.
+- [x] Wired the live run: `src/run_live_ab.py` (+ `requirements-live.txt`, tests 6/6).
+      Real Claude call via the Anthropic SDK with a **neutral fixed system prompt** (so
+      the input format is the only lever), real participants via
+      `nhanes_loader.build_case` (`--cases nhanes`), or the grounded case
+      (`--cases grounded`); writes `results/ab_live_report.json`. See
+      [`AB_PROTOCOL.md`](AB_PROTOCOL.md).
+- [ ] Execute it: needs `anthropic` + `ANTHROPIC_API_KEY` + `pandas`/network (absent in
+      the dev sandbox). Run `python src/run_live_ab.py --cases nhanes --n 5` and paste
+      the aggregate + verdict into the Progress Log.
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
