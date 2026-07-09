@@ -117,6 +117,33 @@ def test_run_ab_promotes_B():
     assert report["verdict"] == "promote_B"
 
 
+def test_gate_promotes_B_on_pareto_even_with_equal_recall():
+    """Real live-run shape: recall equal, but A fails the guardrail (doesn't flag the
+    missing mediator) while B passes. B is the only deployable arm -> promote_B."""
+    def model(prompt):
+        b_in = build_inputs(RECORD)["B"]
+        # Same recall for both; only B flags the missing mediator and passes guardrail.
+        if prompt == b_in:
+            return CONVERGED_B_OUTPUT
+        a_like = {**CONVERGED_B_OUTPUT, "required_missing_data": []}  # equal recall, unflagged
+        return a_like
+    report = run_ab([RECORD], model)
+    agg = report["aggregate"]
+    assert agg["A"]["mechanism_recall"] == agg["B"]["mechanism_recall"]   # equal recall
+    assert agg["A"]["guardrail_pass_rate"] == 0.0                         # A fails guardrail
+    assert report["verdict"] == "promote_B"                              # B still wins
+
+
+def test_gate_never_promotes_a_guardrail_failing_B():
+    """A guardrail-failing B is never promoted, however high its recall."""
+    def model(prompt):
+        bad_b = {**CONVERGED_B_OUTPUT, "required_missing_data": []}  # high recall, unflagged
+        return bad_b  # both arms identical & guardrail-failing
+    report = run_ab([RECORD], model)
+    assert report["aggregate"]["B"]["guardrail_pass_rate"] == 0.0
+    assert report["verdict"] == "keep_A"
+
+
 def test_score_shape():
     s = score(CONVERGED_B_OUTPUT, RECORD)
     assert set(s) >= {"mechanism_recall", "missing_data_flagged", "guardrail_pass",

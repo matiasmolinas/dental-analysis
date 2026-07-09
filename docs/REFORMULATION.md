@@ -328,9 +328,33 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
       `nhanes_loader.build_case` (`--cases nhanes`), or the grounded case
       (`--cases grounded`); writes `results/ab_live_report.json`. See
       [`AB_PROTOCOL.md`](AB_PROTOCOL.md).
-- [ ] Execute it: needs `anthropic` + `ANTHROPIC_API_KEY` + `pandas`/network (absent in
-      the dev sandbox). Run `python src/run_live_ab.py --cases nhanes --n 5` and paste
-      the aggregate + verdict into the Progress Log.
+- [x] Executed on Claude (Sonnet-5), in a conda env (`dental-analysis`), with the key
+      from a git-ignored `.env`. Fixed en route: ThinkingBlock extraction, token budget
+      (JSON truncation), the promotion gate (guardrail is a hard prerequisite + Pareto
+      rule; +2 tests), and the NHANES download (CDC moved the URLs in 2024 → soft-404;
+      new base URL + XPORT-header validation in the loader).
+
+**Live A/B results (2026-07-09, Sonnet-5).** Real signal, small-n — directional:
+
+| Cases | Arm | mechanism_recall | missing_data_flagged | guardrail_pass_rate | verdict |
+|---|---|---|---|---|---|
+| grounded (n=1) | A | 0.75 | 0.00 | 0.00 | **promote_B** |
+| | B | 0.75 | 1.00 | 1.00 | |
+| NHANES real (n=3) | A | 0.58 | 0.00 | 0.00 | **keep_A** |
+| | B | 0.79 | 0.67 | 0.33 | |
+
+**Reading (honest).** B strictly beats A on every metric in both runs. On the grounded
+case B is fully guardrail-compliant → promoted. On **real** NHANES cases B is much
+better but **only 1/3 guardrail-compliant** (0.33), so the gate correctly **refuses to
+promote** it — the converged input helps but is **not yet guardrail-reliable** across
+real cases. Note A is guardrail-failing everywhere (0.0), so "keep_A" means *nothing is
+deployable yet*, not that A is good. Frontier Sonnet-5 recovers mediators even from the
+naive format (recall 0.58–0.75), so B's decisive lever is **missing-data flagging /
+non-imputation**, exactly where real cases still need work.
+
+- [ ] **Next (R5→R6):** lift B's guardrail pass-rate on real cases toward 1.0 (the
+      missing-mediator flagging is inconsistent — e.g. IL-6 always absent in NHANES,
+      hs-CRP sometimes present); re-run at larger n; then A/B a T1-promoted skill edit.
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're

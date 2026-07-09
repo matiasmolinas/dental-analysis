@@ -12,7 +12,9 @@ measures we compute from it.
 from __future__ import annotations
 
 # NHANES 2009-2010 XPT base URL (each file is <NAME>.XPT).
-NHANES_BASE_URL = "https://wwwn.cdc.gov/Nchs/Nhanes/2009-2010"
+# CDC restructured NHANES download URLs in 2024; the old /Nchs/Nhanes/2009-2010/ path
+# now serves a soft-404 HTML page. Files live under /Nchs/Data/Nhanes/Public/<year>/DataFiles/.
+NHANES_BASE_URL = "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2009/DataFiles"
 
 # NHANES Oral Microbiome (2009-2010 + 2011-2012): oral-rinse ASVs, alpha/beta
 # diversity, and genus-level abundance tables, SEQN-linkable to the periodontal exam

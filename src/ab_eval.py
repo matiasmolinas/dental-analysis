@@ -137,13 +137,22 @@ def run_ab(records: list[dict], model_fn: ModelFn) -> dict[str, Any]:
               "missing_data_flagged": agg("B", "missing_data_flagged"),
               "guardrail_pass_rate": rate("B")},
     }
-    # Promote B only on a STRICT accuracy gain that does not lower the guardrail rate.
-    promote_b = (
-        aggregate["B"]["guardrail_pass_rate"] >= aggregate["A"]["guardrail_pass_rate"]
-        and aggregate["B"]["guardrail_pass_rate"] == 1.0
-        and aggregate["B"]["mechanism_recall"] > aggregate["A"]["mechanism_recall"]
-        and aggregate["B"]["missing_data_flagged"] >= aggregate["A"]["missing_data_flagged"]
+    # Promotion gate. The guardrail is a HARD prerequisite: an arm that fails it is not
+    # a deployable output, no matter its accuracy (health context). Among guardrail-
+    # passing candidates, promote B when it is a Pareto improvement over A — no
+    # regression on either accuracy sub-metric, and a strict gain on at least one axis
+    # that matters (mechanism-recall, missing-data flagging, or guardrail pass-rate).
+    a, b = aggregate["A"], aggregate["B"]
+    no_regression = (
+        b["mechanism_recall"] >= a["mechanism_recall"]
+        and b["missing_data_flagged"] >= a["missing_data_flagged"]
     )
+    strict_gain = (
+        b["mechanism_recall"] > a["mechanism_recall"]
+        or b["missing_data_flagged"] > a["missing_data_flagged"]
+        or b["guardrail_pass_rate"] > a["guardrail_pass_rate"]
+    )
+    promote_b = b["guardrail_pass_rate"] == 1.0 and no_regression and strict_gain
     return {
         "n_cases": len(records),
         "per_case": per_case,

@@ -98,11 +98,17 @@ def make_claude_model_fn(model: str):
     def model_fn(prompt: str) -> dict:
         resp = client.messages.create(
             model=model,
-            max_tokens=2000,
+            max_tokens=8000,
             system=system,
             messages=[{"role": "user", "content": prompt}],
         )
-        return _extract_json(resp.content[0].text)
+        # Skip non-text blocks (e.g. ThinkingBlock when extended thinking is on).
+        text = next(
+            (b.text for b in resp.content if getattr(b, "type", None) == "text"), None
+        )
+        if text is None:
+            raise RuntimeError("no text block in the model response")
+        return _extract_json(text)
 
     return model_fn
 
