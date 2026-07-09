@@ -121,17 +121,25 @@ def make_claude_model_fn(model: str, extra_system: str = ""):
         system += "\n\n" + extra_system
 
     def model_fn(prompt: str) -> dict:
-        resp = _create_with_retry(
-            client, model=model, max_tokens=8000, system=system,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        # Skip non-text blocks (e.g. ThinkingBlock when extended thinking is on).
-        text = next(
-            (b.text for b in resp.content if getattr(b, "type", None) == "text"), None
-        )
-        if text is None:
-            raise RuntimeError("no text block in the model response")
-        return _extract_json(text)
+        import json as _json
+        last = None
+        for _ in range(3):  # regenerate on a truncated/malformed JSON, not just conn errors
+            resp = _create_with_retry(
+                client, model=model, max_tokens=12000, system=system,
+                messages=[{"role": "user", "content": prompt}],
+            )
+            # Skip non-text blocks (e.g. ThinkingBlock when extended thinking is on).
+            text = next(
+                (b.text for b in resp.content if getattr(b, "type", None) == "text"), None
+            )
+            if text is None:
+                last = RuntimeError("no text block in the model response")
+                continue
+            try:
+                return _extract_json(text)
+            except _json.JSONDecodeError as e:
+                last = e
+        raise last
 
     return model_fn
 
