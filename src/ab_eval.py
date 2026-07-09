@@ -36,10 +36,16 @@ ModelFn = Callable[[str], dict]
 def build_inputs(record: dict) -> dict[str, str]:
     """The two candidate inputs for one case. B is A's converged counterpart."""
     a = format_a_abbrev_table(record)
+    signals = derived_signals(record)
+    missing = ", ".join(m["field"] for m in signals["missing_mediators"]) or "none"
     b = (
         format_e_json_kb_constraints(record)
         + "\n\nInjected structural signals (deterministic, non-diagnostic):\n"
-        + json.dumps(derived_signals(record), indent=2)
+        + json.dumps(signals, indent=2)
+        + f"\n\nData-completeness directive: the fields under \"missing_mediators\" "
+        f"({missing}) are ABSENT from this record. Add EVERY one of them to "
+        f"required_missing_data (field + why it matters for the oral-systemic link); "
+        f"never impute a value. This is a collection flag, not a patient value."
     )
     return {"A": a, "B": b}
 

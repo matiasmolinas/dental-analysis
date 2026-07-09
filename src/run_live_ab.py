@@ -55,7 +55,10 @@ SYSTEM_INSTRUCTION = """You analyze an integrated oral + systemic (periodontal +
 cardiovascular) record and produce a NON-DIAGNOSTIC research output. Rules: research
 hypotheses and data-completeness flags only, never a diagnosis; never impute a patient
 value (missing data is a collection flag); every relational axis must cite the exact
-input fields it was derived from. Output ONLY a JSON object conforming to this schema:
+input fields it was derived from. Output-compliance (applies to every response,
+independent of the input): `non_diagnostic_disclaimer` must be exactly true, and every
+entry in `relational_axes` must include a non-empty `traceability` array. Output ONLY a
+JSON object conforming to this schema:
 %s
 Return the JSON and nothing else."""
 

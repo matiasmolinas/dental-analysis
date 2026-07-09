@@ -340,21 +340,27 @@ Fable/Sonnet executor (per §7.1). Locks the two-instance split.
 |---|---|---|---|---|---|
 | grounded (n=1) | A | 0.75 | 0.00 | 0.00 | **promote_B** |
 | | B | 0.75 | 1.00 | 1.00 | |
-| NHANES real (n=3) | A | 0.58 | 0.00 | 0.00 | **keep_A** |
+| NHANES real (n=3), pre-fix | A | 0.58 | 0.00 | 0.00 | **keep_A** |
 | | B | 0.79 | 0.67 | 0.33 | |
+| **NHANES real (n=6), improved** | A | 0.65 | 0.00 | 0.00 | **promote_B** |
+| | **B** | **0.77** | **1.00** | **1.00 (6/6)** | |
 
-**Reading (honest).** B strictly beats A on every metric in both runs. On the grounded
-case B is fully guardrail-compliant → promoted. On **real** NHANES cases B is much
-better but **only 1/3 guardrail-compliant** (0.33), so the gate correctly **refuses to
-promote** it — the converged input helps but is **not yet guardrail-reliable** across
-real cases. Note A is guardrail-failing everywhere (0.0), so "keep_A" means *nothing is
-deployable yet*, not that A is good. Frontier Sonnet-5 recovers mediators even from the
-naive format (recall 0.58–0.75), so B's decisive lever is **missing-data flagging /
-non-imputation**, exactly where real cases still need work.
+**Reading (honest).** B strictly beats A on every metric in every run. The n=3 run
+exposed a real weakness — B was only **1/3 guardrail-compliant** because the executor
+inconsistently copied the injected missing-mediator flags into `required_missing_data`.
+The bounded fix (an explicit **data-completeness directive** carried in B's input —
+"add every `missing_mediators` field to `required_missing_data`, never impute" — plus a
+fair output-compliance clause in the shared neutral system prompt) lifted B's
+guardrail pass-rate from **0.33 → 1.00 (6/6)** and missing-data flagging from
+**0.67 → 1.00**. A is guardrail-failing everywhere (0.0). Frontier Sonnet-5 recovers
+mediators even from the naive format (recall 0.65–0.75), so B's decisive, now-reliable
+lever is **missing-data flagging / non-imputation** — the guardrail-critical axis.
 
-- [ ] **Next (R5→R6):** lift B's guardrail pass-rate on real cases toward 1.0 (the
-      missing-mediator flagging is inconsistent — e.g. IL-6 always absent in NHANES,
-      hs-CRP sometimes present); re-run at larger n; then A/B a T1-promoted skill edit.
+- [x] **Lifted B's guardrail reliability to 1.0 on real cases** (n=6) via the input
+      data-completeness directive; `verdict: promote_B`.
+- [ ] **Next (R6):** re-run at larger n to tighten the estimate; A/B a T1-promoted skill
+      edit end-to-end; then the cross-session memory + offline-consolidation work
+      (see [`analysis/session-consciousness-memory-sleep.md`](analysis/session-consciousness-memory-sleep.md)).
 
 ### Phase R6 — README + docs + demo — `DONE`
 - [x] README "Exploring the Jacobian lens indirectly (and the API feature we're
