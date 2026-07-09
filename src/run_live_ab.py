@@ -83,6 +83,24 @@ def _extract_json(text: str) -> dict:
         return json.loads(m.group(0))
 
 
+def _create_with_retry(client, *, attempts: int = 5, **kwargs):
+    """messages.create with backoff on transient errors (connection blips, 429/5xx), so a
+    single network hiccup does not waste a long multi-call run."""
+    import time
+
+    import anthropic
+
+    last = None
+    for i in range(attempts):
+        try:
+            return client.messages.create(**kwargs)
+        except (anthropic.APIConnectionError, anthropic.RateLimitError,
+                anthropic.InternalServerError) as e:
+            last = e
+            time.sleep(2 * (i + 1))
+    raise last
+
+
 def make_claude_model_fn(model: str, extra_system: str = ""):
     """A model_fn(prompt)->dict backed by the Anthropic API. Same system + model for
     both arms; only the user prompt (the A or B input) differs. `extra_system` appends a
@@ -103,10 +121,8 @@ def make_claude_model_fn(model: str, extra_system: str = ""):
         system += "\n\n" + extra_system
 
     def model_fn(prompt: str) -> dict:
-        resp = client.messages.create(
-            model=model,
-            max_tokens=8000,
-            system=system,
+        resp = _create_with_retry(
+            client, model=model, max_tokens=8000, system=system,
             messages=[{"role": "user", "content": prompt}],
         )
         # Skip non-text blocks (e.g. ThinkingBlock when extended thinking is on).
