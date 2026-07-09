@@ -57,7 +57,9 @@ should not) — so the loop stays grounded on Claude alone.
 directional, never a measurement and never clinical evidence; task accuracy on Claude
 plus the protected guardrail are the authorities.
 
-**Docs:** [`docs/APPROACH.md`](docs/APPROACH.md) (**the canonical, domain-general
+**Docs:** [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) (**executive summary of the
+whole research arc** — every hypothesis answered + prioritized next steps),
+[`docs/APPROACH.md`](docs/APPROACH.md) (**the canonical, domain-general
 description of the method** — inferred-lens Observer + Session Working-Consciousness),
 [`docs/IMPACT.md`](docs/IMPACT.md) (where/when the approach generates large impact a
 priori — predictors, archetypes, and a scoring rubric),

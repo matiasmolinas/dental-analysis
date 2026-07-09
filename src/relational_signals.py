@@ -87,6 +87,33 @@ def missing_mediators(record: dict) -> list[dict[str, str]]:
     return flags
 
 
+# Absent mediators whose collection is guardrail-critical (they carry the
+# periodontal-inflammation -> cardiovascular bridge, e.g. hs-CRP). Everything else
+# missing is "important". Deterministic; not a clinical severity claim.
+CRITICAL_MISSING = {"hs_crp"}
+
+
+def required_missing_data_entries(record: dict) -> list[dict[str, str]]:
+    """Schema-ready `required_missing_data` items for absent mediating data.
+
+    Turns `missing_mediators(record)` into entries conforming to
+    `schemas/output_schema.json`'s `required_missing_data` items —
+    `{"field", "why", "impact"}` — so the HARNESS, not the model, guarantees the
+    guardrail-critical collection flags. `impact` is "critical" for inflammatory
+    markers that carry the oral->systemic bridge (hs-CRP), "important" otherwise.
+    Never imputes a value: this is a collection flag, not a computed patient value.
+    """
+    entries = []
+    for flag in missing_mediators(record):
+        field = flag["field"]
+        entries.append({
+            "field": field,
+            "why": flag["why"],
+            "impact": "critical" if field in CRITICAL_MISSING else "important",
+        })
+    return entries
+
+
 def derived_signals(record: dict) -> dict[str, Any]:
     """The injectable variable bundle: deterministic structural signals + the
     missing-mediator collection flags. This is what the Observer injects into the

@@ -32,12 +32,29 @@ def download_files(dest_dir: str) -> dict[str, str]:
     os.makedirs(dest_dir, exist_ok=True)
     paths: dict[str, str] = {}
     for stem in NHANES_FILES:
-        url = f"{NHANES_BASE_URL}/{stem}.XPT"
+        url = f"{NHANES_BASE_URL}/{stem}.xpt"
         local = os.path.join(dest_dir, f"{stem}.XPT")
-        if not os.path.exists(local):
-            urllib.request.urlretrieve(url, local)
+        if not _is_xport(local):  # re-download if absent or a poisoned (HTML soft-404) cache
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "dental-analysis NHANES loader"}
+            )
+            with urllib.request.urlopen(req, timeout=60) as r, open(local, "wb") as f:
+                f.write(r.read())
+            if not _is_xport(local):
+                raise ValueError(
+                    f"{stem}: downloaded file is not an XPORT (CDC soft-404?): {url}"
+                )
         paths[stem] = local
     return paths
+
+
+def _is_xport(path: str) -> bool:
+    """True iff the local file exists and begins with an XPORT header record."""
+    try:
+        with open(path, "rb") as f:
+            return f.read(6) == b"HEADER"
+    except OSError:
+        return False
 
 
 def load_joined(paths: dict[str, str]) -> Any:

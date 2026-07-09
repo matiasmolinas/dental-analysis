@@ -21,6 +21,7 @@ from relational_signals import (
     metabolic_load,
     missing_mediators,
     perio_progression,
+    required_missing_data_entries,
 )
 
 
@@ -50,6 +51,21 @@ def test_missing_mediator_is_flagged_never_imputed():
     for f in flags:
         assert f["status"] == "MISSING"
         assert "value" not in f  # collection flag, never a computed patient value
+
+
+def test_required_missing_data_entries_are_schema_ready():
+    entries = required_missing_data_entries(RECORD)  # hs_crp is None -> flagged
+    fields = {e["field"] for e in entries}
+    assert "hs_crp" in fields
+    for e in entries:
+        # exactly the schema's required item keys, nothing imputed
+        assert set(e.keys()) == {"field", "why", "impact"}
+        assert "value" not in e
+        assert e["impact"] in {"critical", "important", "optional"}
+        assert isinstance(e["why"], str) and e["why"]
+    # hs-CRP carries the inflammatory bridge -> critical to collect
+    hs_crp = next(e for e in entries if e["field"] == "hs_crp")
+    assert hs_crp["impact"] == "critical"
 
 
 def test_derived_signals_bundle_is_non_diagnostic():

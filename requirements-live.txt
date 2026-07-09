@@ -1,0 +1,5 @@
+# Extra deps for the LIVE A/B run only (src/run_live_ab.py).
+# The core project + all tests run on the stdlib alone; these are needed only to
+# actually call Claude and to download/parse real NHANES participants.
+anthropic>=0.40
+pandas>=2.0

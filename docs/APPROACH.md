@@ -149,7 +149,11 @@ MISSING) and check that the dependent conclusion moves in the mechanistically-co
 direction while unrelated conclusions stay put. A conclusion *insensitive* to flipping
 a factor it should depend on is the same "the model isn't really using it" signal the
 lens gives, measured at the output. This keeps the loop grounded on Claude alone, with
-no external instrument.
+no external instrument. Accordingly, `relational_recall` (a mediator counts only when
+used inside a traced mechanism) and counterfactual sensitivity are the **primary honest
+metrics**; plain substring `mechanism_recall` is secondary — the live Sonnet-5 v2 runs
+showed unadorned recall is largely name-echo, not factor-grounded reasoning (see
+`AB_PROTOCOL.md`).
 
 > **The feature we're proposing to Anthropic.** The whole loop is built to the
 > interface of a lens readout. Exploring the paper indirectly through the skill, the

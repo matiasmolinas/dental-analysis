@@ -6,3 +6,15 @@ __pycache__/
 # end). Keep the committed template and the worked example; ignore live sessions.
 .session/working_consciousness.md
 .session/session_*.md
+
+# Live A/B run artifacts and downloaded NHANES data
+results/
+.nhanes/
+
+# Secrets — never commit. The API key lives only in a local .env.
+.env
+.env.*
+!.env.example
+
+# Live cross-session lever ledger (may reflect run data); schema + module are committed
+.knowledge/lever_ledger.jsonl
