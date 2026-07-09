@@ -358,8 +358,35 @@ lever is **missing-data flagging / non-imputation** — the guardrail-critical a
 
 - [x] **Lifted B's guardrail reliability to 1.0 on real cases** (n=6) via the input
       data-completeness directive; `verdict: promote_B`.
-- [ ] **Next (R6):** re-run at larger n to tighten the estimate; A/B a T1-promoted skill
-      edit end-to-end; then the cross-session memory + offline-consolidation work
+
+**Lens-isolation ablation (2026-07-09, Sonnet-5, n=4 NHANES).** The A/B could not
+separate "good input" from "lens-guided input." This three-arm ablation does: A = naive;
+**B_blind** = a converger using only general expertise; **B_lens** = the SAME converger
+given the inferred-lens readout + the Observer's deficiency map (only difference = the
+lens signal). Harness `src/ablation.py` / `src/run_ablation.py`.
+
+| Arm | mechanism_recall | missing_data_flagged | guardrail_pass_rate |
+|---|---|---|---|
+| A (naive) | 0.625 | 0.00 | 0.00 |
+| B_blind | 0.813 | 0.00 | 0.00 |
+| B_lens | **0.906** | 0.00 | 0.00 |
+
+Δ(B_lens − B_blind): recall **+0.094**, missing 0, guardrail 0 → `verdict: lens_adds_value`.
+
+**Honest reading (do not overclaim).** (1) The recall edge is **small and noisy** at n=4:
+per case B_lens wins 2, **loses 1** (case 1: 0.75 vs 0.88), ties 1 — suggestive, not
+conclusive; the `lens_adds_value` label is triggered by a sub-0.1 recall delta and does
+**not** account for significance. (2) On the **guardrail-critical axis the lens did not
+differentiate** — both B arms are 0.00, because the *free-form* converger (blind or lens)
+did **not** reproduce the explicit missing-data flagging that the deterministic
+`build_inputs` directive gave (which reached 1.0 in R5). So R5's guardrail win was the
+**directive**, not the lens. Net: weak evidence of a small recall benefit from the lens
+over blind convergence, and none on the guardrail axis.
+
+- [ ] **Next (R6):** larger n (≥30) to test whether the recall edge survives; feed the
+      deterministic data-completeness directive into both convergers so the ablation can
+      test the lens on the guardrail axis too; implement the counterfactual-sensitivity
+      runner (still prose-only); then cross-session memory + offline consolidation
       (see [`analysis/session-consciousness-memory-sleep.md`](analysis/session-consciousness-memory-sleep.md)).
 
 ### Phase R6 — README + docs + demo — `DONE`
