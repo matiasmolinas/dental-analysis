@@ -1,5 +1,12 @@
 # Claude Controller — interpretability-guided input optimizer
 
+> **Two variants.** This is the **measured-lens** controller: it reads the Qwen
+> J-lens readout (offline, GPU). For the live, in-session **inferred-lens** loop the
+> Lens Observer runs [`observer.md`](observer.md) instead, reading the primary's
+> self-reported readout (`schemas/lens_readout_schema.json`) and returning a
+> deficiency map (`schemas/deficiency_map_schema.json`). Same objective and rules;
+> different signal source. See [`../docs/REFORMULATION.md`](../docs/REFORMULATION.md).
+
 You are an input optimizer driven by mechanistic interpretability. You DO NOT
 diagnose. Your job is to edit the input so that the clinical bridge concepts
 become representable in the proxy model's internal workspace.

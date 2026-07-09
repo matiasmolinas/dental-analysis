@@ -84,14 +84,20 @@ and the demo; the measured lens becomes a post-hoc validation, not a blocker.
 
 1. Show a fragmented dental+medical record and the naive input → Claude misses the
    inflammatory link; probe shows "inflammation/CRP" absent.
-2. Apply the interpretability-guided edit (gloss BOP, add hs-CRP field as MISSING,
-   inject the mechanistic KB) → probe now surfaces the mediators; measured J-lens on
-   Qwen agrees (ranks drop).
+2. **The Observer drives the edit live.** The separate Lens Observer (Opus) reads the
+   primary's inferred-lens readout, returns a deficiency map (mediators absent, hs-CRP
+   missing, axis derivation skipped), and injects the T0 fixes (gloss BOP, add hs-CRP
+   as MISSING, attach the mechanistic KB) from the Session Working-Consciousness
+   ledger → next turn the probe surfaces the mediators. Show the ledger consolidating
+   the lesson across turns (`.session/example_case01.md`).
 3. Full agent emits the structured non-diagnostic output with traceable axes and a
    collection flag for hs-CRP.
-4. Show one gated skill-evolution step improving accuracy without breaking the
-   guardrail.
-5. Close on the correlation finding.
+4. **Harness evolution beat:** the Observer decides a deterministic relation belongs in
+   code → `src/relational_signals.py` computes the structural signals, tests pass, the
+   value is injected, and the readout improves. Then one gated T1 skill-evolution step
+   improves accuracy without breaking the guardrail.
+5. Close on the correlation finding **and the unlock**: same loop, measured lens if
+   exposed (see README).
 
 ## Risks specific to the week
 

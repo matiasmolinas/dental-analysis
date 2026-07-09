@@ -54,11 +54,38 @@ reasoning. Proxy ranks are directional, not absolute — they generate and prior
 hypotheses; Claude is the final judge (transfer validity is verified in Phase 3).
 
 **Docs:** [`docs/PLAN.md`](docs/PLAN.md) (living workplan, status, decisions),
+[`docs/REFORMULATION.md`](docs/REFORMULATION.md) (the inferred-lens Observer +
+Session Working-Consciousness reformulation — the current build direction),
 [`docs/DUAL_LENS.md`](docs/DUAL_LENS.md) (two-instrument methodology + correlation
 experiment), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md) (Built with
 Claude: Life Sciences — tracks, named user, one-week plan, demo, judging),
 [`docs/DATASETS.md`](docs/DATASETS.md) (NHANES 2009–2010 real anchor + Synthea
 longitudinal; schema mapping and access).
+
+## Inferred vs. measured Jacobian lens (and the unlock)
+
+The live loop uses the **inferred** Jacobian lens: the workspace self-report the
+primary model emits while it processes a prompt (`claude-workspace-probe` →
+`schemas/lens_readout_schema.json`). A **second model instance — the Lens Observer**
+(`agents/lens-observer.md`, on Opus) analyzes that readout of the *primary* model,
+diagnoses deficiencies (missing/incorrect input variables, uncovered chain-of-thought
+steps, unrepresented mediators), and drives bounded, gated evolution of five surfaces —
+work prompts, skills, KB context, sub-agent definitions + injected variables, and
+**harness code**. It curates a cumulative **Session Working-Consciousness** ledger (the
+closed in-session evolutionary loop) and injects/modifies prompts from it.
+
+We deliberately do **not** wire the real Colab/Qwen Jacobian lens into the runtime; it
+stays the documented, reproducible *validation* path (`agents/jlens-diagnostic.md`,
+`colab/`, and the `docs/DUAL_LENS.md` correlation experiment). This is an honest limit:
+the inferred lens is **self-report exercised as a readout channel — never a measurement
+and never clinical evidence.**
+
+> **The unlock.** If the frontier model's *real* Jacobian lens were exposed (e.g. via
+> API), this exact architecture would swap the inferred signal for a **measured** one —
+> turning directional hypotheses into causal ground truth, enabling representation
+> swaps, and letting the Observer optimize against the model's true internal workspace.
+> The whole loop is built to that interface; only the signal source would change. That
+> is where this reaches its real power.
 
 ## Layout
 

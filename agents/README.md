@@ -19,16 +19,18 @@ Code agent format (frontmatter `name` / `description` / `tools`). See
 Flow: normalize -> (periodontal ‖ cardiometabolic) -> relate -> hypotheses ->
 verify -> assemble. The verifier can block; nothing failing the guardrail is emitted.
 
-## Dual-lens & offline (dev-time / in-loop)
+## Reformulated loop, dual-lens & offline (dev-time / in-loop)
 
 | File | Role |
 |---|---|
-| `claude-workspace-probe.md` | Fast in-loop self-report ON CLAUDE (real target, no GPU); surfaces mediators per format. Not a measurement |
-| `jlens-diagnostic.md` | Measured Jacobian-lens harness on the Qwen proxy (ground truth, causal); proposes format/KB edits |
-| `skillopt-optimizer.md` | Evolves trainable skills via bounded rollout->reflect->edit->gate |
+| `lens-observer.md` | **Secondary instance (Opus).** Analyzes the primary's inferred-lens readout, diagnoses deficiencies, curates the Session Working-Consciousness, drives bounded gated evolution of five surfaces + injects prompts |
+| `claude-workspace-probe.md` | The inferred-lens readout source ON CLAUDE (real target, no GPU); surfaces mediators per format. Not a measurement |
+| `jlens-diagnostic.md` | Measured Jacobian-lens harness on the Qwen proxy — the documented *validation/unlock* path (offline correlation), not a live dependency |
+| `skillopt-optimizer.md` | **T1 promotion tier.** Evolves the five surfaces (prompts/skills/KB/sub-agent defs+variables/harness code) via bounded rollout->reflect->edit->gate |
 
-The probe and the measured lens are the two instruments of the dual-lens loop; see
-[`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
+The reformulated loop (inferred-lens Observer + Session Working-Consciousness) is in
+[`../docs/REFORMULATION.md`](../docs/REFORMULATION.md); the two-instrument dual-lens
+methodology and correlation experiment in [`../docs/DUAL_LENS.md`](../docs/DUAL_LENS.md).
 
 ## Skill ↔ subagent map
 

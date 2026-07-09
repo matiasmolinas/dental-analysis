@@ -389,6 +389,18 @@ is latent and the work is recall, not format.
   `docs/DATASETS.md`. Enables a reproducible CRP↔periodontitis mini-analysis
   (Research-track).
 
+- **2026-07-08** — **Reformulation adopted (see [`REFORMULATION.md`](REFORMULATION.md)).**
+  Move from an offline dev-time pipeline to a live, in-session self-evolving system:
+  (1) a **separate Lens Observer instance (Opus)** analyzes the executor's *inferred*
+  Jacobian-lens readout and drives evolution; (2) the **inferred lens is the only live
+  signal** — the real Colab/Qwen lens is demoted to the documented "unlock" (offline
+  correlation only); (3) a **Session Working-Consciousness** ledger is the closed
+  in-session evolutionary loop; (4) evolution targets five surfaces incl. **harness
+  code**. Guardrail stays protected; edits are tiered (T0 ephemeral / T1 promoted +
+  human gate). R1 artifacts landed: `agents/lens-observer.md`, `prompts/observer.md`,
+  `skills/lens-deficiency-analysis.md`, `schemas/lens_readout_schema.json`,
+  `schemas/deficiency_map_schema.json`.
+
 ---
 
 ## Progress Log

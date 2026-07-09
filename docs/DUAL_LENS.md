@@ -1,5 +1,11 @@
 # Dual-Lens Methodology
 
+> **Build direction:** the live loop now runs on the **inferred** lens only, read by a
+> separate **Lens Observer** instance that drives evolution and a Session
+> Working-Consciousness ledger — see [`REFORMULATION.md`](REFORMULATION.md). The
+> measured Qwen lens below is the reproducible *validation / unlock* path (the
+> correlation experiment), not a live dependency.
+
 Two instruments read the "workspace" that our input optimization targets. They
 measure **different models** with **different epistemics**, and using both — plus
 the correlation between them — is the core methodological contribution.

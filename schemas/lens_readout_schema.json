@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Inferred Jacobian-Lens Readout (self-report, not a measurement)",
+  "description": "The workspace self-report the EXECUTOR (primary model) emits while processing a prompt package. Uninstrumented self-report exercised as a readout channel — never an activation measurement and never a claim about the patient. Consumed by the Lens Observer for deficiency analysis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "concepts",
+    "sweep",
+    "self_report_not_measurement"
+  ],
+  "properties": {
+    "concepts": {
+      "type": "array",
+      "description": "Workspace entries genuinely active while processing. Sparse-honest: absence of a required mediator/variable is a valid, informative result. Never padded.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["concept", "channel", "stage", "salience", "confidence"],
+        "properties": {
+          "concept": { "type": "string", "description": "Single word / short token-like entry." },
+          "channel": {
+            "type": "string",
+            "enum": ["mediator", "cross_domain_link", "missing_data_pull", "intermediate_step", "self_monitoring"]
+          },
+          "stage": { "type": "string", "enum": ["early", "mid", "late"] },
+          "salience": { "type": "string", "enum": ["strong", "moderate", "faint"], "description": "Qualitative felt-salience, not a magnitude." },
+          "confidence": { "type": "string", "enum": ["high", "med", "low"], "description": "How sure the entry was genuinely active vs reconstructed." }
+        }
+      }
+    },
+    "sweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Left-to-right progression of the workspace from reading to answering.",
+      "required": ["early", "mid", "late"],
+      "properties": {
+        "early": { "type": "array", "items": { "type": "string" } },
+        "mid": { "type": "array", "items": { "type": "string" } },
+        "late": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "required_variables_seen": {
+      "type": "array",
+      "description": "Which required input variables/parameters actually registered in the workspace, and whether their value looked sane. Absence is the signal the Observer acts on.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["variable", "present"],
+        "properties": {
+          "variable": { "type": "string" },
+          "present": { "type": "boolean" },
+          "value_plausible": { "type": "string", "enum": ["yes", "no", "unknown"] }
+        }
+      }
+    },
+    "cot_steps_traversed": {
+      "type": "array",
+      "description": "The procedure steps the internal chain-of-thought actually passed through (e.g. staging, pathway grouping, axis derivation). A skipped/shallow step is a deficiency signal.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["step", "coverage"],
+        "properties": {
+          "step": { "type": "string" },
+          "coverage": { "type": "string", "enum": ["covered", "shallow", "skipped"] }
+        }
+      }
+    },
+    "self_report_not_measurement": { "const": true }
+  }
+}
