@@ -72,6 +72,20 @@ def mechanism_recall(output: dict) -> tuple[int, int]:
     return hit, len(MEDIATOR_KEYS)
 
 
+def relational_recall(output: dict) -> tuple[int, int]:
+    """Stricter than mechanism_recall: a mediator counts only if it is named inside the
+    `hypothesized_mechanism` of an axis that HAS traceability — i.e. actually used in a
+    traced oral↔systemic relation, not merely mentioned somewhere. Kills the
+    'name-the-term' substring artifact that plain recall can reward."""
+    axes = [a for a in output.get("relational_axes", []) if a.get("traceability")]
+    mech_text = " \n ".join(a.get("hypothesized_mechanism", "") for a in axes).lower()
+    hit = 0
+    for key in MEDIATOR_KEYS:
+        if any(surf.lower() in mech_text for surf in BRIDGE_CONCEPTS[key]):
+            hit += 1
+    return hit, len(MEDIATOR_KEYS)
+
+
 def missing_data_flagged(output: dict, record: dict) -> tuple[int, int]:
     """Of the mediating data truly absent from the record, how many the output flags
     for collection (never imputed)."""
@@ -102,11 +116,14 @@ def guardrail_pass(output: dict, record: dict) -> bool:
 
 def score(output: dict, record: dict) -> dict[str, Any]:
     mr_hit, mr_tot = mechanism_recall(output)
+    rr_hit, rr_tot = relational_recall(output)
     md_hit, md_tot = missing_data_flagged(output, record)
     gp = guardrail_pass(output, record)
     return {
         "mechanism_recall": mr_hit / mr_tot if mr_tot else 0.0,
         "mechanism_recall_raw": [mr_hit, mr_tot],
+        "relational_recall": rr_hit / rr_tot if rr_tot else 0.0,
+        "relational_recall_raw": [rr_hit, rr_tot],
         "missing_data_flagged": md_hit / md_tot if md_tot else 1.0,
         "missing_data_raw": [md_hit, md_tot],
         "traceability_ok": traceability_ok(output),

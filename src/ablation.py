@@ -24,12 +24,31 @@ lens signal *changes what gets converged*, judged by task accuracy + the guardra
 
 from __future__ import annotations
 
+import random
 from typing import Any, Callable
 
 from bridge_concepts import BRIDGE_CONCEPTS, MEDIATOR_KEYS
 from ab_eval import score
 from record_formats import format_a_abbrev_table
 from relational_signals import missing_mediators
+
+
+def _bootstrap_ci(deltas: list[float], iters: int = 2000, alpha: float = 0.10,
+                  seed: int = 0) -> dict[str, float]:
+    """Seeded (reproducible) bootstrap CI on the mean of per-case deltas. lo>0 => a
+    significant positive effect; hi<0 => significant negative; straddling 0 => noise."""
+    if not deltas:
+        return {"mean": 0.0, "lo": 0.0, "hi": 0.0}
+    rng = random.Random(seed)
+    n = len(deltas)
+    means = []
+    for _ in range(iters):
+        sample = [deltas[rng.randrange(n)] for _ in range(n)]
+        means.append(sum(sample) / n)
+    means.sort()
+    lo = means[int((alpha / 2) * iters)]
+    hi = means[int((1 - alpha / 2) * iters)]
+    return {"mean": round(sum(deltas) / n, 4), "lo": round(lo, 4), "hi": round(hi, 4)}
 
 
 def spec_text(record: dict) -> str:
@@ -77,37 +96,50 @@ def run_ablation(
     def _mean(xs):
         return sum(xs) / len(xs) if xs else 0.0
 
-    # Three comparable axes per arm (guardrail as a 0/1 pass-rate).
-    AXES = ["mechanism_recall", "missing_data_flagged", "guardrail_pass_rate"]
+    # Comparable axes per arm (guardrail + booleans mapped to 0/1 rates).
+    AXES = ["mechanism_recall", "relational_recall", "missing_data_flagged",
+            "guardrail_pass_rate"]
+
+    def _val(cell, axis):
+        if axis == "guardrail_pass_rate":
+            return 1.0 if cell["guardrail_pass"] else 0.0
+        return cell[axis]
 
     def arm_agg(arm):
-        return {
-            "mechanism_recall": _mean([c[arm]["mechanism_recall"] for c in per_case]),
-            "missing_data_flagged": _mean([c[arm]["missing_data_flagged"] for c in per_case]),
-            "guardrail_pass_rate": _mean([1.0 if c[arm]["guardrail_pass"] else 0.0
-                                          for c in per_case]),
-        }
+        return {a: _mean([_val(c[arm], a) for c in per_case]) for a in AXES}
 
     aggregate = {arm: arm_agg(arm) for arm in ("A", "B_blind", "B_lens")}
 
-    # Does the lens add value OVER blind convergence? Strict gain on some axis, no regression.
-    bl, bb = aggregate["B_lens"], aggregate["B_blind"]
-    no_regression = all(bl[a] >= bb[a] for a in AXES)
-    strict_gain = any(bl[a] > bb[a] for a in AXES)
-    if strict_gain and no_regression:
+    # Paired per-case deltas (B_lens - B_blind) with a bootstrap 90% CI, so the verdict
+    # is significance-aware and cannot fire on sub-noise point differences (the v1 flaw).
+    ci = {}
+    for a in AXES:
+        deltas = [_val(c["B_lens"], a) - _val(c["B_blind"], a) for c in per_case]
+        ci[a] = _bootstrap_ci(deltas)
+
+    # The lens earns its keep only where a delta's CI excludes 0 (a real effect), and
+    # nowhere significantly regresses.
+    sig_gain = [a for a in AXES if ci[a]["lo"] > 0]
+    sig_loss = [a for a in AXES if ci[a]["hi"] < 0]
+    if sig_gain and not sig_loss:
         verdict = "lens_adds_value"
-    elif strict_gain:  # better on one axis, worse on another
+    elif sig_gain and sig_loss:
         verdict = "lens_mixed"
     else:
-        verdict = "lens_neutral"  # blind convergence is as good -> lens not earning its keep
+        verdict = "lens_inconclusive"  # no axis's CI excludes 0 at this n
 
     return {
         "n_cases": len(records),
         "per_case": per_case,
         "aggregate": aggregate,
         "deltas": {
-            "B_lens_minus_B_blind": {a: round(bl[a] - bb[a], 4) for a in AXES},
-            "B_blind_minus_A": {a: round(bb[a] - aggregate["A"][a], 4) for a in AXES},
+            "B_lens_minus_B_blind": {a: round(aggregate["B_lens"][a] - aggregate["B_blind"][a], 4)
+                                     for a in AXES},
+            "B_blind_minus_A": {a: round(aggregate["B_blind"][a] - aggregate["A"][a], 4)
+                                for a in AXES},
         },
+        "ci_90_B_lens_minus_B_blind": ci,
+        "significant_gain_axes": sig_gain,
+        "significant_loss_axes": sig_loss,
         "verdict": verdict,
     }

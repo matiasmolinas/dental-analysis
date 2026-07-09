@@ -89,11 +89,22 @@ def test_lens_adds_value_when_it_beats_blind():
     assert rep["verdict"] == "lens_adds_value"
 
 
-def test_lens_neutral_when_blind_is_as_good():
-    # blind and lens produce the same (good) output -> lens earns nothing
+def test_lens_inconclusive_when_blind_is_as_good():
+    # blind and lens produce the same (good) output -> every delta is 0 -> CI straddles 0
     rep = run_ablation([RECORD], _readout, _observer, _converge, _make_eval(LENS_OUT, LENS_OUT))
     assert rep["aggregate"]["B_blind"]["guardrail_pass_rate"] == 1.0
-    assert rep["verdict"] == "lens_neutral"
+    assert rep["significant_gain_axes"] == []
+    assert rep["verdict"] == "lens_inconclusive"
+
+
+def test_ci_reported_and_significance_aware():
+    rep = run_ablation([RECORD], _readout, _observer, _converge, _make_eval(BLIND_OUT, LENS_OUT))
+    ci = rep["ci_90_B_lens_minus_B_blind"]
+    assert set(ci) >= {"mechanism_recall", "relational_recall", "missing_data_flagged",
+                       "guardrail_pass_rate"}
+    # guardrail delta is a clean +1.0 on this single case -> CI excludes 0
+    assert ci["guardrail_pass_rate"]["lo"] > 0
+    assert "guardrail_pass_rate" in rep["significant_gain_axes"]
 
 
 def test_report_shape():

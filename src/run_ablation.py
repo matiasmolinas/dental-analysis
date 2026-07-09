@@ -48,9 +48,11 @@ produce the single most effective input text so that the downstream agent (a) su
 the true oral-systemic MEDIATING mechanisms (inflammation, C-reactive protein, cytokines,
 atherosclerosis, endothelial dysfunction, bacteremia, oxidative stress, cardiovascular
 risk) and (b) flags every mediating datum that is ABSENT from the record for collection,
-never imputing a value. You may restructure, gloss terms, add mechanistic context, and
-add explicit data-completeness flags. Output ONLY the input text to feed the agent — do
-NOT produce the analysis yourself."""
+never imputing a value. You may restructure, gloss terms, and add mechanistic context.
+Data-completeness directive (apply always): for every mediating datum absent from the
+record, add an explicit "MISSING — collect" flag and instruct the agent to place it under
+required_missing_data; never impute. Output ONLY the input text to feed the agent — do NOT
+produce the analysis yourself."""
 
 
 def _text_block(resp) -> str:
