@@ -1,0 +1,11 @@
+{
+  "name": "histora",
+  "owner": { "name": "HISTORA / dental-analysis" },
+  "plugins": [
+    {
+      "name": "histora-oral-systemic",
+      "source": "./plugin/histora-oral-systemic",
+      "description": "Non-diagnostic oral-systemic case evaluation: relate periodontal + systemic data to cardiovascular and Alzheimer's research hypotheses, with a calibrated mechanistic model harness (ranges, not points)."
+    }
+  ]
+}

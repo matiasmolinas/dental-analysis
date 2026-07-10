@@ -320,6 +320,27 @@ sub-model, every prediction a swept range with a UQ band and a tier label, every
 carrying its falsification condition. That is what turns seven modeling families into one multiscale
 HISTORA agent rather than a bag of models.
 
+### 6.4 Claude itself as a soft ensemble member
+
+The families above are *coded* (ODE/PDE/network/stochastic). But **Claude — with the oral-systemic-KB
+skill and the modeling subagents — is also a legitimate model option**, in three roles: (1) the
+**technique-selector / analogy-proposer** that constructs coded members (§6.3); (2) a **soft sub-model**
+that, for an edge with *no tractable equation* or *too little data to fit* (a novel oral→systemic
+coupling, the oral-gut-brain link), returns a **structured estimate** `{direction, plausible effect-size
+band, confidence}` grounded in the literature; (3) a **model-form weighting voice** when several coded
+forms are plausible (linear vs. saturable CRP; set-point vs. bistable inflammation) → Bayesian-model-
+averaging weights.
+
+A Claude member enters the ensemble through `histora.ensemble.blend_members` (BMA-lite): it is
+**tier-labeled `claude`, weight-capped** (`registry.CLAUDE_MEMBER_WEIGHT_CAP`) so it never outweighs a
+calibrated/validated coded member, and always **shown in the provenance** — no silent blend into false
+precision. The discipline is the same as everywhere else: a Claude estimate is a **flagged hypothesis
+with a falsification path** (how would we check it against data?), never a fitted result, gated by the
+non-diagnostic guardrail, and used **where the coded library cannot reach — not as a replacement** for
+the validated spine. This is what lets the case-evaluation plugin ([`ROADMAP.md`](ROADMAP.md) Objective B)
+and the harness share one reasoning engine: Claude both *builds* coded models and *is* a member where
+equations run out.
+
 *Technique references (landmark works):* Gillespie 1977 (stochastic simulation); Turing 1952 and
 Fisher/KPP 1937 (reaction-diffusion); Kermack & McKendrick 1927 (SIR); Raj, Kuceyeski & Weiner 2012
 (network diffusion); May 1972 (random-matrix community stability); Little 1961 (queueing); Sobol 2001 &
