@@ -26,10 +26,20 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
 - **A3. The next axes as code** — the disciplined additions from [`MODELS.md`](MODELS.md) §5, each with a
   data path: CV inflammation-wave (A3), microglial hub (B2), the diabetes coupling (C4). Only models
   that couple to the shared `gain` **and** have a public-data anchor.
-- **A4. Modeling skills + subagents** — a `modeling-technique-selector` subagent that picks a technique
-  (compartmental / control / nonlinear / network / stochastic / cross-domain analogy *with its
-  falsification gate*), instantiates it as a registry entry, calibrates it, and hands it to the
-  ensemble; a `guardrail-verifier` pass enforces non-diagnostic framing and the analogy gates.
+- **A4. Modeling skills + subagents — and Claude as an ensemble member.** A `modeling-technique-selector`
+  subagent that picks a technique (compartmental / control / nonlinear / network / stochastic /
+  cross-domain analogy *with its falsification gate*), instantiates it as a registry entry, calibrates
+  it, and hands it to the ensemble; a `guardrail-verifier` pass enforces non-diagnostic framing and the
+  analogy gates. **Claude, with the right skills + subagents, is itself a first-class model option** —
+  a `kind: "claude"` sub-model in the registry that supplies a structured `{direction, band, confidence}`
+  estimate for an edge the coded ODE/PDE library *cannot reach* (a novel oral-systemic coupling, a
+  sparse-data link) or a model-form weight when several coded forms are plausible. It enters the ensemble
+  via `ensemble.blend_members` (Bayesian-model-averaging-lite), **capped** so it never outweighs a
+  calibrated/validated coded member (`CLAUDE_MEMBER_WEIGHT_CAP`), tier-labeled and always shown in the
+  provenance — a flagged hypothesis with a falsification path, never a fitted result, gated by the
+  non-diagnostic guardrail. This is how the plugin (Objective B) and the harness (Objective A) share the
+  *same* reasoning engine: Claude both selects/constructs coded models and contributes soft estimates
+  where equations run out.
 
 **"Stable" means:** every built axis has a bootstrap-CI'd anchor on public data, the ensemble reports
 ranges with tier labels, and the guardrail/traceability tests stay green.

@@ -38,20 +38,21 @@ BRAAK_REGIONS = ["entorhinal", "hippocampus", "neocortex"]
 
 
 def neuro_params(p: dict | None = None) -> dict:
-    """Neuro constants merged onto the Phase-1 params (which carry ε, IL-6/CRP, etc.)."""
+    """Neuro constants merged onto the Phase-1 params (which carry ε, IL-6/CRP, etc.). Uses
+    setdefault so a caller (e.g. the ensemble sweeping β_tau) can override any constant."""
     p = dict(p or default_params())
     p.setdefault("alpha_tau", 0.019)     # /yr baseline tau growth (Schäfer 2021, amyloid-positive)
-    p["N_max"] = 1.0                     # max neuroinflammation (normalized)
-    p["K_gain"] = 4.0                    # pg/mL systemic IL-6 excess for half-max neuroinflammation
-    p["bbb_gain"] = 0.5                  # BBB-permeability amplification of crossing (E1.7)
-    p["beta_tau"] = 0.6                  # inflammation→α coupling — FLAGGED unknown; sweep it
+    p.setdefault("N_max", 1.0)           # max neuroinflammation (normalized)
+    p.setdefault("K_gain", 4.0)          # pg/mL systemic IL-6 excess for half-max neuroinflammation
+    p.setdefault("bbb_gain", 0.5)        # BBB-permeability amplification of crossing (E1.7)
+    p.setdefault("beta_tau", 0.6)        # inflammation→α coupling — FLAGGED unknown; sweep it
     # Literature κ≈1.30 µm/yr (Fornari 2019 / Schäfer 2021) is a CONTINUOUS spatial coefficient, not
     # a graph-diffusion rate; on the discrete 3-node Braak chain we use an illustrative coupling on
     # α's timescale so the front propagates over decades (large κ would equilibrate in <1 yr).
-    p["kappa_graph"] = 0.02              # /yr, illustrative discrete-graph coupling
-    p["tau_seed"] = 0.05                 # initial entorhinal tau fraction
-    p["tau_threshold"] = 0.5             # Braak-like crossing fraction
-    p["horizon_years"] = 20.0
+    p.setdefault("kappa_graph", 0.02)    # /yr, illustrative discrete-graph coupling
+    p.setdefault("tau_seed", 0.05)       # initial entorhinal tau fraction
+    p.setdefault("tau_threshold", 0.5)   # Braak-like crossing fraction
+    p.setdefault("horizon_years", 20.0)
     return p
 
 
@@ -116,10 +117,11 @@ def tau_front_arrival(alpha_eff: float, p: dict, t_max: float = 800.0, dt: float
 
 
 # ------------------------------------------------------------------- the neuro centerpiece
-def neuro_centerpiece(features: dict, p: dict | None = None) -> dict[str, Any]:
+def neuro_centerpiece(features: dict, p: dict | None = None, front: bool = True) -> dict[str, Any]:
     """Chain oral structural severity → systemic IL-6 gain → neuroinflammation → tau-α → tau burden
     and onset, with the periodontal-therapy counterfactual, a beta_tau sweep (the flagged coupling
-    as a swept unknown → a RANGE), and the connectome front-arrival order."""
+    as a swept unknown → a RANGE), and the connectome front-arrival order. `front=False` skips the
+    (expensive) Braak-chain front simulation — used by the ensemble, which needs only the scalars."""
     p = neuro_params(p)
     H, c0, theta = p["horizon_years"], p["tau_seed"], p["tau_threshold"]
 
@@ -161,7 +163,7 @@ def neuro_centerpiece(features: dict, p: dict | None = None) -> dict[str, Any]:
                             "note": "absolute years illustrative (α_tau CI ±0.27); read the delta"},
         "beta_tau_sweep": sweep,
         "tau_burden_range_over_beta": burden_range,
-        "connectome_front_arrival_years": tau_front_arrival(alpha_eff, p),
+        "connectome_front_arrival_years": (tau_front_arrival(alpha_eff, p) if front else None),
         "confidence": "scaffold",
         "flags": ["inflammation→α is a FLAGGED hypothesis (not fitted)",
                   "atuzaginstat/GAIN trial failed → live hypothesis, not causation",

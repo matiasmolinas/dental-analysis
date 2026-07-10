@@ -1,0 +1,8 @@
+{
+  "name": "histora-oral-systemic",
+  "description": "HISTORA — a non-diagnostic oral-systemic research agent. Evaluate a new case: relate a patient's periodontal + systemic data to cardiovascular and Alzheimer's/neurodegeneration research hypotheses, and run a mechanistic model harness (IL-6/CRP → CV & neuro axes, calibrated to real data) to produce parameter-level predictions with honest uncertainty ranges. Never diagnoses; never imputes a patient value.",
+  "version": "0.1.0",
+  "author": {
+    "name": "HISTORA / dental-analysis"
+  }
+}
