@@ -160,6 +160,41 @@ def _plausible(v, lo, hi):
     return v if (v is not None and v == v and lo <= v <= hi) else None
 
 
+def load_cv_table(paths: dict[str, str]) -> list[dict[str, Any]]:
+    """Join the 2009-2010 files on SEQN and derive the perio↔CV analysis records. Unlike the neuro
+    cycle, CRP (the inflammatory mediator) IS co-measured here with the periodontal exam and CV
+    history — so this cycle can test the perio→CRP mediator edge directly. Each record: seqn,
+    perio_cal, perio_ppd (mm), hs_crp (mg/L), cv_history (1 if ever CHD/MI/stroke else 0),
+    age, education (1-5), smoking (1 ever / 0 never), bmi, hba1c. Missing → None. Requires pandas."""
+    merged = _load_joined(paths, how="outer")
+    la_cols = [c for c in merged.columns if _LA_RE.match(c)]
+    pc_cols = [c for c in merged.columns if _PC_RE.match(c)]
+
+    records = []
+    for _, row in merged.iterrows():
+        def g(col):
+            return None if col not in row or row[col] != row[col] else float(row[col])
+
+        smoke = g("SMQ020")  # 1=yes ever, 2=no
+        # CV history: ever told had coronary heart disease / heart attack / stroke (1=yes, 2=no)
+        cvx = [g(c) for c in ("MCQ160C", "MCQ160E", "MCQ160F")]
+        cv_history = (1.0 if any(v == 1 for v in cvx)
+                      else 0.0 if any(v == 2 for v in cvx) else None)
+        records.append({
+            "seqn": g(JOIN_KEY),
+            "perio_cal": _mean_plausible(row, la_cols, 0, 20),
+            "perio_ppd": _mean_plausible(row, pc_cols, 0, 20),
+            "hs_crp": _plausible(g("LBXCRP"), 0, 50),          # mg/L (2009-2010 standard CRP)
+            "cv_history": cv_history,
+            "age": _plausible(g("RIDAGEYR"), 0, 130),
+            "education": _plausible(g("DMDEDUC2"), 1, 5),
+            "smoking": (1.0 if smoke == 1 else 0.0 if smoke == 2 else None),
+            "bmi": _plausible(g("BMXBMI"), 10, 80),
+            "hba1c": _plausible(g("LBXGH"), 3, 20),
+        })
+    return records
+
+
 def load_neuro_table(paths: dict[str, str]) -> list[dict[str, Any]]:
     """Join the 2011-2012 files on SEQN and derive the perio↔cognition analysis records. Periodontal
     severity is derived defensively by column-pattern matching (per-site OHX##LA#/OHX##PC# averaged
