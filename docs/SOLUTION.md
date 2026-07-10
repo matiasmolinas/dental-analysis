@@ -8,6 +8,10 @@
 > **Non-diagnostic, throughout.** HISTORA is an oral–systemic *research* agent. Every output is a
 > population-level or in-silico parameter-level prediction, a swept range, or a data-collection flag —
 > **never** a patient diagnosis and **never** an imputed patient value. Nothing here is medical advice.
+>
+> **Companions:** the condensed technical report is [`PAPER.md`](PAPER.md); the comparative validation
+> against separate models and bare Claude is [`BENCHMARK.md`](BENCHMARK.md); the full model catalogue is
+> [`MODELS.md`](MODELS.md).
 
 ---
 
@@ -49,6 +53,8 @@ generates coherent, cross-axis, falsifiable hypotheses rather than a disconnecte
 |---|---|
 | The mechanistic pipeline is internally consistent, calibratable, and stable | **Validated capability** (deterministic, tested) |
 | Higher periodontal severity tracks worse cognition in NHANES, adjusted | **Validated association** (real data, 3/4 outcomes significant) |
+| Higher periodontal severity tracks higher CRP and higher HbA1c in NHANES, adjusted | **Validated associations** (2009-2010; CV and metabolic anchors significant) |
+| The integrated harness beats separate models and bare Claude on a pre-specified scorecard | **Validated comparatively** (parsimony, calibration, uncertainty, falsifiability; direction ties — [`BENCHMARK.md`](BENCHMARK.md)) |
 | Externalizing a known-but-dropped deterministic step improves guardrail reliability | **Validated capability** (W1, reproduced) |
 | Oral inflammation *causes* faster tau spread via α | **Flagged hypothesis** — swept as a range, never asserted |
 
