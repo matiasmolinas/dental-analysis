@@ -95,12 +95,32 @@ non-diagnostic hypothesis-generating agent. (See the library's Gladstone-alignme
 
 ## 4. Phases
 
-| Phase | Deliverable | Model cost | Composes with |
+| Phase | Deliverable | Status | Composes with |
 |---|---|---|---|
-| **0. Deep research** | `model-library.md` (cited, confidence-flagged) + index | low (web) | — |
-| **1. Modeling harness** | sympy/scipy tools + one model instantiated, simulated, fit, sensitivity-analyzed | medium | new `src/` module + tools |
-| **2. Fair lens/monitor re-test** | re-run Path A (monitor) + ablation on the mechanistic task, where reasoning defects are detectable | medium–high | `qa_monitor.py`, `ablation.py` |
-| **3. Oral–neuro axis** | Alzheimer edge as a second domain, Gladstone-forward | medium | `bridge_concepts.py`, schemas |
+| **0. Deep research** | `model-library.md` (cited, confidence-flagged) | **DONE** — 4 tracks, ~30 cited models | — |
+| **1. Modeling harness** | pure-python ODE tools + the centerpiece instantiated, ε-calibrated, both axes, counterfactuals | **DONE** — `src/mech_ode.py`, `src/mech_models.py`, `src/mech_calibrate.py`, `src/run_mechanistic.py`; 17 tests | new `src/` modules |
+| **2. Fair lens/monitor re-test** | re-run Path A (monitor) + ablation on the mechanistic task, where reasoning defects are detectable | next | `qa_monitor.py`, `ablation.py` |
+| **3. Oral–neuro axis** | Alzheimer edge as a second domain, Gladstone-forward | pending | `bridge_concepts.py`, schemas |
+
+### Phase 1 — what was built (2026-07-09)
+
+A pure-python mechanistic-modeling toolkit (no scipy/sympy/GPU dependency; numpy optional):
+`mech_ode.py` (RK4 integration, steady state, finite-difference Jacobian, closed-form eigenvalues +
+stability, local sensitivity, parameter sweep) and `mech_models.py` (the centerpiece: periodontal
+structural source → IL-6 → hepatic CRP turnover → CV and neuro axes, driven by one shared
+inflammatory-gain quantity). `mech_calibrate.py` pins the one epistemic-risk edge — the spillover
+efficiency ε — to the **~0.5 mg/L ΔhsCRP-after-periodontal-therapy anchor** (bisection). Running
+`run_mechanistic.py` calibrates ε≈0.15, produces a monotone CRP response across structural strata
+(low-BOP 2.7 → high-BOP+diabetes+smoking 3.3 mg/L), forks both axes from the same IL-6 state
+(CV recruitment ×1.01–1.05; tau-α +0.6–3.0%), runs the therapy and IL-6-blockade counterfactuals,
+and **sweeps ε to report a CRP range (2.8–3.4 mg/L)** rather than a point — the honest treatment of
+the uncertain edge. The ODE core is verified stable and its closed-form steady state matches the
+integrated dynamics. Non-diagnostic: structural bands/flags only (numeric patient values are
+ignored by construction, asserted in tests).
+
+> Note on the word *Jacobian*: the harness's `jacobian()` is the **dynamical-systems** Jacobian of
+> the biological ODE (∂ẏ_i/∂y_j, for stability), **not** the Anthropic "Jacobian lens"
+> (∂readout/∂activations of the LLM). Same word, different object; they meet only in Phase 2.
 
 ## 5. Honest gut-check
 
