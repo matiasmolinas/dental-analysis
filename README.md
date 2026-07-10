@@ -1,145 +1,118 @@
-# dental-analysis — HISTORA Oral-Systemic Intelligence Agent
+# HISTORA — Oral-Systemic Intelligence Agent
 
-> **What this is (honest, post-investigation).** An **apparatus and a rigorous negative.**
-> We built a Claude-only system to ask whether reading a model's internal *workspace* helps
-> optimize its inputs — an inferred-lens Observer loop, five-surface evolution, a
-> session-consciousness ledger, a guardrail-protected gate — and a tested experimental
-> apparatus (A/B with bootstrap CIs, an ablation, a counterfactual-sensitivity test), run
-> live on real NHANES cases. The finding: the workspace signal is genuinely **non-redundant
-> with the output**, but **no actuator we built turns it into an outcome gain over a strong
-> blind baseline** on this task. The one clean, repeated win — reliable missing-data flagging
-> (0.00→1.00, 6/6) — is a **deterministic directive, not the lens.** Canonical conclusions:
-> [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) and [`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md).
+> A **non-diagnostic** research agent that relates periodontal (gum) disease to systemic disease —
+> **cardiovascular and Alzheimer's / neurodegeneration** — by (1) surfacing oral-systemic risk
+> **hypotheses** from a patient's data and (2) building and running **mechanistic mathematical models**
+> of the candidate pathways, **validated against public data**. It turns *"these things co-occur"* into
+> *"here is a candidate mechanism, simulated, checked against real data, with honest uncertainty."*
+> It never diagnoses and never imputes a patient value.
+>
+> **New here? Start with [`docs/VISION.md`](docs/VISION.md) (the why, for clinicians + engineers) and
+> [`docs/SOLUTION.md`](docs/SOLUTION.md) (the how).**
 
-A **non-diagnostic** research agent that relates periodontal data (probing, bleeding, bone
-loss, treatments, radiographs) to medical / cardiovascular data (hypertension, diabetes,
-lipids, smoking, medications, CV history) and surfaces oral-systemic risk profiles and
-research hypotheses — used as the domain instance for the methodology above.
+## The problem
 
-## What works (the validated pieces)
+Periodontal disease is common, chronic, and inflammatory. A growing body of evidence links it to
+**cardiovascular disease** and, more recently, **Alzheimer's / neurodegeneration** — plausibly through
+**systemic inflammation**. But that evidence is split between population statistics on one side and
+disconnected molecular mechanisms on the other. HISTORA bridges them: a hypothesis-generating agent
+with a mechanistic-modeling backbone and an empirical-validation layer, built to occupy the honest
+terrain of *plausible-but-unproven* — generating prioritized, testable, non-diagnostic hypotheses and
+flagging the confounders, never overclaiming.
 
-- **Deterministic missing-data flagging → guardrail reliability.** `missing_data_flagged`
-  and `guardrail_pass` go **0.00 → 1.00 (6/6)** on real NHANES cases — the single clean,
-  repeated win. It comes from a **hardcoded data-completeness directive**
-  (`src/relational_signals.py`, `src/ab_eval.py`), *not* the lens: free-form convergers handed
-  the same directive fell back to 0.00.
-- **The protected non-diagnostic invariant.** Never evolved; part of every gate; enforced at
-  *write time* where it could leak cross-patient (`src/lever_ledger.py` rejects any numeric
-  patient value). Held across every experiment.
-- **The honest experimental apparatus** — `src/ab_eval.py`, `src/ablation.py` (bootstrap CIs),
-  `src/counterfactual.py`. Domain-general, 44 tests green; it is what produced a rigorous
-  `lens_inconclusive` instead of a false positive.
+## The hackathon
 
-## What was tried and is inconclusive
+Co-organized with **Gladstone Institutes**, a leader in neurodegeneration research (tau, APOE4,
+microglia/neuroinflammation, the blood-brain barrier). HISTORA's **oral → neuro axis** — periodontitis
+→ systemic inflammation → neuroinflammation → tau propagation — offers Gladstone-adjacent labs a
+**novel upstream perturbation** to plug into their existing tau/microglia/BBB frameworks. The project
+also explores, *indirectly*, Anthropic's global-workspace ("Jacobian lens") interpretability paper —
+see the honest note under [What we explored and set aside](#what-we-explored-and-set-aside).
 
-The **Observer-lens loop** (below) ran as software, but its lens-driven contribution over
-*blind* convergence was **not demonstrated** (`lens_inconclusive`; the whole gain was blind
-prompt engineering). The Session Working-Consciousness ran live once (n=1); cross-session
-memory and targeted injection show a small, single-case signal without demonstrated payoff.
-Details + the one number for each: [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) §2,
-[`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md).
+## The solution that works
 
-**The loop (tested, inconclusive).** A second model instance — the **Lens Observer**
-(`agents/lens-observer.md`) — reads the primary's **inferred Jacobian-lens** self-report
-(`claude-workspace-probe` → `schemas/lens_readout_schema.json`), diagnoses deficiencies
-(`schemas/deficiency_map_schema.json`), and drives bounded, gated edits across five surfaces
-(work prompt, skill, KB, sub-agent def + injected variables, **harness code**), curating a
-Session Working-Consciousness ledger. Claude only — no proxy, no GPU, no measured lens; the
-inferred lens is **self-report, never a measurement or clinical evidence**, corroborated by
-counterfactual-sensitivity flips. The final authority is task accuracy + the protected
-guardrail, never the readout score. Full method: [`docs/APPROACH.md`](docs/APPROACH.md).
+One shared quantity — the **effective inflammatory gain** (excess IL-6) — links a periodontal
+inflammatory source to three systemic axes:
 
-## The measured-lens API feature (the forward claim)
+```
+ periodontal severity ─► IL-6 ─► hepatic CRP        (calibrated to the real ~0.5 mg/L
+ (structural, non-diagnostic)     turnover, t½≈19h    ΔhsCRP-after-periodontal-therapy anchor)
+                                        │
+                     ┌──────────────────┼───────────────────────┐
+              METABOLIC             CARDIOVASCULAR             NEURO
+        (insulin sensitivity)  (endothelium / atherosclerosis,  (neuroinflammation → tau-spread α →
+                                wall shear stress, IL-6→CRP)     Fisher–KPP propagation on the connectome)
+```
 
-The evidence-motivated ask — and the one route that removes the access layer everything is
-bottlenecked on: **expose the real Jacobian lens on Claude through the Anthropic API.** This
-repo is the **consumer built and waiting for it** — swapping the inferred signal for a
-measured one is a signal-source change with no redesign (`schemas/lens_readout_schema.json`
-is the contract). This is a *forward claim*, not a finding. See
-[`docs/API_FEATURE_REQUEST.md`](docs/API_FEATURE_REQUEST.md).
+1. **Mechanistic-modeling harness** — pure-python tools that *formulate and run* mechanistic models
+   (ODEs, control theory, fluid transport, ecological dynamics), grounded in a **curated, cited model
+   library** ([`docs/model-library.md`](docs/model-library.md), ~30 confidence-tiered models). The
+   centerpiece chain is calibrated to a real interventional anchor and forks to the CV and neuro axes;
+   every uncertain coupling is **flagged and swept as a range**, never asserted.
+   `src/mech_ode.py`, `src/mech_models.py`, `src/mech_calibrate.py`, `src/mech_neuro.py`.
+2. **Empirical validation** — the **periodontitis ↔ cognition association** on real **NHANES 2011-2012**
+   (n=919 older adults): **3 of 4 cognitive measures show a significant, confounder-adjusted
+   (age/education/smoking/HbA1c) negative association** with periodontal severity — the direction the
+   mechanistic model predicts. Reproducible with pure-python stats + bootstrap CIs.
+   `src/perio_cognition.py`, [`docs/analysis/perio-cognition-result.md`](docs/analysis/perio-cognition-result.md).
+3. **Non-diagnostic relational agent** — generates structured oral↔CV↔neuro research hypotheses with
+   full traceability and a **protected guardrail** (never a diagnosis, never an imputed value, enforced
+   at write time). `src/relational_signals.py`, `src/ab_eval.py`, `schemas/output_schema.json`.
+4. **An honest experimental apparatus** — A/B, ablation, counterfactual-sensitivity, all with
+   bootstrap confidence intervals. The discipline that produced rigorous results (including rigorous
+   negatives). `src/ablation.py`, `src/counterfactual.py`.
+5. **The execution-gap capability** — the one robust way found to improve the agent's inputs:
+   **externalize a deterministic structural step the model *knows* but *drops* in situ** (validated:
+   missing-data flagging **0 → 1.0**). A pre-A/B predictor + a 3-arm A/B to scale it.
+   `src/exec_gap.py`, [`docs/analysis/lens-recipes-and-the-execution-gap.md`](docs/analysis/lens-recipes-and-the-execution-gap.md).
 
-**Docs:** [`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md) (**canonical** — the whole
-arc, every hypothesis answered + next steps), [`docs/RETROSPECTIVE.md`](docs/RETROSPECTIVE.md)
-(what worked / was inconclusive / failed), [`docs/APPROACH.md`](docs/APPROACH.md) (the method,
-domain-general), [`docs/API_FEATURE_REQUEST.md`](docs/API_FEATURE_REQUEST.md) (the ask),
-[`docs/AB_PROTOCOL.md`](docs/AB_PROTOCOL.md) (the apparatus),
-[`docs/DATASETS.md`](docs/DATASETS.md) (NHANES + Synthea). Historical / hypothesis-status:
-[`docs/REFORMULATION.md`](docs/REFORMULATION.md), [`docs/PLAN.md`](docs/PLAN.md),
-[`docs/IMPACT.md`](docs/IMPACT.md), [`docs/HACKATHON_STRATEGY.md`](docs/HACKATHON_STRATEGY.md).
-The full research trail is archived under
-[`docs/analysis/ARCHIVE/`](docs/analysis/ARCHIVE/README.md).
+## What we explored and set aside
+
+The project rigorously investigated whether reading a model's internal **workspace** (the *Jacobian
+lens*) could optimize the agent's inputs and evolve its harness. The answer is a **rigorous negative
+with a precise explanation**: on tasks within a capable model's competence, the lens is redundant with
+*(the output + a competent reader's own knowledge)* — so reading it adds nothing over reading the
+output with a capable model. Cross-session memory/consolidation was likewise **inconclusive**. These
+negatives are documented honestly and they *sharpened* the positive: the durable value — the
+mechanistic models, the empirical validation, and the execution-gap capability — depends on none of
+them. Full trail: [`docs/analysis/`](docs/analysis/README.md); canonical technical record:
+[`docs/RESEARCH_SUMMARY.md`](docs/RESEARCH_SUMMARY.md).
+
+## Run it
+
+Everything in the core runs on **pure Python** (no GPU, no notebook); the mechanistic models and the
+NHANES validation need only `numpy`/`pandas` at run time.
+
+```bash
+python src/run_mechanistic.py       # the centerpiece: periodontal source → IL-6/CRP → CV & neuro axes
+python src/run_mech_neuro.py        # the neuro axis: neuroinflammation → tau spread (Braak-ordered)
+python src/run_perio_cognition.py   # the empirical validation on real NHANES 2011-2012 (needs network)
+python -m pytest tests/ -q          # or run each tests/test_*.py — pure-python harness, 120+ tests
+```
 
 ## Layout
 
 ```
 dental-analysis/
   src/
-    bridge_concepts.py         # target mediators + shared concepts (the Observer spec)
-    record_formats.py          # one NHANES-grounded record, five candidate formats (A–E)
-    relational_signals.py      # deterministic, non-diagnostic structural signals (harness)
-    nhanes_mapping.py          # schema field -> NHANES 2009-2010 file+variable codes
-    nhanes_loader.py           # download XPT + build a grounded case
-  schemas/
-    output_schema.json         # non-diagnostic structured output contract
-    lens_readout_schema.json   # inferred-lens readout the executor emits
-    deficiency_map_schema.json # deficiency map + bounded edits the Observer returns
-    examples/                  # worked readout -> deficiency-map example (schema-valid)
-  prompts/
-    observer.md                # Lens Observer system prompt (inferred-lens controller)
-    evaluator.md               # Claude final-analysis prompt
-  agents/                      # orchestrator + specialists + lens-observer + skillopt-optimizer
-  skills/                      # reusable capability docs (SkillOpt-trainable; guardrail protected)
-  tests/                       # harness tests (pure-python, no GPU)
-  .session/                    # Session Working-Consciousness template + worked example
+    mech_ode.py / mech_models.py / mech_calibrate.py / mech_neuro.py   # the mechanistic harness
+    perio_cognition.py / nhanes_neuro_loader.py                        # the empirical validation
+    ab_eval.py / ablation.py / counterfactual.py                       # the honest apparatus
+    relational_signals.py / bridge_concepts.py / record_formats.py     # the relational signals + concepts
+    exec_gap.py                                                        # the execution-gap capability
+    nhanes_mapping.py / nhanes_loader.py                               # NHANES data mapping + loader
+  schemas/          # non-diagnostic output contract + examples
+  agents/ skills/   # the Claude Code agent + skill catalog (see their README.md)
+  docs/             # VISION, SOLUTION, model-library, RESEARCH_SUMMARY, DATASETS, analysis trail
+  tests/            # pure-python harness tests (no GPU)
 ```
 
-See [`agents/README.md`](agents/README.md) and [`skills/README.md`](skills/README.md)
-for the full subagent + skill catalog and the skill↔subagent map.
+## Data & guardrails
 
-## Reference repos (siblings, not part of this repo)
-
-- `../jacobian-lens/` — Anthropic's Jacobian-lens reference implementation. We **do not
-  run or import it** — this project explores the paper *indirectly* via the self-report
-  skill on Claude. It is the instrument we would use directly if the lens were exposed
-  on Claude through the API (see the API-feature section above).
-- `../SkillOpt/` — Microsoft Research SkillOpt: skills as trainable parameters,
-  the reference for the skill-evolution loop (the T1 promotion tier).
-- `Doriandarko/skirano-skills` (GitHub, not cloned) — Pietro Schirano's `j-space-lens`
-  self-report skill that inspired `skills/claude-workspace-probe.md`. Referenced with
-  attribution, **not vendored** (its repo has no license); install its plugin
-  separately if you want the original.
-
-## Run
-
-Everything runs on Claude — no GPU, no notebook. The agents and skills are Claude Code
-artifacts; the `src/` harness is pure-python and loads without a GPU. Verify the
-harness:
-
-```bash
-python3 tests/test_relational_signals.py     # deterministic signals (5/5)
-```
-
-The full loop is driven by the orchestrator (`agents/orchestrator.md`) and the Lens
-Observer (`agents/lens-observer.md`); a worked, schema-valid turn is in
-`schemas/examples/` and a 3-turn session ledger in `.session/example_case01.md`.
-
-## Data
-
-Cases are grounded in **NHANES 2009–2010** (public, de-identified — the cycle that
-pairs the full-mouth periodontal exam with CRP), plus the **NHANES Oral Microbiome
-2009–2012** mediator layer (SEQN-linked) and **Synthea** for longitudinal
-progression and shareable demo records. Mapping in [`src/nhanes_mapping.py`](src/nhanes_mapping.py),
-loader in [`src/nhanes_loader.py`](src/nhanes_loader.py), full detail in
-[`docs/DATASETS.md`](docs/DATASETS.md).
-
-## Guardrails
-
-Non-diagnostic throughout. Missing mediating data becomes a **collection flag**,
-never an imputed patient value. Every relational axis cites the input fields it
-was derived from. NHANES-grounded / synthetic data only for methodology development.
-
-## Note
-
-`jacobian-lens/` (sibling folder) is the upstream paper reference and is left
-unmodified; this project does not run or import it — it explores the paper indirectly,
-on Claude, through the self-report skill.
+Grounded in **public, de-identified NHANES** (2009-2010 for the periodontal + cardiovascular +
+inflammatory anchor; 2011-2012 for the periodontal + cognitive battery), plus a curated mechanistic
+model library from the peer-reviewed literature. **Non-diagnostic throughout:** research hypotheses and
+mechanistic models only; missing data is a collection flag, never an imputed value; every relational
+axis cites the input fields it was derived from. Honest by design: hypothesis-level couplings are
+flagged and reported as ranges, and the one failed causal drug test of the periodontitis→Alzheimer
+hypothesis (atuzaginstat / GAIN) is named as the standing caveat. See [`docs/DATASETS.md`](docs/DATASETS.md).

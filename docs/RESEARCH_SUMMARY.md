@@ -1,15 +1,45 @@
-# Executive Summary — the HISTORA / Jacobian-lens research arc
+# Executive Summary — the HISTORA research arc (technical record)
 
-> 2026-07-09. Consolidates the full investigation (10 analyses in [`analysis/`](analysis/) + the
-> live runs in [`REFORMULATION.md`](REFORMULATION.md) §R5–R6). Purpose: answer every hypothesis and
-> strategy raised along the way, and define prioritized next steps. Claude-only throughout; the
-> inferred/predicted lens is self-report/inference, never a measurement.
+> Consolidated 2026-07-10. The **canonical honest technical record** of the whole investigation. For
+> the product-facing story, read [`VISION.md`](VISION.md) and [`SOLUTION.md`](SOLUTION.md); for the
+> full reasoning trail, [`analysis/`](analysis/README.md). This document keeps the complete arc —
+> including the lens investigation that became a rigorous negative — so nothing is lost.
 
-## 0. One-line verdict
+## 0. Final state — the durable positives and the honest negatives
 
-**The workspace/lens signal is real and non-redundant — but no mechanism we built converts it into an
-outcome gain over a strong blind baseline, on this (largely re-derivable) task. The bottleneck is the
-actuator + the task + the access, not the signal's existence.** Two unrun doors could still flip it.
+**What works (the durable value):**
+- **A mechanistic-modeling harness** — oral → IL-6/CRP → CV & neuro axes, one shared inflammatory-gain
+  parameter, calibrated to the real ~0.5 mg/L ΔhsCRP-after-therapy anchor; uncertain couplings flagged
+  and swept as ranges (`src/mech_*.py`, [`model-library.md`](model-library.md)).
+- **A validated empirical result** — periodontitis ↔ cognition on real NHANES 2011-2012: **3/4
+  cognitive measures show a significant, confounder-adjusted negative association** with periodontal
+  severity, the direction the model predicts ([`analysis/perio-cognition-result.md`](analysis/perio-cognition-result.md)).
+- **The execution-gap capability** — externalize a deterministic step the model *knows* but *drops in
+  situ* (W1: missing-data flagging **0 → 1.0**), generalized with a predictor + 3-arm A/B
+  (`src/exec_gap.py`, [`analysis/lens-recipes-and-the-execution-gap.md`](analysis/lens-recipes-and-the-execution-gap.md)).
+- **An honest apparatus** — A/B, ablation, counterfactual-sensitivity, all with bootstrap CIs; 120+
+  tests green.
+
+**The lens verdict (rigorous negative, now *explained*):** the workspace/lens signal is real and
+non-redundant with the *output*, **but no mechanism converts it into an outcome gain over a strong
+blind baseline** — because it is **redundant with (output + a competent reader's own knowledge)**:
+`I(L;Y|O,K_R)≈0` for a frontier reader on an in-competence task (the **boundary condition**,
+[`analysis/why-no-lens-payoff.md`](analysis/why-no-lens-payoff.md)). Every Claude test was
+"Opus-reads-Opus" (max competence → the marginal collapses). The one regime the boundary *permits* —
+a **measured** lens on a **weaker** model (Qwen 4B) on out-of-competence tasks — is untested and is
+epistemic-hygiene mechanism-closure only, not a path to a frontier harness
+([`analysis/validated-evolution-and-qwen-regime.md`](analysis/validated-evolution-and-qwen-regime.md)).
+Cross-session memory/consolidation: **`memory_inconclusive`** ([`analysis/memory-value-result.md`](analysis/memory-value-result.md)).
+
+**The one-line verdict** (preserved for the record): *the workspace/lens signal is real and
+non-redundant, but no mechanism we built converts it into an outcome gain over a strong blind baseline —
+because a competent reader already has, from the output, what the lens would add. The durable value is
+the mechanistic + empirical product above, which depends on none of it.*
+
+---
+
+> The sections below are the **original arc record** (H1–H9, the lens investigation as it unfolded),
+> kept verbatim for honesty. Read §0 above for the final consolidated state.
 
 ## 1. What we built
 
@@ -98,7 +128,7 @@ the measured lens remain the two verdict-changing doors (§6).
 
 ### 4c. Forward-plan execution — the sensible paths, built + offline-tested (2026-07-09)
 
-Following the gut-checked plan in [`FORWARD_PLAN.md`](FORWARD_PLAN.md) (Fable), the paths that can
+Following the gut-checked plan in [`FORWARD_PLAN.md`](analysis/ARCHIVE/FORWARD_PLAN.md) (Fable), the paths that can
 honestly move — or honestly make-true — a claim were implemented. All offline pieces are tested; the
 live experiments are wired and pending a run.
 

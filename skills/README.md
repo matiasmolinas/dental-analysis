@@ -1,13 +1,14 @@
 # Skills
 
-> **Status:** the lens-evolution loop these skills feed was tested and came out
-> **inconclusive** over blind convergence — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md)
-> §0. The `non-diagnostic-guardrail` (protected invariant) and the runtime clinical skills stand.
+> **Status.** The runtime clinical skills and the `non-diagnostic-guardrail` (a protected invariant)
+> are the working, non-diagnostic HISTORA agent (see [`../docs/VISION.md`](../docs/VISION.md) /
+> [`../docs/SOLUTION.md`](../docs/SOLUTION.md)). The lens/Observer-evolution skills
+> (`claude-workspace-probe`, `lens-deficiency-analysis`, `session-working-consciousness`,
+> `harness-evolution`) fed a research loop that came out a rigorous negative
+> ([`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md) §0); they are kept as the honest record,
+> not the product.
 
-Reusable capability documents (Claude Code skill format: frontmatter + procedural
-body). The body of each trainable skill is a SkillOpt-style artifact — compact,
-auditable, imperative discipline — so it can be evolved by the `skillopt-optimizer`
-(reference: sibling `SkillOpt/` repo). See [`docs/PLAN.md` §3b](../docs/PLAN.md).
+Reusable capability documents (Claude Code skill format: frontmatter + procedural body).
 
 | Skill | Purpose | Trainable? |
 |---|---|---|
@@ -26,7 +27,7 @@ auditable, imperative discipline — so it can be evolved by the `skillopt-optim
 `claude-workspace-probe` is inspired by the `j-space-lens` skill in
 `Doriandarko/skirano-skills` (referenced, not vendored — no license). It is
 uninstrumented self-report, **not a measurement** — the only lens signal, on Claude
-only; see [`../docs/APPROACH.md`](../docs/APPROACH.md).
+only; see [`../docs/APPROACH.md`](../docs/analysis/ARCHIVE/APPROACH.md).
 
 ## Evolution gate
 
