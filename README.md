@@ -47,7 +47,7 @@ inflammatory source to systemic axes:
    data flags). `src/histora/agent.py`, `src/run_agent.py`.
 2. **Mechanistic-modeling harness** — pure-python tools that *formulate and run* mechanistic models
    (ODEs, control theory, fluid transport), grounded in a **curated, cited model library**
-   ([`docs/model-library.md`](docs/model-library.md)). The centerpiece chain is calibrated to a real
+   ([`docs/MODELS.md`](docs/MODELS.md) (the models, evidence, and fitted parameters) and [`docs/model-library.md`](docs/model-library.md)). The centerpiece chain is calibrated to a real
    interventional anchor and forks to the CV and neuro axes; every uncertain coupling is **flagged and
    swept as a range**. `src/histora/mech_*.py`.
 3. **Empirical validation** — the **periodontitis ↔ cognition association** on real **NHANES 2011-2012**
