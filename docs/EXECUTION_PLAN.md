@@ -4,21 +4,22 @@
 > analyses, with honest **offline vs billed** flags and **gating** so we don't burn spend on
 > expected-nulls or adopt frameworks before measuring value. Cheapest-decisive-first.
 
-## Track 1 — Harness evolution (gated on one measurement)
+## Track 1 — Harness evolution (gated on one measurement) — **RESOLVED: adopt nothing**
 
-**1a. Decision gate: run `run_memory_value.py` — the trace-consolidation value we built and never
-measured.** [BILLED, ~100 Opus/Sonnet calls] The boundary condition (`why-no-lens-payoff.md` §6)
-names trace-consolidation as the only live slice; a null here is a null on any "dream/consolidation"
-framework transitively. Size for `n_beliefs_consolidated ≥ 1` (`--fresh-ledger --min-support 1`,
-moderate `--n-train`); a run with `beliefs==[]` is a no-op, not a null. **RUN NOW.**
+**1a. Decision gate: `run_memory_value.py` — DONE (2026-07-10).** Verdict **`memory_inconclusive`**:
+WARM−COLD mean 0 on all axes, CIs straddle 0 (relational_recall [−0.083,+0.083]), WARM mixed-to-
+negative per case — at the weakest bar (`min_support=1`, 1 belief from 1/4 seeded levers). Cross-
+session trace-consolidation did not beat a cold start. Full analysis:
+[`analysis/memory-value-result.md`](analysis/memory-value-result.md).
 
-**1b. Conditional on 1a** [OFFLINE, gated]:
-- `memory_adds_value` → extend `lever_ledger.py` by hand (~80 lines, zero deps, every write through
-  `validate_lever`): negative-constraint levers, belief deprecation, 7-type failure tags; keep the
-  anti-overfitting-gate + minimal-surface-ranking rubric for prompt-evolution steps.
-- `memory_inconclusive` / `memory_regresses` → **adopt nothing** (llmunix/skillos all CUT — see
-  [`harness-evolution-adoption.md`](analysis/harness-evolution-adoption.md)); record the result; keep
-  the rubric in a drawer.
+**1b. Applied — `memory_inconclusive` → adopt nothing.**
+- **llmunix / skillos: all CUT stands.** Fable's transitivity premise is now measured — deterministic
+  guardrailed consolidation yields WARM−COLD ≈ 0, so a noisier LLM "dream" pass over self-graded
+  traces cannot yield more. Automating the loop would automate a null.
+- **No hand-extension of `lever_ledger.py`** (that was gated on `memory_adds_value`, which did not
+  fire). The ~80-line ideas list + anti-overfitting rubric stay in the drawer for a future task that
+  ever shows consolidation value.
+- Harness-evolution track closed honestly; durable value remains **Track 2**.
 
 ## Track 2 — Phase 3 scientific product (the real value line)
 
