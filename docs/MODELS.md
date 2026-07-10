@@ -167,6 +167,15 @@ or is its oral-systemic coupling too speculative to even be a useful hypothesis?
 **The load-bearing agent is the ~8 models that touch either the calibratable IL-6→CRP spine or a public
 NHANES dataset.** The instinct to curate 30 models was the weakness; the honest harness is small.
 
+> **Executed disposition.** [`model-library.md`](model-library.md) is now pruned into **five tiers** by
+> decreasing commitment — *Core spine (built) · Flagged scaffolds (swept) · Staged substrate (next
+> axes) · Reference-only (cited, not built) · Explored & rejected (one-line graveyard with the reason).*
+> The DISCARD entries were **not deleted** but compressed to one-line "rejected, because X" stubs (a
+> documented dead end is verified knowledge — it stops the next agent re-deriving the stranded
+> fluid-mechanics track); E4.4 (a pure duplicate label) was the one outright removal. Four DEMOTE
+> models became **staged substrate** because a planned axis needs them: Bergman (E3.1) for the diabetes
+> coupling, and the microbiome cluster (E3.5/E3.6/E3.7) for a future microbiome axis.
+
 ### What to actually implement next (beyond the current centerpiece)
 1. **A CV-axis empirical anchor — highest value.** NHANES **2009-2010 co-measures periodontal exam +
    CRP + CV history in the SAME participants** (unlike the neuro cycle, where the mediator is
