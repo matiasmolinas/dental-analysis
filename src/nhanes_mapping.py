@@ -59,3 +59,42 @@ NHANES_FILES = sorted(
 )
 
 JOIN_KEY = "SEQN"  # NHANES respondent sequence number; join all files on this.
+
+
+# ---------------------------------------------------------------------------------------------
+# Neuro axis (oral <-> Alzheimer) — NHANES 2011-2012 (_G). The COGNITIVE FUNCTIONING module (CFQ)
+# — CERAD Word Learning, Animal Fluency, Digit Symbol — coexists with the full-mouth periodontal
+# exam (OHXPER) in the SAME participants (SEQN-linkable), giving the oral<->neuro empirical anchor
+# the CV axis has via 2009-2010.
+#
+# HONEST DATA CAVEATS (documented, not worked around):
+#   * The 2009-2010 CV-anchor cycle has NO cognition module; the 2011-2014 cognition cycles have NO
+#     CRP (standard CRP was discontinued after 2009-2010; hs-CRP returns only in 2015-2016, HSCRP_I).
+#     So NO single public NHANES cycle carries periodontal + CRP + cognition together. The
+#     inflammation MEDIATOR (which mech_neuro models) is therefore not measurable in-cycle with
+#     cognition — the neuro data work is a population-level periodontal<->cognition ASSOCIATION
+#     (the mechanistic mediation is a modeled hypothesis, not a measured per-participant chain).
+#   * NHANES-III (1988-1994) additionally carries serum P. gingivalis IgG + cognition (Noble 2009),
+#     a different file structure — a second, cross-cycle option, not wired here.
+NHANES_NEURO_BASE_URL_2011 = "https://wwwn.cdc.gov/Nchs/Data/Nhanes/Public/2011/DataFiles"
+
+SCHEMA_TO_NHANES_NEURO: dict[str, tuple[str, tuple[str, ...], str]] = {
+    "cognition.cerad_word_learning": ("CFQ_G", ("CFDCST1", "CFDCST2", "CFDCST3"),
+                                      "CERAD immediate word-learning trials 1-3 total"),
+    "cognition.cerad_delayed_recall": ("CFQ_G", ("CFDCSR",), "CERAD delayed recall total"),
+    "cognition.animal_fluency": ("CFQ_G", ("CFDAST",), "Animal Fluency total score"),
+    "cognition.digit_symbol": ("CFQ_G", ("CFDDS",), "Digit Symbol Substitution score"),
+    # periodontal exam IN THE SAME CYCLE so perio <-> cognition are SEQN-linkable per participant
+    "periodontal.mean_ppd_mm_2011": ("OHXPER_G", ("OHXxxPCx",),
+                                     "derive mean per-site probing depth (2011-2012)"),
+    "periodontal.cal_mm_2011": ("OHXPER_G", ("OHXxxLAx",),
+                               "derive mean per-site attachment loss (2011-2012)"),
+    # shared risk factors available in-cycle (confounders to adjust for in any association)
+    "shared_risk.hba1c_2011": ("GHB_G", ("LBXGH",), "glycohemoglobin % (2011-2012)"),
+    "shared_risk.smoking_status_2011": ("SMQ_G", ("SMQ020", "SMD030"), "ever/onset smoking (2011-2012)"),
+    "demographics.age_2011": ("DEMO_G", ("RIDAGEYR",), "age — the dominant cognition/perio confounder"),
+    "demographics.education_2011": ("DEMO_G", ("DMDEDUC2",), "education — key cognition confounder"),
+}
+
+# Unique 2011-2012 XPT files for the neuro (perio + cognition + confounders) join.
+NHANES_NEURO_FILES = sorted({f for f, _, _ in SCHEMA_TO_NHANES_NEURO.values()})
