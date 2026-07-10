@@ -109,3 +109,23 @@ inequality, opposite side. That is exactly why the boundary permits it when it f
 — (1) the correlation gate, then (2) the 2-arm out-of-competence optimization test at n≥30 with a
 bootstrap CI. ~1 GPU-day, framed as **epistemic hygiene / boundary-validation, not a path to Claude
 harness evolution.** Track-2 is the durable result and the room the project actually lives in.
+
+## Corrected intent (user, 2026-07-10) — Qwen = validation-only; the Claude payoff is "lens recipes"
+
+The Qwen measured-lens test is **not** for integrating Qwen into the workflow (it is a weaker model, as
+the boundary asymmetry makes clear) — it is purely to **finish discarding the mechanism, or validate
+it.** If it validates, the intended Claude-side use is **not** a live lens read (which the API does not
+expose) but **Fable-pre-generated "lens recipes"**: curated patterns of what the workspace/lens would
+contain for classes of generic problems, evaluated and then **injected as on-demand additional context
+to Opus** at solve time.
+
+Where this lands against the settled findings (pending a dedicated Fable pressure-test):
+- It **aligns with W1** — the one clean win was a *pre-specified external directive* injected as context
+  that free-form convergers did not self-reproduce (0→1.0). A recipe is that generalized.
+- It **aligns with Q1** — recipes are external, curated, *validated* context (fitness from outside the
+  model), the channel the boundary permits.
+- **The filo:** a recipe R for class C pays iff `I(R; E* | O, K_R_opus) > 0` — it must encode structure
+  **outside Opus's prior** that it does not reliably self-generate (W1-type), not generic domain
+  knowledge Opus already has (screened). Which one it is, is an **eval-anchored A/B question**
+  (recipe-injected vs not, CI-separated). Whether the *Qwen measured lens* contributes recipe content
+  Opus+Fable couldn't generate directly — or is ornamental — is the open question under analysis.
