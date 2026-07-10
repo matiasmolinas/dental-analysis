@@ -1,10 +1,10 @@
 # HISTORA — Oral-Systemic case-evaluation plugin
 
 A Claude Code plugin that evaluates a **new oral-systemic case**, non-diagnostically: it relates a
-patient's periodontal + systemic data to **cardiovascular** and **Alzheimer's / neurodegeneration**
-research hypotheses, and runs a **mechanistic model harness** (IL-6/CRP → CV & neuro axes, calibrated to
-real data) to produce parameter-level predictions with **honest uncertainty ranges**. It never
-diagnoses and never imputes a patient value.
+patient's periodontal + systemic data to **cardiovascular, metabolic, and Alzheimer's / neurodegeneration**
+research hypotheses, and runs a **mechanistic model harness** (IL-6/CRP → CV, metabolic & neuro axes,
+calibrated to real interventional data) to produce parameter-level predictions with **honest uncertainty
+ranges**. It never diagnoses and never imputes a patient value.
 
 ## Install & use
 
@@ -33,6 +33,8 @@ flags, and prioritized follow-up experiments.
 
 The mechanistic harness is the [`histora`](../../src/histora/) package (`run_case_models.py` is the
 tool the flow invokes). The models, their evidence, the fitted parameters, and the honest census are in
-[`docs/MODELS.md`](../../docs/MODELS.md) and [`docs/model-library.md`](../../docs/model-library.md).
+[`docs/MODELS.md`](../../docs/MODELS.md) and [`docs/model-library.md`](../../docs/model-library.md); the
+technical report is [`docs/PAPER.md`](../../docs/PAPER.md), and the comparative validation showing the
+integrated harness beats separate models and bare Claude is [`docs/BENCHMARK.md`](../../docs/BENCHMARK.md).
 Everything is **non-diagnostic**: research hypotheses and parameter-level ranges, never a patient
 diagnosis or an imputed value.

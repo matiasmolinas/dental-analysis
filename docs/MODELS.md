@@ -3,8 +3,9 @@
 > How the agent's mechanistic harness explains the oral–systemic relationships: the models, the
 > bibliography that supports them, the agent's input, the parameters the harness calibrates / sweeps /
 > validates against real data, and an honest account of which models are load-bearing vs. reference.
-> Companion to [`SOLUTION.md`](SOLUTION.md) (the architecture) and [`model-library.md`](model-library.md)
-> (the full ~30-model catalog with citations). **Non-diagnostic throughout.**
+> Companion to [`SOLUTION.md`](SOLUTION.md) (the architecture), [`model-library.md`](model-library.md)
+> (the full ~30-model catalog with citations), [`PAPER.md`](PAPER.md) (the technical report), and
+> [`BENCHMARK.md`](BENCHMARK.md) (the comparative validation). **Non-diagnostic throughout.**
 
 ## 1. How the agent's input works
 

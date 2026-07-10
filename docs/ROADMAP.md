@@ -47,8 +47,16 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
   *same* reasoning engine: Claude both selects/constructs coded models and contributes soft estimates
   where equations run out.
 
+- **A5. Comparative validation** ✅ — a pre-specified scorecard ([`BENCHMARK.md`](BENCHMARK.md),
+  `histora.benchmark`) that runs the integrated harness (H) against separate single-axis models (S) and
+  bare Claude (C) on one severity panel. H wins on parsimony (1 vs 3 free params), calibration error
+  (0.00 vs 0.71 / 1.25), uncertainty honesty and falsifiability (1.00 vs 0.00), and ties on directional
+  validity and overt-guardrail adherence — the earned advantage is coherence + calibration, written up
+  in [`PAPER.md`](PAPER.md) §5.
+
 **"Stable" means:** every built axis has a bootstrap-CI'd anchor on public data, the ensemble reports
-ranges with tier labels, and the guardrail/traceability tests stay green.
+ranges with tier labels, the comparative benchmark favors the integration, and the guardrail/traceability
+tests stay green.
 
 ## Objective B — the case-evaluation plugin (the delivery surface)
 
