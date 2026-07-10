@@ -14,7 +14,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from mech_ode import (
+from histora.mech_ode import (
     eigenvalues,
     integrate,
     is_stable,

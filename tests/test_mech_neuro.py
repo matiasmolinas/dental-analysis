@@ -14,7 +14,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from mech_neuro import (
+from histora.mech_neuro import (
     BRAAK_REGIONS,
     neuro_centerpiece,
     neuro_params,

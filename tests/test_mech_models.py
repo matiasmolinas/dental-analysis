@@ -15,8 +15,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from mech_calibrate import calibrate_epsilon, calibrated_params
-from mech_models import (
+from histora.mech_calibrate import calibrate_epsilon, calibrated_params
+from histora.mech_models import (
     CRP_BASAL,
     IL6_BASAL,
     centerpiece,

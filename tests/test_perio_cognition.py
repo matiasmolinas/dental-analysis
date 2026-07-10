@@ -15,7 +15,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from perio_cognition import _ols_exposure_coef, _standardize, analyze
+from histora.perio_cognition import analyze
+from histora.stats import ols_exposure_coef as _ols_exposure_coef, standardize as _standardize
 
 
 def _lcg(seed):

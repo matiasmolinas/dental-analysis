@@ -20,10 +20,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from lever_ledger import case_signature
-from mech_calibrate import calibrated_params
-from mech_neuro import neuro_centerpiece, neuro_params
-from record_formats import RECORD
+from histora.relational_signals import case_signature
+from histora.mech_calibrate import calibrated_params
+from histora.mech_neuro import neuro_centerpiece, neuro_params
+from histora.record_formats import RECORD
 
 
 def _features_from_record(record: dict) -> dict:

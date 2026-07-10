@@ -13,8 +13,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from counterfactual import FACTORS, axis_conf, counterfactual_report, flip, sensitivity
-from record_formats import RECORD
+from histora.counterfactual import FACTORS, axis_conf, counterfactual_report, flip, sensitivity
+from histora.record_formats import RECORD
 
 
 def _axis(axis, conf):

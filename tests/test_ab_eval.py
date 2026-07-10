@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from ab_eval import (
+from histora.ab_eval import (
     build_inputs,
     guardrail_pass,
     mechanism_recall,
@@ -23,7 +23,7 @@ from ab_eval import (
     run_ab,
     score,
 )
-from record_formats import RECORD
+from histora.record_formats import RECORD
 
 # --- canned outputs (output_schema.json-shaped) ---------------------------------
 

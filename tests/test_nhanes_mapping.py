@@ -13,7 +13,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from nhanes_mapping import (
+from histora.nhanes import (
     NHANES_FILES,
     NHANES_NEURO_FILES,
     SCHEMA_TO_NHANES,

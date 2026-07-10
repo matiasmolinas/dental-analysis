@@ -14,8 +14,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from ab_eval import neuro_relational_recall, relational_recall
-from bridge_concepts import BRIDGE_CONCEPTS, NEURO_MEDIATOR_KEYS
+from histora.ab_eval import neuro_relational_recall, relational_recall
+from histora.bridge_concepts import BRIDGE_CONCEPTS, NEURO_MEDIATOR_KEYS
 
 
 def _axis(axis, mech, trace=("periodontal.bop_pct",)):

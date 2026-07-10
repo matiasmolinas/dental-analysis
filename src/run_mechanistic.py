@@ -20,10 +20,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from lever_ledger import case_signature
-from mech_calibrate import calibrated_params
-from mech_models import centerpiece, crp_steady, il6_steady, structural_load
-from record_formats import RECORD
+from histora.relational_signals import case_signature
+from histora.mech_calibrate import calibrated_params
+from histora.mech_models import centerpiece, crp_steady, il6_steady, structural_load
+from histora.record_formats import RECORD
 
 
 def _features_from_record(record: dict) -> dict:
@@ -85,9 +85,6 @@ def main() -> None:
         "cases": results,
         "epsilon_sweep_reference_high_BOP": eps_sweep,
         "guardrail": "non-diagnostic: structural bands only; parameter-level predictions + ranges",
-        "terminology_note": ("the harness Jacobian (stability) is the dynamical-systems Jacobian of "
-                             "the ODE, NOT the Anthropic Jacobian-lens (which is ∂readout/∂activations "
-                             "of the LLM) — see mech_ode.py"),
     }
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as f:

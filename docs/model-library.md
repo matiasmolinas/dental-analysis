@@ -1,7 +1,7 @@
 # Model Library — mechanistic models for oral–systemic hypothesis generation
 
 > Curated by the Harness-0 deep-research pass (4 tracks, search-verified citations) — see
-> [`MECHANISTIC_HARNESS_PLAN.md`](MECHANISTIC_HARNESS_PLAN.md). Each entry: domain edge → mechanism
+> [`SOLUTION.md`](SOLUTION.md). Each entry: domain edge → mechanism
 > → math formalism → parameters/data → key papers → confidence → caveats.
 > **Non-diagnostic:** every model generates falsifiable research hypotheses about population- or
 > in-silico-level parameters, **never** a patient diagnosis or an imputed value. Status: **complete
@@ -245,9 +245,6 @@ not clinical claims.
 3. **Fork to both axes from the same IL-6/CRP state:** CV via E2.6/E1.1; **neuro via E2.7 → E2.8**
    (inflammation raises tau-spread α), with **NHANES periodontal+cognitive** data on the neuro side.
 4. **Counterfactual lever** (E2.10): simulate IL-6 neutralization → predicted ΔCRP/Δrisk.
-5. **The fair lens/monitor re-test** (Plan §4 Phase 2): on this mechanistic task, does reading the
-   workspace help the agent pick the *right* model/parameters vs. a plausible-but-wrong one? — the
-   honest bridge back to the §0 investigation.
 
 Everything sweeps **ε** and the **inflammation→α multiplier** as unknowns, reports **ranges** of
 falsifiable predictions, privileges **IL-6/IL-1β as causal / CRP as observable**, and stays strictly

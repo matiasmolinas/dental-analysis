@@ -14,8 +14,8 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from record_formats import RECORD  # NHANES-grounded synthetic case (hs_crp is None)
-from relational_signals import (
+from histora.record_formats import RECORD  # NHANES-grounded synthetic case (hs_crp is None)
+from histora.relational_signals import (
     derived_signals,
     inflammatory_load,
     metabolic_load,

@@ -17,8 +17,8 @@ import sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from nhanes_neuro_loader import download_neuro_files, load_neuro_table
-from perio_cognition import analyze
+from histora.nhanes import download_neuro_files, load_neuro_table
+from histora.perio_cognition import analyze
 
 OUTCOMES = ["cerad_immediate", "cerad_delayed", "animal_fluency", "digit_symbol"]
 CONFOUNDERS = ["age", "education", "smoking", "hba1c"]
