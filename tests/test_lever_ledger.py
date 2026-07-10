@@ -44,11 +44,22 @@ def test_validate_rejects_guardrail_fail_and_values():
     try: validate_lever(_rec(guardrail_pass=False))
     except ValueError: pass
     else: raise AssertionError("should reject guardrail_pass=False")
-    # a patient value smuggled into the lever text is fine (string), but a numeric field is not:
+    # a numeric field is rejected:
     bad = _rec(); bad["case_signature"] = {**bad["case_signature"], "hs_crp_value": 4.2}
     try: validate_lever(bad)
     except ValueError: pass
     else: raise AssertionError("should reject a numeric patient value")
+
+
+def test_validate_rejects_measurement_number_in_string():
+    # the guardrail hole: a patient-ish number embedded in free text must be rejected
+    for leak in ("vasoconstriction — true 62", "BOP 42%", "hs-CRP 7.1 mg/L", "PPD 5.5"):
+        try: validate_lever(_rec(mediator_moved=leak))
+        except ValueError: pass
+        else: raise AssertionError(f"should reject measurement number in {leak!r}")
+    # but legitimate single-digit classifiers / mediator names survive
+    for ok in ("IL-6 signaling", "type 2 diabetes", "endothelial dysfunction", "omega-3 pathway"):
+        validate_lever(_rec(mediator_moved=ok))
 
 
 def test_write_read_suggest_and_consolidate():

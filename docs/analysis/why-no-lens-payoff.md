@@ -167,3 +167,47 @@ control to `run_targeted.py`, run out-of-competence at n ≥ 30) is worth doing 
 possible demonstration that the door is painted on the wall** — a boundary confirmation, not expected
 to open. **B(i)** remains the one honest missing measurement, now also the only way to test whether
 "what did I miss" self-report is a readout at all.
+
+## 6. Addendum — the SESSION-level lens (2026-07-10). Verdict: NO — boundary bites *harder*.
+
+A further refinement: the boundary was argued at one-shot granularity; maybe a **multi-step session**
+escapes it — ask the model to make explicit its Jacobian lens *across a whole session*, review that,
+and consolidate (analogous to memory-trace analysis) to evolve prompts/skills/subagent-defs/harness.
+
+**It inverts the geometry the wrong way for the lens.** A one-shot lens is the *only* carrier of the
+trajectory because `O` is just the final answer. The moment a multi-step agent externalizes its
+intermediate reasoning, tool calls, and discarded branches **as transcript text**, that content moves
+*into the conditioning set* `O`. You are not opening a channel to the workspace — you are transcribing
+the workspace into `O` and conditioning on it. With `O_transcript = g(H_{1:T})` and `L_session =
+f(H_{1:T})` reading the *same* trajectory:
+
+> `I(L_session ; Y | O_transcript, K_R) ≤ I(L_oneshot ; Y | O_oneshot, K_R) ≈ 0` — a **strict subset**
+> of the already-≈0 one-shot residual. Externalization is exactly the operation that screens the lens
+> *harder*.
+
+- **Confabulation is worse, not better.** "Make explicit your session-level lens" = the model
+  re-reading `O_transcript` and reconstructing a plausible trajectory `f(O_transcript, K_R)` —
+  confabulation DOF scale with horizon, and the §5 Q2 strike (no introspective access to counterfactual
+  non-activation) applies with *compound* force across `T` steps.
+- **The value is the externalized TRACE, not a hidden session-lens.** A harness's behavior *is* its
+  transcripts: a redundant tool call, a dropped requirement, a repeated dead-end all *manifest as
+  text*. So `I(M ; {O_transcript}, K_R^corpus)` is large and `I(M ; {L_session} | {O_transcript},
+  K_R^corpus) ≈ 0` — harness evolution is a **corpus-analysis / eval problem by construction**.
+- **The already-built machinery confirms it.** `run_swc_session.py` ran (turn1 rel_recall 0.50→0.625,
+  n=1, no CI) — but its mechanism is a **reviewer reading the OUTPUT** and injecting targeted
+  considerations (trace/reflection, K_R-reads-O), *never* a workspace read. `run_memory_value.py` was
+  built but **never run**, and on the current 1-lever ledger (support 1 < `min_support` 2) `consolidate`
+  yields 0 beliefs → WARM ≡ COLD by construction. The trace-consolidation *value* is the one thing the
+  project built and never measured — and it is a **trace** thesis, not a lens thesis.
+
+**The one honest runnable slice** is therefore not a session-lens (undefined on Claude = B(iii) at
+session scale) but the **trace-consolidation value** itself: run `run_memory_value.py --cases nhanes`
+with enough training cases that ≥2 corroborating levers share a `case_signature` (so `consolidate`
+yields ≥1 belief), COLD vs WARM, bootstrap CI. **Both arms are externalized-trace, neither is a lens.**
+Expected `memory_inconclusive`, any gain likeliest on guardrail/consistency reliability. Label a
+positive **trace-consolidation value, never session-lens.**
+
+**Guardrail hole found in passing:** the one persisted lever's `mediator_moved` carried a stray
+patient-ish number (`"…vasoconstriction — true 62"`) because `lever_ledger.validate_lever._no_numbers`
+rejected numeric *types* only, not digits embedded in strings. Fixed (reject standalone
+measurement-like numeric tokens in strings; single-digit classifiers like "type 2" still allowed).

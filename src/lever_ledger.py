@@ -16,7 +16,13 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from typing import Any
+
+# A measurement-like numeric token: a decimal (7.1) or a 2+-digit integer (62). Single digits are
+# allowed so classifiers survive ("type 2 diabetes", "stage 3", "omega-3", "IL-6"). This is a
+# heuristic guardrail against patient values leaking inside free-text fields, not a perfect classifier.
+_MEASUREMENT_NUM = re.compile(r"\d+\.\d+|\d{2,}")
 
 CORROBORATION = {"counterfactual_flip", "ab_on_claude", "repeated_turns"}
 SURFACES = {"work_prompt", "skill", "kb_context", "injected_variables", "subagent_def", "harness_code"}
@@ -63,6 +69,16 @@ def validate_lever(rec: dict) -> None:
             return
         if isinstance(v, (int, float)):
             raise ValueError(f"numeric value at {path} — the ledger must never store patient values")
+        if isinstance(v, str):
+            # Reject measurement-like numbers embedded in free text (the hole that let
+            # "...vasoconstriction — true 62" through: type-only checks miss digits in strings).
+            for tok in v.split():
+                core = tok.strip(".,;:%()[]{}/–-")
+                if core and _MEASUREMENT_NUM.fullmatch(core):
+                    raise ValueError(
+                        f"measurement-like number {tok!r} in string at {path} — "
+                        "the ledger must never store patient values")
+            return
         if isinstance(v, dict):
             for k, x in v.items():
                 _no_numbers(x, f"{path}.{k}")
