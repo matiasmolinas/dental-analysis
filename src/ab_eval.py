@@ -25,7 +25,7 @@ from __future__ import annotations
 import json
 from typing import Any, Callable
 
-from bridge_concepts import BRIDGE_CONCEPTS, MEDIATOR_KEYS
+from bridge_concepts import BRIDGE_CONCEPTS, MEDIATOR_KEYS, NEURO_MEDIATOR_KEYS
 from record_formats import RECORD, format_a_abbrev_table, format_e_json_kb_constraints
 from relational_signals import derived_signals, missing_mediators
 
@@ -72,18 +72,26 @@ def mechanism_recall(output: dict) -> tuple[int, int]:
     return hit, len(MEDIATOR_KEYS)
 
 
-def relational_recall(output: dict) -> tuple[int, int]:
-    """Stricter than mechanism_recall: a mediator counts only if it is named inside the
-    `hypothesized_mechanism` of an axis that HAS traceability — i.e. actually used in a
-    traced oral↔systemic relation, not merely mentioned somewhere. Kills the
+def _traced_mediator_recall(output: dict, keys: list[str]) -> tuple[int, int]:
+    """How many of `keys` are named inside the `hypothesized_mechanism` of a traced axis — i.e.
+    actually used in a traced oral↔systemic relation, not merely mentioned. Kills the
     'name-the-term' substring artifact that plain recall can reward."""
     axes = [a for a in output.get("relational_axes", []) if a.get("traceability")]
     mech_text = " \n ".join(a.get("hypothesized_mechanism", "") for a in axes).lower()
-    hit = 0
-    for key in MEDIATOR_KEYS:
-        if any(surf.lower() in mech_text for surf in BRIDGE_CONCEPTS[key]):
-            hit += 1
-    return hit, len(MEDIATOR_KEYS)
+    hit = sum(1 for key in keys
+              if any(surf.lower() in mech_text for surf in BRIDGE_CONCEPTS[key]))
+    return hit, len(keys)
+
+
+def relational_recall(output: dict) -> tuple[int, int]:
+    """Stricter than mechanism_recall, over the CV/oral-systemic mediators (the primary metric)."""
+    return _traced_mediator_recall(output, MEDIATOR_KEYS)
+
+
+def neuro_relational_recall(output: dict) -> tuple[int, int]:
+    """Relational recall over the NEURO-axis mediators (oral↔Alzheimer, Phase 3). Scored separately
+    so CV-only cases are not penalized; a neuro-relevant case surfaces these in traced axes."""
+    return _traced_mediator_recall(output, NEURO_MEDIATOR_KEYS)
 
 
 def missing_data_flagged(output: dict, record: dict) -> tuple[int, int]:

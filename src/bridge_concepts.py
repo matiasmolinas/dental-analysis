@@ -1,4 +1,4 @@
-"""Target bridge concepts for the oral-systemic (periodontal <-> cardiovascular) task.
+"""Target bridge concepts for the oral-systemic task (periodontal <-> cardiovascular AND neuro).
 
 This is the **spec** the Lens Observer scores the inferred-lens readout against: the
 mediating concepts that should surface in the primary's self-report for an input
@@ -31,9 +31,18 @@ BRIDGE_CONCEPTS: dict[str, list[str]] = {
     # --- shared risk factors (present in the input; weaker evidence) ---
     "shared_diabetes": ["diabetes", "glycemic", "insulin"],
     "shared_smoking": ["smoking", "tobacco", "nicotine"],
+    # --- neuro-axis mediators (oral <-> Alzheimer / neurodegeneration; Phase 3) ---
+    # The brain-side cross-domain links. Systemic_inflammation + cytokines (above) are the SHARED
+    # upstream drivers of both the CV and neuro axes; these are the distinctively neural mediators.
+    "neuroinflammation": ["neuroinflammation", "neuroinflammatory", "microglia", "microglial"],
+    "amyloid_beta": ["amyloid", "abeta", "aβ", "a-beta"],
+    "tau_pathology": ["tau", "tangle", "neurofibrillary", "p-tau", "phospho-tau"],
+    "blood_brain_barrier": ["blood-brain barrier", "blood brain barrier", "bbb", "cerebrovascular"],
+    "glymphatic_clearance": ["glymphatic", "perivascular", "csf clearance"],
 }
 
-# Concepts that prove relational reasoning; the optimizer targets these first.
+# Concepts that prove relational reasoning; the optimizer targets these first. CV/oral-systemic set
+# (unchanged — the whole existing apparatus scores against this).
 MEDIATOR_KEYS = [
     "systemic_inflammation",
     "c_reactive_protein",
@@ -43,4 +52,17 @@ MEDIATOR_KEYS = [
     "bacteremia",
     "oxidative_stress",
     "cardiovascular_risk",
+]
+
+# Neuro-axis mediators (oral <-> Alzheimer). Additive second domain; scored separately so CV cases
+# are not penalized for lacking neural mediators. The shared upstream drivers (systemic_inflammation,
+# cytokines) count for BOTH axes and are intentionally included here too.
+NEURO_MEDIATOR_KEYS = [
+    "systemic_inflammation",
+    "cytokines",
+    "neuroinflammation",
+    "amyloid_beta",
+    "tau_pathology",
+    "blood_brain_barrier",
+    "glymphatic_clearance",
 ]
