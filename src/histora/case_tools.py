@@ -14,6 +14,7 @@ from typing import Any
 
 from .ensemble import ensemble_report
 from .mech_calibrate import calibrated_params
+from .mech_metabolic import calibrated_metabolic_params, metabolic_centerpiece
 from .mech_models import centerpiece
 from .mech_neuro import neuro_centerpiece, neuro_params
 from .relational_signals import case_signature
@@ -31,10 +32,11 @@ def case_mechanistic_predictions(record: dict, n_ensemble: int = 200) -> dict[st
     the ensemble envelope (ranges over the swept unknowns), the counterfactual levers, and the honest
     flags. Non-diagnostic: parameter-level population predictions, never a patient inference."""
     features = case_stratum(record)
-    p = neuro_params(calibrated_params())
+    p = calibrated_metabolic_params(p=neuro_params(calibrated_params()))
 
     cp = centerpiece(features, p, verify_dynamics=True)
     nc = neuro_centerpiece(features, p)
+    mc = metabolic_centerpiece(features, p)
     env = ensemble_report(features, n=n_ensemble)
 
     return {
@@ -52,10 +54,14 @@ def case_mechanistic_predictions(record: dict, n_ensemble: int = 200) -> dict[st
                   "tau_burden_relative_increase": nc["tau_burden_horizon"]["relative_increase"],
                   "connectome_front_arrival_years": nc["connectome_front_arrival_years"],
                   "confidence": nc["confidence"]},
+        "metabolic": {"insulin_resistance_index": mc["insulin_resistance_index"],
+                      "hba1c_shift_pp": mc["hba1c_shift_pp"],
+                      "confidence": mc["confidence"]},
         "counterfactuals": {
             "periodontal_therapy": cp["counterfactuals"]["periodontal_therapy"],
             "il6_blockade": cp["counterfactuals"]["il6_blockade"],
             "tau_onset_therapy_delay_years": nc["tau_onset_years"]["therapy_delay_years"],
+            "hba1c_therapy_drop_pp": mc["counterfactual_therapy"]["hba1c_drop_pp"],
         },
         "ranges_over_uncertainty": env["envelope"],
         "dominant_uncertainty": {o: max(s.items(), key=lambda kv: abs(kv[1]), default=("-", 0))[0]
