@@ -28,3 +28,12 @@ relational→`oral-systemic-analysis` (+`oral-systemic-kb`),
 verifier→`non-diagnostic-guardrail` + `traceability-audit`.
 
 `non-diagnostic-guardrail` is a **protected invariant** — never edited.
+
+## Modeling-extension subagent
+
+| File | Role |
+|---|---|
+| `modeling-technique-selector.md` | For an oral-systemic edge the coded harness cannot yet reach: recommends the technique to code next and, while it is un-coded, produces a soft falsifiable estimate that enters the ensemble as a **weight-capped Claude member** (`histora.claude_model` → `ensemble.blend_members`). See docs/MODELS.md §6.4. |
+
+This is the "Claude as a model member" role — a step toward a coded model, never a permanent
+substitute; population/parameter level, non-diagnostic, and it must ship a falsification path.

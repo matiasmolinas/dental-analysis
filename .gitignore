@@ -1,6 +1,8 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
+.venv/
+venv/
 
 # Live Session Working-Consciousness ledgers are ephemeral (auto-revert at session
 # end). Keep the committed template and the worked example; ignore live sessions.

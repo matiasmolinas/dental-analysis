@@ -104,7 +104,24 @@ coupling is flagged and swept as a range, never asserted. Full catalog + confide
   the periodontitis→Alzheimer hypothesis (atuzaginstat/GAIN gingipain-inhibitor trial) **failed** — so
   this axis is a live hypothesis, never a result.
 
-### 2.5 Counterfactual levers (E2.10)
+### 2.5 The metabolic axis (C4 / E3.1) — the oral→diabetes coupling, FLAGGED
+- **Medical relationship.** The same shared inflammatory `gain` (excess IL-6 over basal) drives
+  **insulin resistance** — IL-6/TNF-α interfere with IRS-1 signaling — raising fasting glycemia and,
+  over the red-cell lifetime, **HbA1c**. Periodontal therapy that lowers systemic inflammation lowers
+  HbA1c, closing the loop back to the oral source.
+- **Math (implemented, `histora.mech_metabolic`).**
+  - Insulin-resistance index: `IR = 1 + β_si · max(0, gain)`, monotone in the shared gain, `β_si` the
+    flagged coupling (swept 0.075–0.30, nominal 0.15).
+  - HbA1c shift: `ΔHbA1c(pp) = k_hba1c · max(0, gain)`, with `k_hba1c` **calibrated closed-form** so the
+    reference high-severity case's therapy counterfactual reproduces the **~0.35 pp HbA1c-drop-after-
+    periodontal-therapy** meta-analytic anchor (`calibrate_hba1c`).
+  - Counterfactual: periodontal therapy (`source → 0`) → the predicted HbA1c drop (pp).
+- **Evidence.** Minimal-model of insulin sensitivity (Bergman 1979; Pritchard-Bell/Parker 2013, the
+  IL-6→IRS-1→insulin-resistance route); HbA1c-drop-after-therapy meta-analyses (~0.3–0.4 pp). The
+  coupling constant `β_si` is an imposed, biology-plausible scaffold swept as a range; the **direction
+  and the calibration anchor are real**, validated on NHANES below.
+
+### 2.6 Counterfactual levers (E2.10)
 - **Periodontal therapy** — remove the oral source (`source → 0`): predicted ΔCRP (the calibration
   anchor) and, on the neuro axis, a delay of the modeled tau-threshold crossing.
 - **IL-6 blockade** — neutralize IL-6 signaling: CRP relaxes to its IL6-basal floor (the
@@ -120,6 +137,7 @@ Three distinct epistemic operations — this is what makes the harness a *measur
 | **Sweep (report a range, not a point)** | **β_tau** — the inflammation→tau-α coupling; the second epistemic-risk parameter | vary β_tau over a plausible band → a range of tau burden / onset | none available in-cycle (the coupling is unfitted) | tau-burden **range**, never a point claim |
 | **Validate (neuro)** | the model's *predicted direction* (worse cognition with more periodontal severity) | `histora.perio_cognition` — confounder-adjusted standardized OLS + bootstrap CIs | real **NHANES 2011-2012** (n=919; age/education/smoking/HbA1c adjusted; robust across both perio_cal and perio_ppd) | **3/4 cognitive measures significant, negative** — Digit Symbol adj −0.181, Animal Fluency −0.098, CERAD-immediate −0.057 (CERAD-delayed ns); the direction the model predicts |
 | **Validate (CV)** | the model's *predicted mediator edge* (more periodontal severity → higher CRP → more CV history) | same engine (`run_perio_cv.py`) — the CV cycle co-measures perio + CRP + CV history in the SAME participants | real **NHANES 2009-2010** (n≈8700; age/education/smoking/BMI/HbA1c adjusted) | **perio → CRP significant** (log-CRP adj +0.041 [+0.017,+0.062]) **and perio → CV history significant** (+0.104 [+0.081,+0.127]); small but real — the CV-axis empirical anchor, and the mediator the neuro cycle couldn't measure |
+| **Validate (metabolic)** | the model's *predicted glycemic edge* (more periodontal severity → higher HbA1c) | same engine (`run_perio_diabetes.py`) — the 2009-2010 cycle co-measures perio + HbA1c in the SAME participants | real **NHANES 2009-2010** (n=8744; age/education/smoking/BMI adjusted) | **perio → HbA1c significant, positive** — adj std coef **+0.160** (perio_cal) / **+0.119** (perio_ppd), CI90 excludes 0, robust across both exposures — the C4 metabolic-axis empirical anchor, the direction the model predicts |
 
 **Additional checks the harness runs on itself:** every mechanistic run verifies the closed-form
 steady state is the stable dynamical attractor (Jacobian eigenvalues); `histora.counterfactual` tests
@@ -145,7 +163,9 @@ or is its oral-systemic coupling too speculative to even be a useful hypothesis?
   anchor), E4.6 (the validated NHANES perio↔cognition association).
 - **KEEP-FLAGGED (real biology, imposed math, swept as a range — never asserted):** E2.6 (CV
   atherogenic index), E2.7 (neuroinflammation node), E4.2 (systemic→neuro bridge, realized by
-  E2.7→E2.8), E3.2 (diabetes gain→insulin-sensitivity coupling).
+  E2.7→E2.8), **E3.2/C4 (diabetes gain→insulin-sensitivity coupling — now BUILT as
+  `histora.mech_metabolic`: gain→IR index→HbA1c, calibrated to the HbA1c-drop anchor and validated on
+  NHANES 2009-2010, §2.5 / §3).**
 - **DEMOTE (keep as a library citation, do NOT build):** E1.4, E1.5, E1.6 (GCF flow / Windkessel /
   bacteremia — subsumed by the `ε·structural_load` abstraction, and NHANES carries no PWV/CFU to fit
   them); E2.1, E2.2 (murine/dimensionless inflammation ODEs — their one insight, "IL-6 integral drives
@@ -334,7 +354,12 @@ averaging weights.
 A Claude member enters the ensemble through `histora.ensemble.blend_members` (BMA-lite): it is
 **tier-labeled `claude`, weight-capped** (`registry.CLAUDE_MEMBER_WEIGHT_CAP`) so it never outweighs a
 calibrated/validated coded member, and always **shown in the provenance** — no silent blend into false
-precision. The discipline is the same as everywhere else: a Claude estimate is a **flagged hypothesis
+precision. **This is shipped, not aspirational:** `histora.claude_model.estimate_edge(edge, model_fn=…)`
+takes an un-coded edge + its structural stratum + the shared gain, calls Claude under a non-diagnostic
+system prompt, and returns exactly such a member — the confidence tier sets the weight (capped),
+the parse **rejects any estimate that omits a falsification path**, and the member carries the modeling
+technique it recommends coding next. The `agents/modeling-technique-selector` subagent is its
+Claude-Code face. The discipline is the same as everywhere else: a Claude estimate is a **flagged hypothesis
 with a falsification path** (how would we check it against data?), never a fitted result, gated by the
 non-diagnostic guardrail, and used **where the coded library cannot reach — not as a replacement** for
 the validated spine. This is what lets the case-evaluation plugin ([`ROADMAP.md`](ROADMAP.md) Objective B)

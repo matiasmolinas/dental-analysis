@@ -16,6 +16,7 @@ import random
 from typing import Any, Callable
 
 from .mech_calibrate import calibrated_params
+from .mech_metabolic import calibrated_metabolic_params, hba1c_shift_pp, insulin_resistance_index
 from .mech_models import centerpiece
 from .mech_neuro import neuro_centerpiece, neuro_params
 from .registry import CLAUDE_MEMBER_WEIGHT_CAP, OUTPUTS, SWEPT_PARAMS
@@ -38,12 +39,15 @@ def predict_case(features: dict, p: dict) -> dict[str, float]:
     params; return the ensemble's scalar outputs."""
     cp = centerpiece(features, p, verify_dynamics=False)
     nc = neuro_centerpiece(features, p, front=False)   # skip the expensive Braak-chain sim
+    gain = cp["inflammatory_gain_pg_ml"]
     return {
         "crp_mg_l": cp["steady_state"]["crp_mg_l"],
         "cv_recruitment_multiplier": cp["cv_axis"]["recruitment_multiplier"],
         "tau_alpha_rel_increase": nc["tau_alpha"]["relative_increase"],
         "tau_burden_rel_increase": nc["tau_burden_horizon"]["relative_increase"],
         "therapy_onset_delay_yr": nc["tau_onset_years"]["therapy_delay_years"] or 0.0,
+        "insulin_resistance_index": insulin_resistance_index(gain, p),
+        "hba1c_shift_pp": hba1c_shift_pp(gain, p),
     }
 
 
@@ -55,8 +59,8 @@ def _summary(vals: list[float]) -> dict[str, float]:
 
 
 def _base_params(target_delta_crp: float = 0.5) -> dict:
-    """Calibrated ε + neuro constants; the nominal center the sweep bands are scaled around."""
-    return neuro_params(calibrated_params(target_delta_crp=target_delta_crp))
+    """Calibrated ε + neuro + metabolic constants; the nominal center the sweep bands scale around."""
+    return calibrated_metabolic_params(p=neuro_params(calibrated_params(target_delta_crp=target_delta_crp)))
 
 
 def _resolve_bounds(base: dict) -> dict[str, tuple[float, float]]:

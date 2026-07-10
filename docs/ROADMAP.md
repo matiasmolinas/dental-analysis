@@ -16,8 +16,9 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
   - ✅ **perio ↔ cognition** (NHANES 2011-2012) — the neuro axis anchor (3/4 significant).
   - ✅ **perio → CRP + CV history** (NHANES 2009-2010) — the CV-axis anchor; CRP is co-measured with the
     periodontal exam here, so this validates the mediator the neuro cycle couldn't (`run_perio_cv.py`).
-  - ⬜ **the diabetes coupling** (C4: IL-6 → insulin-sensitivity) — anchored to the HbA1c-drop-after-
-    therapy meta-analysis + in-cycle NHANES 2009-2010 HbA1c.
+  - ✅ **perio → HbA1c** (NHANES 2009-2010) — the metabolic-axis anchor; HbA1c is co-measured with the
+    periodontal exam in this cycle. Confounder-adjusted standardized coef **+0.160** (CAL) / **+0.119**
+    (PPD), CI90 excludes 0, n=8744 — the direction the C4 coupling predicts (`run_perio_diabetes.py`).
 - **A2. The ensemble scaffold** ([`MODELS.md`](MODELS.md) §6) — a **model registry** (one dict per
   sub-model with a `gain_coupling` hook + a `tier`), a **composition layer** (series / parallel-fork /
   feedback / operator-split), and an **ensemble/UQ driver** (Latin-hypercube sweeps, Sobol sensitivity,
@@ -25,8 +26,13 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
   sweep**, never a point. This is what makes "adjust the ensemble" a real operation.
 - **A3. The next axes as code** — the disciplined additions from [`MODELS.md`](MODELS.md) §5, each with a
   data path: CV inflammation-wave (A3), microglial hub (B2), the diabetes coupling (C4). Only models
-  that couple to the shared `gain` **and** have a public-data anchor.
-- **A4. Modeling skills + subagents — and Claude as an ensemble member.** A `modeling-technique-selector`
+  that couple to the shared `gain` **and** have a public-data anchor. ✅ **C4 metabolic axis** built
+  (`histora.mech_metabolic`: gain → insulin-resistance index → HbA1c shift, calibrated to the
+  ~0.35 pp HbA1c-drop-after-therapy anchor), registered, swept in the ensemble, and validated above.
+- **A4. Modeling skills + subagents — and Claude as an ensemble member.** ✅ Delivered: the
+  `modeling-technique-selector` subagent (`agents/modeling-technique-selector.md`) + the live estimator
+  `histora.claude_model` (`estimate_edge` → a weight-capped `claude`-tier member for
+  `ensemble.blend_members`, gated so every estimate ships a falsification path). A `modeling-technique-selector`
   subagent that picks a technique (compartmental / control / nonlinear / network / stochastic /
   cross-domain analogy *with its falsification gate*), instantiates it as a registry entry, calibrates
   it, and hands it to the ensemble; a `guardrail-verifier` pass enforces non-diagnostic framing and the

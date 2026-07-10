@@ -26,6 +26,9 @@ SUBMODELS: dict[str, dict] = {
                              "gain_param": "gamma_cv", "citation": "Ougrinovskaia 2010 (E2.6)"},
     "neuro_tau_spread": {"axis": "neuro", "tier": "flagged", "kind": "coded", "gain_param": "beta_tau",
                          "citation": "Fornari 2019 / Schäfer 2021 (E2.7→E2.8)"},
+    "metabolic_insulin_resistance": {"axis": "metabolic", "tier": "flagged", "kind": "coded",
+                                     "gain_param": "beta_si",
+                                     "citation": "Bergman 1979 / Pritchard-Bell 2013 (E3.1/C4)"},
     # example slot for a Claude soft-model member of an un-coded edge (registered when instantiated):
     # "oral_gut_brain_estimate": {"axis":"neuro","tier":"claude","kind":"claude","gain_param":None,
     #                             "citation":"Claude reasoning over the oral-systemic KB + literature"},
@@ -42,8 +45,10 @@ SWEPT_PARAMS: dict[str, tuple[float, float]] = {
     "epsilon": (0.5, 1.5),      # ×nominal (calibrated ε), reflecting the ΔCRP-anchor spread
     "gamma_cv": (0.025, 0.10),  # CV recruitment coupling per pg/mL (nominal 0.05)
     "beta_tau": (0.3, 1.5),     # inflammation→tau-α coupling (nominal 0.6)
+    "beta_si": (0.075, 0.30),   # inflammation→insulin-resistance coupling (nominal 0.15)
 }
 
 # The ensemble's reported outputs (one envelope each over the sweep).
 OUTPUTS = ("crp_mg_l", "cv_recruitment_multiplier", "tau_alpha_rel_increase",
-           "tau_burden_rel_increase", "therapy_onset_delay_yr")
+           "tau_burden_rel_increase", "therapy_onset_delay_yr",
+           "insulin_resistance_index", "hba1c_shift_pp")
