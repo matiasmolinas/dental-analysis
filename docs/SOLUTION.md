@@ -56,7 +56,7 @@ generates coherent, cross-axis, falsifiable hypotheses rather than a disconnecte
 
 ## 2. The mechanistic models
 
-### 2.1 The centerpiece chain (`src/mech_models.py`)
+### 2.1 The centerpiece chain (`src/histora/mech_models.py`)
 
 The pipeline is a small system of ordinary differential equations (ODEs — equations describing how
 quantities change over time). It is **pure Python**, dependency-light, and every constant is anchored to
@@ -133,14 +133,11 @@ misfolded spread tracks Alzheimer's progression) — the growth rate α rises wi
 - **IL-6 blockade** → CRP relaxes to its IL6-basal floor (the E2.10 tocilizumab-style lever).
 
 Finally, `centerpiece` runs a **dynamics check**: it numerically integrates the ODEs and confirms the
-closed-form steady state is the actual stable attractor via the **dynamical-systems Jacobian**.
+closed-form steady state is the actual stable attractor via the **Jacobian** of the ODE system (the
+matrix of partial derivatives of the vector field — the standard tool for testing whether a fixed
+point is stable).
 
-> **Terminology guard (important):** this Jacobian is the matrix of partial derivatives of the
-> *biological ODE* — the standard tool for testing whether a fixed point is stable. It is **NOT** the
-> Anthropic "Jacobian lens" (∂readout/∂activations of a language model). The two are unrelated; the code
-> and `run_mechanistic.py` both flag this explicitly.
-
-### 2.2 Calibrating ε — the one uncertain edge (`src/mech_calibrate.py`)
+### 2.2 Calibrating ε — the one uncertain edge (`src/histora/mech_calibrate.py`)
 
 Everything above is anchored to literature *except* ε, which carries the epistemic risk of the whole
 periodontitis→systemic link. Rather than guess it, HISTORA **pins ε to a real interventional anchor**:
@@ -159,7 +156,7 @@ If the target is unreachable within the bracket, the routine returns the ceiling
 into a **falsifiable, data-anchored object**. Because the anchor itself has spread, ε is then *swept*
 (0.5×–2× in `run_mechanistic.py`) to report a **range** of CRP predictions, not a point claim.
 
-### 2.3 The neuro axis in full (`src/mech_neuro.py`)
+### 2.3 The neuro axis in full (`src/histora/mech_neuro.py`)
 
 The neuro model reuses the *same* systemic gain and forks it into the brain. The chain: systemic IL-6
 excess → (gated by blood–brain-barrier permeability) → neuroinflammation `N` → raised tau-spread α →
@@ -211,7 +208,7 @@ observable readout.
 
 ## 3. The data and the empirical validation
 
-### 3.1 The datasets (`src/nhanes_mapping.py`)
+### 3.1 The datasets (`src/histora/nhanes.py`)
 
 HISTORA uses **NHANES** (the U.S. National Health and Nutrition Examination Survey — a large, public,
 de-identified population dataset). Two cycles matter:
@@ -228,7 +225,7 @@ returns only in 2015–2016 (`HSCRP_I`), but that cycle drops the full periodont
 stated plainly: **the model supplies the "why" (the mechanism); the data can only test the "whether"
 (the association).** HISTORA does not paper over this gap — it names it.
 
-### 3.2 The result (`src/perio_cognition.py`, `docs/analysis/perio-cognition-result.md`)
+### 3.2 The result (`src/histora/perio_cognition.py`)
 
 **Question:** does higher periodontal severity (exposure = mean clinical attachment loss, CAL — the
 distance the gum has detached from the tooth, a standard severity measure) track *lower* cognitive
@@ -286,35 +283,35 @@ The invariant — **never diagnose, never impute a patient value** — is enforc
 politeness. It is checked at **write time**: `lever_ledger.validate_lever` rejects any attempt to store a
 numeric patient value, the one place a cross-patient leak could occur. It held across every experiment.
 
-`src/relational_signals.py` is the deterministic embodiment: it turns a record into **structural signal
+`src/histora/relational_signals.py` is the deterministic embodiment: it turns a record into **structural signal
 bands** (e.g., a BOP inflammatory-load band of low/moderate/high) and an explicit **missing-mediator
 list** — and its hard rules mirror the guardrail: *structural categorizations of present data only, and
 no imputation — a missing datum becomes a collection flag, never a computed value.*
 
-### 4.2 The apparatus (W3) — A/B, ablation, bootstrap CIs
+### 4.2 The apparatus — scoring, bootstrap CIs, counterfactual sensitivity
 
-- `src/ab_eval.py` — a **model-agnostic A/B scorer** with a promotion gate. It scores mechanism recall,
-  missing-data flagging, traceability, and the guardrail. Crucially, the **guardrail is a hard
-  prerequisite**: an edit that raises accuracy but breaks the guardrail is *rejected* (the health-context
-  gate is accuracy AND guardrail pass-rate). Promotion of a candidate requires a Pareto improvement — no
-  regression on either accuracy sub-metric plus a strict gain on at least one axis.
-- `src/ablation.py` — a **three-arm ablation** (naive / blind-converged / lens-converged) with a
-  bootstrap-CI verdict, so a claim of value cannot fire on sub-noise deltas. This is what correctly
-  produced `lens_inconclusive` instead of a false positive.
+- `src/histora/ab_eval.py` — a **model-agnostic scorer**: mechanism recall (CV + neuro mediators),
+  relational recall (a mediator counts only when used inside a *traced* axis, not merely named),
+  missing-data flagging, traceability, and the guardrail. The **guardrail is a hard prerequisite**: an
+  output that fails it is not deployable regardless of its accuracy.
+- `src/histora/stats.py` — the significance discipline: seeded **bootstrap confidence intervals** (a
+  claim never fires on a sub-noise delta) and a standardized OLS for confounder-adjusted analysis.
+- `src/histora/counterfactual.py` — **counterfactual sensitivity**: flip one input factor and check the
+  dependent axis moves in the mechanistically-correct direction while unrelated axes stay put — a
+  behavioral test that the model *reasons with* a factor, not just names it.
 
-### 4.3 W1 — the one clean win, and the execution-gap capability (`src/exec_gap.py`)
+### 4.3 W1 — the one clean win, and the execution-gap capability (`src/histora/exec_gap.py`)
 
 The project's single clean, repeated win (**W1**): a **deterministic missing-data directive raised
 guardrail pass 0.00 → 1.00** on real NHANES cases. The critical control: **free-form convergers handed
 the *same* directive still fell back to 0.00.** They had the content in context and did not deploy it.
 
-`src/exec_gap.py` generalizes this into a repeatable capability. The insight (from
-`docs/analysis/lens-recipes-and-the-execution-gap.md`) is to split what a model knows from what it
-reliably *does*:
+`src/histora/exec_gap.py` generalizes this into a repeatable capability. The insight is to split what
+a model knows from what it reliably *does*:
 
-- `K_R^know` = what the model can state if asked.
-- `K_R^exec` = what it reliably deploys **in situ** under generation load.
-- The payoff channel is the set difference **`K_R^know \ K_R^exec`** — steps the model *knows but drops*.
+- `K_know` = what the model can state if asked.
+- `K_exec` = what it reliably deploys **in situ** under generation load.
+- The payoff channel is the set difference **`K_know \ K_exec`** — steps the model *knows but drops*.
   A deterministic, enforced directive externalizes exactly this.
 
 The module provides:
@@ -341,28 +338,28 @@ is precisely why HISTORA frames the inflammation→tau edge as a swept hypothesi
 
 ## 5. How to run it
 
-All three centerpieces are **pure-Python, offline, no API and no GPU** (the association runner needs
-`pandas` and network access to fetch NHANES). Run from the repository root.
+The mechanistic and validation centerpieces are **pure-Python** (the association runner needs `pandas`
++ network to fetch NHANES; the Claude agent needs `anthropic` + `ANTHROPIC_API_KEY`). Run from the
+repository root.
 
 ```bash
 # 1. The mechanistic centerpiece: calibrate ε, run the strata, sweep ε → a CRP range, write a report.
-python src/run_mechanistic.py
-#    → prints per-stratum IL-6, CRP, CV multiplier, tau-α increase; ε-swept CRP range.
-#    → writes results/mechanistic_report.json
+python src/run_mechanistic.py            # → results/mechanistic_report.json
 
 # 2. The neuro axis: oral severity → gain → neuroinflammation → tau-α → burden/onset/connectome front,
 #    with the periodontal-therapy counterfactual and the β_tau sweep (flagged coupling → a range).
-python src/run_mech_neuro.py
-#    → writes results/mech_neuro_report.json
+python src/run_mech_neuro.py             # → results/mech_neuro_report.json
 
 # 3. The empirical anchor: confounder-adjusted perio ↔ cognition association on real NHANES 2011-2012.
-python src/run_perio_cognition.py --exposure perio_cal    # or: --exposure perio_ppd
-#    → prints per-outcome crude/adjusted coefficients + 90% bootstrap CIs; writes results/perio_cognition_report.json
+python src/run_perio_cognition.py --exposure perio_cal    # → results/perio_cognition_report.json
+
+# 4. The Claude-powered relational agent: analyze a record → non-diagnostic oral-systemic hypotheses,
+#    then check the guardrail. (Requires anthropic + ANTHROPIC_API_KEY in .env.)
+python src/run_agent.py                  # → results/agent_output.json
 ```
 
-Each runner reasserts the guardrail in its output banner ("non-diagnostic: structural bands only;
-parameter-level predictions + ranges") and the mechanistic runner also prints the Jacobian
-terminology note.
+Each runner reasserts the guardrail in its output ("non-diagnostic: structural bands only;
+parameter-level predictions + ranges").
 
 ---
 
@@ -370,20 +367,14 @@ terminology note.
 
 | Category | Component | Why it is here |
 |---|---|---|
-| **Validated capability** | The mechanistic pipeline (`mech_models`, `mech_calibrate`, `mech_neuro`) | Internally consistent, ε calibrated to a real interventional anchor, ODE steady states verified stable |
-| **Validated capability** | The apparatus (`ab_eval`, `ablation`, bootstrap CIs) | Model-agnostic, significance-aware; correctly returned `lens_inconclusive` rather than a false positive; 35 tests green |
-| **Validated capability** | The execution-gap mechanism (`exec_gap`, W1) | Deterministic directive raised guardrail pass 0.00 → 1.00, reproduced; prose control isolates externalization |
+| **Validated capability** | The mechanistic pipeline (`mech_models`, `mech_calibrate`, `mech_neuro`) | Internally consistent, spillover calibrated to a real interventional anchor, ODE steady states verified stable |
+| **Validated capability** | The apparatus (`ab_eval`, `stats`, `counterfactual`, bootstrap CIs) | Model-agnostic, significance-aware — a claim never fires on a sub-noise delta; pure-python, tested |
+| **Validated capability** | The execution-gap mechanism (`exec_gap`) | Deterministic directive raised guardrail pass 0.00 → 1.00, reproduced; the prose control isolates enforcement from content |
 | **Validated association** | Perio ↔ cognition (NHANES, `perio_cognition`) | 3/4 outcomes significant, confounder-adjusted, bootstrap CIs exclude 0 — real data, honestly caveated |
-| **Hypothesis (flagged, swept)** | inflammation → tau-α causal coupling (`β_neuro`, `β_tau`) | Biology plausible, math imposed; the direct causal test (atuzaginstat) failed — swept as a range, never asserted |
-| **Set aside (rigorous negative)** | The "inferred Jacobian-lens" as an optimization signal | Real, non-redundant signal but **no demonstrated payoff** over a strong blind baseline; the win belonged to the deterministic directive (W1), not the lens. See `docs/analysis/` and `docs/RETROSPECTIVE.md`. |
+| **Hypothesis (flagged, swept)** | inflammation → tau-α causal coupling (`beta_tau`) | Biology plausible, math imposed; the direct causal test (atuzaginstat) failed — swept as a range, never asserted |
 
-**On the set-aside:** HISTORA began partly as an investigation into whether *reading a model's internal
-workspace* ("the lens") could improve how its inputs are optimized. The apparatus (§4.2) delivered a
-**rigorous negative-with-nuance**: the workspace signal is genuinely *non-redundant* with the output,
-but **no actuator built here converted it into an outcome gain** over a strong blind baseline. That is
-reported as a negative, not buried — the durable value migrated to the deterministic engineering (W1–W3)
-and the mechanistic + empirical pipeline documented above. Details:
-`docs/analysis/lens-recipes-and-the-execution-gap.md` and `docs/RETROSPECTIVE.md`.
+Everything in the codebase is one of the above: a validated capability, a validated association, or an
+explicitly-flagged-and-swept hypothesis. Nothing that could not be verified or reproduced was kept.
 
 ---
 

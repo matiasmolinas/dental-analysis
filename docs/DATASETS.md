@@ -42,8 +42,8 @@ smoking + CV history.
 | `medical_cv.prior_cv_event` / `family_history_mi` | `MCQ_F` | `MCQ160C/E/F`, `MCQ300A` |
 
 Exact per-site periodontal variable names must be confirmed against the `OHXPER_F`
-codebook. The mapping is encoded in [`../src/nhanes_mapping.py`](../src/nhanes_mapping.py);
-a documented download + case-builder is in [`../src/nhanes_loader.py`](../src/nhanes_loader.py)
+codebook. The mapping is encoded in [`../src/histora/nhanes.py`](../src/histora/nhanes.py);
+a documented download + case-builder is in [`../src/histora/nhanes.py`](../src/histora/nhanes.py)
 (reads XPT via `pandas.read_sas`, no extra deps).
 
 ### Uses in the project
@@ -80,7 +80,7 @@ Oral-rinse microbiome testing on NHANES participants (cycles 2009-2010 and
 2011-2012): amplicon sequence variants, alpha/beta diversity, and genus-level
 abundance tables, **linkable by `SEQN`** to the periodontal exam and full phenotype.
 Hosted at <https://wwwn.cdc.gov/Nchs/Nhanes/Omp/> (separate from the standard XPT
-set; see `NHANES_OMP_URL` in `src/nhanes_mapping.py`).
+set; see `NHANES_OMP_URL` in `src/histora/nhanes.py`).
 
 **Why it matters — the real, reproducible mediator chain.** In **2009-2010** the
 microbiome overlaps with the full-mouth periodontal exam **and** CRP **in the same

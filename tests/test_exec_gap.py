@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from exec_gap import predict_pays, run_directive_ab, stated_but_dropped
+from histora.exec_gap import predict_pays, run_directive_ab, stated_but_dropped
 
 
 def test_predict_pays_classifies_all_cases():
