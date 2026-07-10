@@ -120,3 +120,50 @@ CIs already in `ablation.py`. Absent measured-lens-on-Claude, every Claude exper
 Opus-reads-Opus, which the boundary resolves before a token is spent. Run **B(i)** as the one honest
 measurement the project is missing; treat a positive as **monitoring-validation, not a crack in the
 null.**
+
+## 5. Addendum — the "negative-space probe" refinement (2026-07-10)
+
+A follow-up proposal: keep Opus-reads-Opus but make the difference come from **the probe prompt** —
+design it to surface the **run-specific alternatives the forward pass did NOT activate** (the negative
+space), which the output can't show; and optimize that probe as a pure meta-task (no biology/safety →
+Fable can be the optimizer, sidestepping the forced-Opus point). **Verdict: NO — the boundary
+re-encountered at trajectory granularity — but it names a real, previously-unnamed residual.**
+
+- **Q1 (absence vs enumeration).** Generic enumeration `E` = {plausible alternatives} is pure `K_R`
+  (a competent model brainstorms it with no lens). The content quantity `I(L; A_missed_this_run |
+  O, K_R) > 0` is real but is **non-redundancy (a) restated at trajectory level, not a new door.**
+  The **actionability collapse:** the optimal edit injects the alternatives that *matter* (`M ⊆ E`,
+  pure `K_R`), not the ones the run *missed*. The lens's only marginal is a **negative filter** —
+  distinguishing *never-considered* (worth injecting) from *silently-considered-and-discarded* (the
+  model already killed it; re-injecting dilutes, cf. F1). That residual — `I(L;
+  {activated-but-absent-from-O} | O, K_R)` — is the entire door, and it is expected small.
+- **Q2 (confabulation vs readout) — the strongest strike.** Self-report of **absence** is categorically
+  weaker than self-report of presence; the paper's reportability-is-causal result covers *activated*
+  content, and there is **no evidence introspection extends to counterfactual non-activation.** Asked
+  "what did I miss," the model re-derives `E` from `K_R` and subtracts what it notices in `O` — i.e.
+  returns the `K_R` baseline. **The confabulated answer IS the boundary condition,** and you can't tell
+  readout from confabulation without a measured lens.
+- **Q3 (validation).** Optimizing a probe "toward the real lens" needs a target Claude lacks →
+  collapses to **(a) Qwen ground truth = B(i) with extra steps**, or **(b) downstream payoff =
+  boundary-screened.** Paraphrase-stability tests reliability, not validity; steering-consistency *is*
+  the measured lens. **No third route.**
+- **Q4 (the one survivable on-Claude test).** `src/run_targeted.py`'s `targeted` arm currently
+  **fuses lens + K_R** (predictor surfaces gaps, selector picks) and **lacks a lens-free control.** The
+  clean test adds **`brainstorm_targeted`** (a competent model brainstorms mattering, output-absent
+  alternatives with **no lens**) as a third arm vs `lens_targeted` and `append_all`. Quantity
+  `Δ = quality(lens_targeted) − quality(brainstorm_targeted)`, paired, `ablation._bootstrap_ci`,
+  **n ≥ 30 out-of-competence** cases (else both ceiling). **Expected: Δ ≈ 0** — brainstorm matches lens,
+  boundary wins; the only regime where lens could separate (out-of-competence) is self-defeating for
+  self-report (a pass that couldn't enumerate the alternatives can't self-report missing them).
+- **Q5 (Fable as optimizer).** Removes forced-Opus from the *meta-loop* (legitimate), but the boundary
+  `I(L;Y|O,K_R)≈0` lives at the *object* level and is indifferent to who wrote the probe. **Relocated,
+  not escaped.**
+
+**Net:** the refinement isolates the only residual where an on-Claude lens could ever be actionable —
+the **silently-considered-and-discarded set** — but its target is *absence* (least readable, most
+confabulation-prone), it has no non-Qwen/non-payoff validation, and the clean 3-arm test's expected
+result is `brainstorm_targeted ≈ lens_targeted`. The runnable slice (add the `brainstorm_targeted`
+control to `run_targeted.py`, run out-of-competence at n ≥ 30) is worth doing **as the cleanest
+possible demonstration that the door is painted on the wall** — a boundary confirmation, not expected
+to open. **B(i)** remains the one honest missing measurement, now also the only way to test whether
+"what did I miss" self-report is a readout at all.
