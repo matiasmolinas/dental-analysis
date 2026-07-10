@@ -32,7 +32,7 @@
         "properties": {
           "axis": {
             "type": "string",
-            "enum": ["inflammatory", "metabolic", "shared_behavioral", "vascular"]
+            "enum": ["inflammatory", "metabolic", "shared_behavioral", "vascular", "neuroinflammatory"]
           },
           "oral_evidence": { "type": "array", "items": { "type": "string" } },
           "systemic_evidence": { "type": "array", "items": { "type": "string" } },

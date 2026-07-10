@@ -1,11 +1,16 @@
-# Archived research trail (2026-07-09)
+# Archived research trail
 
-These 12 analyses are the chronological research trail behind the settled verdict in
+Two kinds of preserved-verbatim history, neither driving the current narrative (which leads with what
+works — the mechanistic + empirical product — see [`../../VISION.md`](../../VISION.md) and
+[`../README.md`](../README.md)):
+
+**Superseded planning / method docs** (the lens-era reformulation, plans, and Observer method — kept
+for honesty, replaced by the product docs): `REFORMULATION.md`, `PLAN.md`, `IMPACT.md`, `APPROACH.md`
+(the inferred-lens Observer method), `HACKATHON_STRATEGY.md`, `FORWARD_PLAN.md`, `EXECUTION_PLAN.md`.
+
+**The chronological lens-analysis trail** (the 12 analyses below) behind the verdict in
 [`../../RESEARCH_SUMMARY.md`](../../RESEARCH_SUMMARY.md) and the categorization in
-[`../../RETROSPECTIVE.md`](../../RETROSPECTIVE.md). They are preserved **verbatim** as the honest
-record, but they do **not** drive the top-level narrative (which now leads with what works — the
-deterministic guardrail win and the tested apparatus — and labels the Observer-lens loop as
-tested-and-inconclusive).
+[`../../RETROSPECTIVE.md`](../../RETROSPECTIVE.md):
 
 Read in order they show the arc:
 

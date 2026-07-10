@@ -1,15 +1,45 @@
-# Executive Summary — the HISTORA / Jacobian-lens research arc
+# Executive Summary — the HISTORA research arc (technical record)
 
-> 2026-07-09. Consolidates the full investigation (10 analyses in [`analysis/`](analysis/) + the
-> live runs in [`REFORMULATION.md`](REFORMULATION.md) §R5–R6). Purpose: answer every hypothesis and
-> strategy raised along the way, and define prioritized next steps. Claude-only throughout; the
-> inferred/predicted lens is self-report/inference, never a measurement.
+> Consolidated 2026-07-10. The **canonical honest technical record** of the whole investigation. For
+> the product-facing story, read [`VISION.md`](VISION.md) and [`SOLUTION.md`](SOLUTION.md); for the
+> full reasoning trail, [`analysis/`](analysis/README.md). This document keeps the complete arc —
+> including the lens investigation that became a rigorous negative — so nothing is lost.
 
-## 0. One-line verdict
+## 0. Final state — the durable positives and the honest negatives
 
-**The workspace/lens signal is real and non-redundant — but no mechanism we built converts it into an
-outcome gain over a strong blind baseline, on this (largely re-derivable) task. The bottleneck is the
-actuator + the task + the access, not the signal's existence.** Two unrun doors could still flip it.
+**What works (the durable value):**
+- **A mechanistic-modeling harness** — oral → IL-6/CRP → CV & neuro axes, one shared inflammatory-gain
+  parameter, calibrated to the real ~0.5 mg/L ΔhsCRP-after-therapy anchor; uncertain couplings flagged
+  and swept as ranges (`src/mech_*.py`, [`model-library.md`](model-library.md)).
+- **A validated empirical result** — periodontitis ↔ cognition on real NHANES 2011-2012: **3/4
+  cognitive measures show a significant, confounder-adjusted negative association** with periodontal
+  severity, the direction the model predicts ([`analysis/perio-cognition-result.md`](analysis/perio-cognition-result.md)).
+- **The execution-gap capability** — externalize a deterministic step the model *knows* but *drops in
+  situ* (W1: missing-data flagging **0 → 1.0**), generalized with a predictor + 3-arm A/B
+  (`src/exec_gap.py`, [`analysis/lens-recipes-and-the-execution-gap.md`](analysis/lens-recipes-and-the-execution-gap.md)).
+- **An honest apparatus** — A/B, ablation, counterfactual-sensitivity, all with bootstrap CIs; 120+
+  tests green.
+
+**The lens verdict (rigorous negative, now *explained*):** the workspace/lens signal is real and
+non-redundant with the *output*, **but no mechanism converts it into an outcome gain over a strong
+blind baseline** — because it is **redundant with (output + a competent reader's own knowledge)**:
+`I(L;Y|O,K_R)≈0` for a frontier reader on an in-competence task (the **boundary condition**,
+[`analysis/why-no-lens-payoff.md`](analysis/why-no-lens-payoff.md)). Every Claude test was
+"Opus-reads-Opus" (max competence → the marginal collapses). The one regime the boundary *permits* —
+a **measured** lens on a **weaker** model (Qwen 4B) on out-of-competence tasks — is untested and is
+epistemic-hygiene mechanism-closure only, not a path to a frontier harness
+([`analysis/validated-evolution-and-qwen-regime.md`](analysis/validated-evolution-and-qwen-regime.md)).
+Cross-session memory/consolidation: **`memory_inconclusive`** ([`analysis/memory-value-result.md`](analysis/memory-value-result.md)).
+
+**The one-line verdict** (preserved for the record): *the workspace/lens signal is real and
+non-redundant, but no mechanism we built converts it into an outcome gain over a strong blind baseline —
+because a competent reader already has, from the output, what the lens would add. The durable value is
+the mechanistic + empirical product above, which depends on none of it.*
+
+---
+
+> The sections below are the **original arc record** (H1–H9, the lens investigation as it unfolded),
+> kept verbatim for honesty. Read §0 above for the final consolidated state.
 
 ## 1. What we built
 
@@ -96,6 +126,28 @@ Claude-only runtime), #1 is Anthropic's feature to expose, #6's *live* training 
 rollouts. The bounded live results (#2, #4) are single-case and directional; the powered n≥30 runs and
 the measured lens remain the two verdict-changing doors (§6).
 
+### 4c. Forward-plan execution — the sensible paths, built + offline-tested (2026-07-09)
+
+Following the gut-checked plan in [`FORWARD_PLAN.md`](analysis/ARCHIVE/FORWARD_PLAN.md) (Fable), the paths that can
+honestly move — or honestly make-true — a claim were implemented. All offline pieces are tested; the
+live experiments are wired and pending a run.
+
+| Path | Verdict | Status | Artifact |
+|---|---|---|---|
+| **A. Lens as MONITOR/QA** (top) | reframes the one genuine positive into the paper's *demonstrated* use (detection, not optimization) | **Built + tested (offline); live run pending** | `src/qa_monitor.py` (monitor vs blind-read + eval), `src/inject_defects.py` (deterministic labeled defects), `src/run_qa_eval.py` (live Opus), `tests/test_qa_monitor.py` (8). Headline = monitor_recall − blind_recall on injected defects, bootstrap CI, matched control FP rate. **The one path that can upgrade the §0 verdict — to a demonstrated DETECTION payoff, not optimization.** |
+| **C. Measured-lens readiness adapter** | makes "consumer built and waiting" literal code | **Built + tested (offline)** | `src/lens_source.py` (`get_lens_readout(source=inferred\|measured)`, same schema), `--lens-source` wired into `run_ablation.py`, `tests/test_lens_source.py` (8). `measured` raises the documented `NotImplementedError`; the day the API ships the swap is one flag + one function body. |
+| **memory-value** (folds in the useful slice of the "wire the autonomous loop" path) | the value hypothesis behind the loop; first caller of the orphan functions | **Built + tested (offline); live A/B pending** | `src/run_memory_value.py` — the **first caller of `lever_ledger.consolidate` + `suggest_levers`** (both wired to nothing before). Seed → sleep-consolidate → COLD vs WARM held-out A/B with bootstrap CI. `tests/test_memory_value.py` (6). Closes the loop as a running system + measures its value. |
+| **D. Targeted actuator, powered** (demoted, gated) | can only close the ours-to-run optimization door | **Made significance-aware; powered run gated on A** | `src/run_targeted.py` now computes a bootstrap 90% CI on paired `targeted − base` deltas and only says `targeted_useful` when a CI excludes 0 with no regression (point-positive-but-CI-straddles-0 is now honestly `targeted_directional_inconclusive`). Run n≥30 only **if A shows the surfaced gaps are behaviorally real**. |
+| **coordinator live training** | optimizing a possibly-flat objective is premature | **CUT / deferred** | `src/coordinator.py` scaffold unchanged; revisit only if A or D show a non-flat actuator objective. |
+
+**What this changes about the headline:** by default, nothing — these paths do not resurrect the
+optimizer claim. The only path that can upgrade §0 is **A**, and it would upgrade it to *"no
+optimization payoff, but a demonstrated **detection** payoff"* — the paper's actually-demonstrated use
+and the more defensible claim the evidence has pointed to all along. C and memory-value make two
+existing claims literally true and testable without moving the verdict (unless memory-value surprises
+positive on cross-case guardrail reliability). Sequencing: **C (done, offline) → A → memory-value → D
+(if A confirms)**. Test count: **65 green** (was 44; +21).
+
 ## 5. Hackathon positioning (honest)
 
 - **Build track:** working software — the Observer loop, five-surface evolution, the guardrail-protected
@@ -112,3 +164,29 @@ Only two things, both flagged and both unrun: **(a)** a free/targeted actuator o
 non-obvious-gap task at n≥30 (ours to do); **(b)** the **measured** Jacobian lens on Claude via the API
 (Anthropic's to expose). Absent those, the defensible statement is: **real, non-redundant signal; no
 demonstrated payoff.**
+
+### 6b. The Phase-2 boundary condition — *why* there is no payoff (2026-07-09)
+
+The mechanistic-modeling harness ([`MECHANISTIC_HARNESS_PLAN.md`](MECHANISTIC_HARNESS_PLAN.md)) was
+built to test the hypothesis that the §0 null is a **task-ceiling artifact** — NHANES doesn't require
+mechanistic reasoning, so there is no headroom for reading the workspace to help. Phase 2
+([`analysis/phase2-fair-lens-retest.md`](analysis/phase2-fair-lens-retest.md)) re-ran the monitor on a
+task that *does* require reasoning, with three arms holding the two possible payoffs apart:
+`blind` / `reasoning_monitor` (audits reasoning, no tool = the lens thesis) / `model_grounded` (audit +
+the calibrated model as an oracle = the harness thesis). Result over 25 injected quantitative
+mechanistic defects: **blind 0.96, reasoning_monitor 1.00, model_grounded 1.00; Δ+0.04, CI [0,0.12]
+— inconclusive, no separation.** A strong blind reader (Opus) already catches ~96% from its own
+competence; neither the reasoning audit nor the oracle adds a demonstrable edge. The one crack was a
+defect whose truth is an **arbitrary parameter of the constructed model, not in the reader's prior**.
+
+This yields a precise, falsifiable **boundary condition** that generalizes §0:
+
+> The workspace / lens / model-oracle adds value only where the reader **lacks the knowledge to
+> adjudicate the output** — a weaker reader or genuinely novel/arbitrary content. On any task within a
+> capable model's own competence, reading its workspace does not beat reading its output with a capable
+> model. That is why the lens-as-optimizer/detector program keeps returning inconclusive: the tasks
+> live inside the model's competence.
+
+So the honest verdict is unchanged but now *explained*: **no demonstrated payoff, because there is no
+headroom when the reader is already competent.** The mechanistic harness itself stands as a validated,
+calibrated deliverable (Phase 1); its value is scientific hypothesis generation, not a lens payoff.

@@ -1,12 +1,14 @@
 # Subagents
 
-> **Status:** the lens-driven Observer loop these subagents form was tested and came out
-> **inconclusive** over blind convergence — see [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md)
-> §0. The runtime clinical subagents and the protected guardrail are unaffected.
+> **Status.** The **runtime pipeline** below is the working, non-diagnostic HISTORA agent (see
+> [`../docs/VISION.md`](../docs/VISION.md) and [`../docs/SOLUTION.md`](../docs/SOLUTION.md)). The
+> **inferred-lens Observer loop** further down was a research investigation that came out a rigorous
+> negative (the boundary condition — [`../docs/RESEARCH_SUMMARY.md`](../docs/RESEARCH_SUMMARY.md) §0);
+> those instruments are kept as the honest record but are not the product. The protected guardrail is
+> unaffected.
 
 Subagent definitions for the HISTORA Oral-Systemic Intelligence Agent, in Claude
-Code agent format (frontmatter `name` / `description` / `tools`). See
-[`docs/PLAN.md` §3b](../docs/PLAN.md) for the architecture rationale.
+Code agent format (frontmatter `name` / `description` / `tools`).
 
 ## Runtime pipeline
 
@@ -31,10 +33,10 @@ verify -> assemble. The verifier can block; nothing failing the guardrail is emi
 | `claude-workspace-probe.md` | The inferred-lens readout source ON CLAUDE (real target, no GPU); surfaces mediators per format. Self-report, not a measurement |
 | `skillopt-optimizer.md` | **T1 promotion tier.** Evolves the five surfaces (prompts/skills/KB/sub-agent defs+variables/harness code) via bounded rollout->reflect->edit->gate |
 
-The method is in [`../docs/APPROACH.md`](../docs/APPROACH.md) (canonical) and
-[`../docs/REFORMULATION.md`](../docs/REFORMULATION.md) (delta + workplan). **Claude
-only** — no proxy, no Colab, no measured lens; the paper is explored indirectly via the
-self-report skill, corroborated with counterfactual-sensitivity on Claude.
+The method is archived in [`../docs/analysis/ARCHIVE/APPROACH.md`](../docs/analysis/ARCHIVE/APPROACH.md)
+and the verdict in [`../docs/analysis/why-no-lens-payoff.md`](../docs/analysis/why-no-lens-payoff.md).
+**Claude only** — no proxy, no measured lens; the paper was explored indirectly via the self-report
+skill. Kept as the honest record of a rigorous negative; not part of the working product.
 
 ## Skill ↔ subagent map
 

@@ -2,7 +2,7 @@
 
 > Validates the approach: does the Observer-converged input actually beat the naive
 > input on Claude? This is the fitness signal and the promotion gate (see
-> [`REFORMULATION.md`](REFORMULATION.md) §R5, [`../agents/skillopt-optimizer.md`](../agents/skillopt-optimizer.md)).
+> [`REFORMULATION.md`](analysis/ARCHIVE/REFORMULATION.md) §R5, [`../agents/skillopt-optimizer.md`](../agents/skillopt-optimizer.md)).
 > Harness: [`../src/ab_eval.py`](../src/ab_eval.py); tests: `tests/test_ab_eval.py`.
 
 ## The two arms (same case, same model)
