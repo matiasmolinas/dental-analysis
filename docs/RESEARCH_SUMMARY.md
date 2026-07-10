@@ -134,3 +134,29 @@ Only two things, both flagged and both unrun: **(a)** a free/targeted actuator o
 non-obvious-gap task at n≥30 (ours to do); **(b)** the **measured** Jacobian lens on Claude via the API
 (Anthropic's to expose). Absent those, the defensible statement is: **real, non-redundant signal; no
 demonstrated payoff.**
+
+### 6b. The Phase-2 boundary condition — *why* there is no payoff (2026-07-09)
+
+The mechanistic-modeling harness ([`MECHANISTIC_HARNESS_PLAN.md`](MECHANISTIC_HARNESS_PLAN.md)) was
+built to test the hypothesis that the §0 null is a **task-ceiling artifact** — NHANES doesn't require
+mechanistic reasoning, so there is no headroom for reading the workspace to help. Phase 2
+([`analysis/phase2-fair-lens-retest.md`](analysis/phase2-fair-lens-retest.md)) re-ran the monitor on a
+task that *does* require reasoning, with three arms holding the two possible payoffs apart:
+`blind` / `reasoning_monitor` (audits reasoning, no tool = the lens thesis) / `model_grounded` (audit +
+the calibrated model as an oracle = the harness thesis). Result over 25 injected quantitative
+mechanistic defects: **blind 0.96, reasoning_monitor 1.00, model_grounded 1.00; Δ+0.04, CI [0,0.12]
+— inconclusive, no separation.** A strong blind reader (Opus) already catches ~96% from its own
+competence; neither the reasoning audit nor the oracle adds a demonstrable edge. The one crack was a
+defect whose truth is an **arbitrary parameter of the constructed model, not in the reader's prior**.
+
+This yields a precise, falsifiable **boundary condition** that generalizes §0:
+
+> The workspace / lens / model-oracle adds value only where the reader **lacks the knowledge to
+> adjudicate the output** — a weaker reader or genuinely novel/arbitrary content. On any task within a
+> capable model's own competence, reading its workspace does not beat reading its output with a capable
+> model. That is why the lens-as-optimizer/detector program keeps returning inconclusive: the tasks
+> live inside the model's competence.
+
+So the honest verdict is unchanged but now *explained*: **no demonstrated payoff, because there is no
+headroom when the reader is already competent.** The mechanistic harness itself stands as a validated,
+calibrated deliverable (Phase 1); its value is scientific hypothesis generation, not a lens payoff.

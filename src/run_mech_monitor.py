@@ -56,6 +56,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Phase 2 fair lens re-test (mechanistic, 3-arm)")
     ap.add_argument("--reader-model", default="claude-opus-4-8")
     ap.add_argument("--judge-model", default="claude-sonnet-5")
+    ap.add_argument("--defect-mode", choices=["blatant", "subtle"], default="subtle",
+                    help="subtle (v2) = quantitative mech errors a blind read can't adjudicate")
     ap.add_argument("--out", default=os.path.join(os.path.dirname(__file__), "..", "results",
                                                   "mech_monitor_report.json"))
     args = ap.parse_args()
@@ -81,7 +83,7 @@ def main() -> None:
 
     injected, controls = [], []
     for feat in _strata():
-        bundle = inject_all_mechanistic(feat, p)
+        bundle = inject_all_mechanistic(feat, p, mode=args.defect_mode)
         ct = _case_text(feat)
         controls.append({"case_text": ct, "answer": bundle["correct"], "reference": bundle["reference"]})
         for row in bundle["injected"]:
@@ -90,7 +92,8 @@ def main() -> None:
 
     report = evaluate_mech(injected, controls, arms,
                            judge_caught=lambda dets, label: caught(judge, dets, label))
-    report["meta"] = {"reader": args.reader_model, "judge": args.judge_model, "n_cases": 5}
+    report["meta"] = {"reader": args.reader_model, "judge": args.judge_model, "n_cases": 5,
+                      "defect_mode": args.defect_mode}
 
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w") as f:

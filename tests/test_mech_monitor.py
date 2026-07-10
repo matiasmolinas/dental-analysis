@@ -23,6 +23,10 @@ from mech_defects import (
     break_monotonicity,
     overstate_coupling,
     false_point_certainty,
+    magnitude_therapy,
+    subtle_causal_attribution,
+    wrong_dominant_factor,
+    narrow_range,
 )
 from mech_monitor import evaluate_mech
 
@@ -61,6 +65,29 @@ def test_inject_all_bundle_shape():
     assert set(b) == {"reference", "correct", "injected"}
     assert len(b["injected"]) == 5
     assert "steady_state" in b["reference"]  # the oracle for the grounded arm
+
+
+def test_subtle_injectors_are_same_direction_wrong_quantity():
+    ans = correct_answer(FEAT, P)
+    # therapy: same direction (LOWERS) but a wrong magnitude number
+    out, lab = magnitude_therapy(ans, FEAT, P)
+    assert "LOWERS" in _claim(out, "therapy_direction") and lab["defect_type"] == "magnitude_therapy"
+    # causal: names TNF-α (plausible), not a blatant CRP-as-cause
+    out, lab = subtle_causal_attribution(ans, FEAT, P)
+    assert "TNF" in _claim(out, "causal_node") and lab["defect_type"] == "subtle_causal_attribution"
+    # dominant factor: smoking above diabetes (contra the amplifier values)
+    out, lab = wrong_dominant_factor(ans, FEAT, P)
+    assert "smoking" in _claim(out, "monotonicity").lower() and lab["defect_type"] == "wrong_dominant_factor"
+    # range: too narrow
+    out, lab = narrow_range(ans, FEAT, P)
+    assert "tight" in _claim(out, "crp_estimate") and lab["defect_type"] == "narrow_range"
+
+
+def test_subtle_mode_uses_subtle_set():
+    b = inject_all_mechanistic(FEAT, P, mode="subtle")
+    types = {r["defect_type"] for r in b["injected"]}
+    assert types == {"magnitude_therapy", "subtle_causal_attribution", "wrong_dominant_factor",
+                     "overstated_confidence_subtle", "narrow_range"}
 
 
 def test_evaluate_mech_separates_theses():

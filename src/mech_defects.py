@@ -115,6 +115,75 @@ def false_point_certainty(answer, features, p):
                  "description": "gives a definitive point CRP; the model only supports a range (ε uncertainty)"}
 
 
+# --------------------------------------------------------------------------- subtle variants (v2)
+# v1 (above) were DIRECTIONAL REVERSALS — a competent blind read catches them on sight (ceiling; no
+# headroom to separate the arms). These v2 variants are QUANTITATIVE: same direction, wrong
+# magnitude/attribution/width — errors a blind read *cannot* adjudicate without the model, so they
+# create headroom AND separate the theses (the model_grounded oracle can verify a number; the
+# reasoning arm can only catch what mechanism knowledge alone reveals). See qa-monitor-live-result.
+
+def magnitude_therapy(answer, features, p):
+    """Right direction (therapy lowers CRP) but a wrong MAGNITUDE — a blind read can't know the
+    number; the oracle can. ΔCRP inflated ~3–4×."""
+    res = centerpiece(features, p, verify_dynamics=False)
+    d = res["counterfactuals"]["periodontal_therapy"]["delta_crp_mg_l"]
+    wrong = round(abs(d) * 3 + 1.5, 2)
+    out = _replace_claim(answer, "therapy_direction",
+                         f"Periodontal therapy LOWERS systemic CRP by about {wrong} mg/L "
+                         f"(a large, clinically decisive reduction).")
+    return out, {"defect_type": "magnitude_therapy", "claim_id": "therapy_direction",
+                 "description": f"claims ΔCRP≈{wrong} mg/L; the model predicts ≈{abs(d):.2f} mg/L "
+                                "(right direction, wrong magnitude)"}
+
+
+def subtle_causal_attribution(answer, features, p):
+    """Attributes the causal drive to TNF-α (a plausible cytokine) instead of IL-6 — subtle, both
+    are real inflammatory mediators; only mechanism knowledge (or the model) flags it."""
+    out = _replace_claim(answer, "causal_node",
+                         "TNF-α is the principal causal driver of the hepatic acute-phase response "
+                         "here, with IL-6 a secondary correlate.")
+    return out, {"defect_type": "subtle_causal_attribution", "claim_id": "causal_node",
+                 "description": "names TNF-α as the principal CRP driver; the model/kernel makes IL-6 "
+                                "the hepatic-CRP driver (TNF is upstream/secondary)"}
+
+
+def wrong_dominant_factor(answer, features, p):
+    """A subtle ordering error: claims smoking is the dominant comorbid amplifier when the model's
+    diabetes amplifier (×1.4) exceeds smoking (×1.25). Only the amplifier values settle it."""
+    out = _replace_claim(answer, "monotonicity",
+                         "Higher BOP raises systemic inflammatory gain; among comorbidities, smoking "
+                         "is the dominant amplifier of that gain, above diabetes.")
+    return out, {"defect_type": "wrong_dominant_factor", "claim_id": "monotonicity",
+                 "description": f"ranks smoking (×{p.get('smoking_amp')}) above diabetes "
+                                f"(×{p.get('diabetes_amp')}) as the dominant amplifier; the model has "
+                                "diabetes larger"}
+
+
+def overstated_confidence_subtle(answer, features, p):
+    """One notch too high: presents the neuro coupling as 'moderate confidence, preliminary fits'
+    rather than a flagged scaffold/hypothesis — plausible, not a blatant 'established law'."""
+    out = _replace_claim(answer, "neuro_coupling",
+                         "The inflammation→tau-spread-α coupling has moderate empirical support from "
+                         "preliminary fits and can be treated as a probable quantitative link.")
+    return out, {"defect_type": "overstated_confidence_subtle", "claim_id": "neuro_coupling",
+                 "description": "upgrades a flagged scaffold to 'moderate empirical support / probable "
+                                "quantitative link'; the model marks it an unfitted hypothesis"}
+
+
+def narrow_range(answer, features, p):
+    """A range too NARROW: ±0.05 around the point vs the true ε-driven spread — a blind read can't
+    know the width; the oracle (ε sweep) can."""
+    res = centerpiece(features, p, verify_dynamics=False)
+    crp = res["steady_state"]["crp_mg_l"]
+    out = _replace_claim(answer, "crp_estimate",
+                         f"Predicted systemic CRP is {round(crp-0.05,2)}–{round(crp+0.05,2)} mg/L — a "
+                         f"tight, well-constrained interval.")
+    true_rng = _crp_range(features, p)
+    return out, {"defect_type": "narrow_range", "claim_id": "crp_estimate",
+                 "description": f"claims a ±0.05 interval; the ε uncertainty gives a much wider range "
+                                f"({true_rng[0]}–{true_rng[1]} mg/L)"}
+
+
 MECH_INJECTORS = {
     "wrong_counterfactual_direction": flip_therapy_direction,
     "wrong_causal_node": swap_causal_node,
@@ -123,14 +192,24 @@ MECH_INJECTORS = {
     "false_point_certainty": false_point_certainty,
 }
 
+SUBTLE_MECH_INJECTORS = {
+    "magnitude_therapy": magnitude_therapy,
+    "subtle_causal_attribution": subtle_causal_attribution,
+    "wrong_dominant_factor": wrong_dominant_factor,
+    "overstated_confidence_subtle": overstated_confidence_subtle,
+    "narrow_range": narrow_range,
+}
 
-def inject_all_mechanistic(features: dict, p: dict) -> dict[str, Any]:
+
+def inject_all_mechanistic(features: dict, p: dict, mode: str = "blatant") -> dict[str, Any]:
     """The true answer + one corrupted variant per injector + the reference oracle (centerpiece
-    numbers). Returns {reference, correct, injected:[{defect_type, corrupted_answer, label}]}."""
+    numbers). `mode='blatant'` = v1 directional reversals; `mode='subtle'` = v2 quantitative errors
+    a blind read cannot adjudicate without the model. Returns {reference, correct, injected}."""
     correct = correct_answer(features, p)
     reference = centerpiece(features, p, verify_dynamics=False)
+    injectors = SUBTLE_MECH_INJECTORS if mode == "subtle" else MECH_INJECTORS
     injected = []
-    for name, fn in MECH_INJECTORS.items():
+    for name, fn in injectors.items():
         corrupted, label = fn(correct, features, p)
         injected.append({"defect_type": name, "corrupted_answer": corrupted, "label": label})
     return {"reference": reference, "correct": correct, "injected": injected}
