@@ -26,11 +26,13 @@ session trace-consolidation did not beat a cold start. Full analysis:
 Done: the neuro mechanistic model (`mech_neuro.py`) and the neuro relational axis
 (`bridge_concepts.py` + schema + `neuro_relational_recall`).
 
-**2a. NHANES perio + cognition data integration** [OFFLINE code + network to fetch]. Extend
-`nhanes_mapping.py` / `nhanes_loader.py` for the cognitive battery (CERAD-WL, Animal Fluency, DSST;
-NHANES-III and 2011–2014 carry both periodontal exams and cognition) so the **neuro axis gets an
-empirical anchor** like the CV axis has. Keeps HISTORA's oral↔neuro hypotheses grounded in real,
-public, de-identified data. **DO (mapping offline; the download is opt-in at run time).**
+**2a. NHANES perio + cognition data integration — DONE + RUN (2026-07-10).** `perio_cognition.py`
+(pure-python adjusted OLS + bootstrap CI), `nhanes_neuro_loader.py`, `run_perio_cognition.py`. Live on
+NHANES 2011-2012 (n=919 complete): **3 of 4 cognitive measures show a significant, confounder-adjusted
+NEGATIVE association** with periodontal severity (Digit Symbol adj −0.181 [−0.226,−0.137]; Animal
+Fluency −0.098; CERAD-immediate −0.057; CERAD-delayed ns) — the direction `mech_neuro` predicts.
+**The durable value line paying off** — a genuine, honestly-caveated positive (association, not
+causation; mediator not in-cycle). Full analysis: [`analysis/perio-cognition-result.md`](analysis/perio-cognition-result.md).
 
 ## Track 3 — Boundary-confirmation experiments (honest expected-null; do the cheap/offline parts)
 
