@@ -1,7 +1,7 @@
 # Subagents
 
 The HISTORA non-diagnostic relational agent, as Claude Code subagent definitions (frontmatter
-`name` / `description` / `tools`). See [`../docs/SOLUTION.md`](../docs/SOLUTION.md) for how these fit
+`name` / `description` / `tools`). See [`SOLUTION.md`](../../../docs/SOLUTION.md) for how these fit
 the whole solution.
 
 ## Runtime pipeline
