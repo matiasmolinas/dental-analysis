@@ -24,3 +24,6 @@ results/
 
 # macOS
 .DS_Store
+
+# demo generated output
+demo/brief.json
