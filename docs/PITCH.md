@@ -13,6 +13,8 @@
 It is a **research agent, not a disease predictor.** The win is not accuracy; it is *mechanism +
 honesty*: uncertainty and falsifiability as product features, every number traceable, nothing diagnosed.
 
+*The stage runbook (timed lines, clicks, fallbacks, Q&A) is [`DEMO-SCRIPT.md`](DEMO-SCRIPT.md).*
+
 ## The one memorable demo — "the inflammatory-proxy walk"
 
 `python demo/run_demo.py` (offline, no API key) runs a fixed case through five stages:
