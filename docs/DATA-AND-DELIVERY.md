@@ -77,12 +77,22 @@ detection) built into the platform.
 
 1. **Claude Code plugin — keep it as the portable hackathon-demo surface.** No special account, runs
    anywhere, drives the WS3 live demo. This is what a judge can run.
-2. **Claude Science packaging — the "where a real lab runs it" story.** Package HISTORA as Claude Science
-   **skills + specialist agents**, save the `histora` harness as a **reusable pipeline/skill**, wire the
-   **connectors** (UniProt/PDB for grounding; GWAS for the MR probe), and lean on the **reviewer agent**
-   for citation/calculation checking. This directly satisfies the review's *polished interface* (R10) and
-   *safe, transparent research acceleration* (F4), and it is the form that resonates with Gladstone +
-   Anthropic.
+2. **Claude Science — the "where a real lab runs it" home.** **Claude Science has no "plugin" slot** — its
+   native extension model is **skills** (reusable pipelines) + **connectors** (to tools, databases, ELNs,
+   HPC, and models), plus user-created **specialist agents** and a **reviewer agent** (confirmed from the
+   product page and launch post). HISTORA maps onto exactly these primitives:
+
+   | HISTORA component (Claude Code plugin) | Claude Science home |
+   |---|---|
+   | `skills/` (periodontal staging, guardrail, oral-systemic KB) | **skills** |
+   | the `histora` Python harness | a **reusable pipeline saved as a skill** |
+   | `agents/` (orchestrator, analysts, guardrail-verifier) | **specialist agents** |
+   | data access (UniProt/PDB, GWAS for MR, NHANES) | **connectors** |
+   | our citation-accuracy + guardrail metrics | the platform **reviewer agent** (native) |
+
+   **"Can HISTORA be a plugin to Claude Science?"** Not by that name — but **yes, it integrates cleanly**,
+   because Claude Code and Claude Science share the same primitives (skills, subagents, connectors). The
+   very components we ship as a Claude Code plugin *are* the Claude Science integration; no rewrite.
 
 Why not "an app that runs Claude Code"? A bespoke app re-implements what Claude Science already provides
 (compute management, reviewer agent, connectors, reproducible artifacts) — effort better spent on the

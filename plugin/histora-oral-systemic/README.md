@@ -9,6 +9,10 @@ research hypotheses, and runs a **mechanistic model harness** (IL-6/CRP → CV, 
 calibrated to real interventional data) to produce parameter-level predictions with **honest uncertainty
 ranges**. It never diagnoses and never imputes a patient value.
 
+This plugin is the **portable delivery surface** for the hackathon demo. Its production home is
+**Claude Science**, whose native extension model is *skills + connectors* — the same components port
+directly (see [`../../docs/PITCH.md`](../../docs/PITCH.md) for the integration decision).
+
 ## Install & use
 
 ```
