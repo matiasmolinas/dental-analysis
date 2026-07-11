@@ -144,4 +144,26 @@ them importable. This is the concrete, mechanical change that makes HISTORA impo
 **Takeaway for the analysis:** "100% Claude Science" is not just possible in principle — the importer
 *already parses our repo*; the only blocker was a skill-file layout convention, now fixed.
 
+### Live end-to-end run (confirmed)
+
+After the fix, we imported and ran HISTORA **live** in Claude Science:
+- **Preview → 7/7 skills importable**; **Import → "7 skills · Imported"** into the profile.
+- A **new session** with a structural case (Stage III periodontitis, BOP 45%, type-2 diabetes, hs-CRP
+  MISSING) **auto-loaded 6 of the 7 skills** (it selected the relevant ones) and produced a **faithful,
+  non-diagnostic HISTORA analysis**:
+  - 2017 AAP/EFP periodontal framing with **field-level traceability** (`[fields: stage, BOP, …]`);
+  - two prioritized relational axes (CV = priority 1, **confidence LOW because the hs-CRP mediator is
+    missing**; metabolic = priority 2), each citing its input fields;
+  - a **collection-flags** block (hs-CRP, HbA1c, smoking, lipids/BP/CV history, CAL/bone-loss) —
+    **nothing imputed**; it even noted that smoking suppresses BOP, so severity may be under-read;
+  - a hypothetical-only counterfactual and the **full non-diagnostic disclaimer**;
+  - and a **"Reviewing"** step — the platform **reviewer agent** checked the output automatically.
+
+**The guardrail held perfectly, in the platform's own flow.** This validates the whole thesis: the
+**skills layer** (reasoning / framing / guardrail / traceability) runs natively and safely in Claude
+Science with **zero code**. What this run did *not* exercise is the **deterministic engine** (calibrated
+ODE/ensemble/MR numbers) — that is the next integration step: ship the `histora` harness as a **pinned
+pipeline skill** (+ Modal/connectors) so the numbers, not just the framing, come from HISTORA. That
+boundary is exactly §2's "what must stay code": the skills reason; the pipeline computes.
+
 *Non-diagnostic throughout; population/parameter-level only.*
