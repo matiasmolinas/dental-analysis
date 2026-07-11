@@ -113,6 +113,11 @@ transparent AI agent" story the judges want — and we can report them honestly 
 every number a home. **Effort: M.** Offline metrics ship first (deterministic); the live consistency run
 is a small add.
 
+> **Research-track extension (gated):** a *self-improving-harness* metric — the harness detects a
+> recurring omission in its own traces and externalizes the fix, measured with the W1 guardrail metric
+> and a prose-vs-enforcement control. See §11 (Behavioral Trace Diagnostics). It is upside, not a
+> must-have, and runs only after the must-haves close.
+
 ---
 
 ## 5. Cheap, high-leverage honesty fixes (R5, R6, R7)
@@ -212,6 +217,11 @@ Drop-in narrative for README + pitch:
 - **Do not report agentic metrics we can't reproduce.** Every metric ships with a seed/manifest and an
   offline check where possible; live-Claude metrics report their n and variance honestly (as the M6
   guardrail probe already does).
+- **Do not let the research track (§11) become a Trojan horse for the removed lens/memory work, and do
+  not persist patient-derived values into long-term memory.** The self-improvement layer must stay
+  offline-reproducible over real traces, must be named honestly (behavioral, post-hoc — not "Jacobian
+  lens"), and its consolidation step must persist only workflow patterns/templates — never a
+  physiological magnitude — or it violates the non-diagnostic guardrail it is meant to strengthen.
 
 ---
 
@@ -231,10 +241,87 @@ Drop-in narrative for README + pitch:
 9. **Why-now / Why-Anthropic-Gladstone + scientific roadmap** (§8, §7) — S — pitch polish.
 10. **Thin demo UI** (§3/R11) — M — only after the must-haves.
 
+**Research track (gated, zero budget until 1–6 close):**
+- **Behavioral Trace Diagnostics** (§11) — the API-accessible analogue of the Jacobian-lens idea:
+  self-improving-harness introspection over observable traces, with the W1-standard measured experiment
+  and its control. A research-track sub-item of #5, reported honestly (including as a negative if the
+  control ties). **Not** a must-have; never displaces the pitch.
+
 **Definition of done for Stage 2:** a judge can watch one 3-minute demo that shows a case → Claude's
 hypotheses → the engine's uncertainty-quantified mechanism → the NHANES validation → a falsifiable brief,
 backed by a reproducible **agentic-AI metric card** and **design-adjusted NHANES statistics**, framed
 throughout as a *safe scientific research agent*, not a predictor.
+
+---
+
+## 11. Research track (gated) — Behavioral Trace Diagnostics
+
+> **Origin.** A hands-on experiment with the **Jacobian Lens** (J-Lens, Neuronpedia/Qwen) showed that
+> reading a model's *internal workspace* alongside its output diagnoses **what a prompt is missing**
+> better than reading the output alone — but does **not** catch execution errors (a bad multiplication);
+> the winning loop is *lens (fix the input) + output verification*.
+>
+> **The hard constraint.** Claude's API does **not** expose the Jacobian lens, so this cannot be a
+> production feature here. The question this track answers: *can we recover the diagnostic value from
+> API-accessible **observable** signals instead — short-term session traces, long-term learned memory,
+> per-session results, and the harness evolved during the session?*
+
+**Why it is coherent (and why it is not a rerun of the removed lens work).** Stage-1 established the
+boundary condition `I(L;Y|O,K_R)≈0`: the internal lens L was redundant with the observable output O plus
+a competent reader's knowledge K_R. That result **argues for** this track — if the internal signal was
+already recoverable from O+K_R, then the observable traces carry (almost) all of it. And traces have one
+strict advantage over the internal lens: **they see the output**, so they can catch the execution errors
+J-Lens missed. But the same result also carries the warning: the internal lens was cut for being
+*insight without payoff*, and that risk **moves with us unchanged**. Recoverable ≠ actionable.
+
+**Honest naming — do NOT call this "Jacobian lens."** It is a **different mechanism**: behavioral and
+*post-hoc* (after the session), *correlational* (observation only, no STEER/ABLATE), over external
+traces — not the causal, *during-computation* internal readout. The honest framing: *"inspired by the
+J-Lens lesson (fixing the input beats fixing the token), implemented on observable traces because the
+internal lens is inaccessible in production."* Overselling it as interpretability would cost credibility
+across the whole project.
+
+**Positioning: research-track, gated — not a new must-have.** The external review demanded *less* scope;
+a self-improving-harness module is exactly the kind of shine to prune. It therefore has a **zero time
+budget until the six must-haves are closed**, and it lives as a clearly-labelled **research-track
+sub-item of must-have #5** (agentic-AI metrics) — because a measurable harness self-improvement *is* an
+agentic metric. It never displaces the demo, the diagram, the protocol, or the survey weights.
+
+**The one measurable experiment (held to the W1 standard — improvement, not insight).** W1 worked
+because it *externalized a deterministic step the model knows but drops*, and **measured** it
+(guardrail 0.00→1.00) with a **control** proving prose alone did not suffice. This track must repeat that
+anatomy one level up (self-improvement instead of manual fix):
+
+1. **Trace analyzed** — the deterministic S/C/H benchmark logs (they already exist; offline).
+2. **Defect detected** — a recurring omission pattern (e.g. the execution-gap reappearing in a branch,
+   or a branch that skips the non-diagnostic disclaimer / the survey-weights step). A consolidation pass
+   (the llmunix `MemoryConsolidationAgent` pattern) extracts *"in context X, the harness drops step Y."*
+3. **Harness change produced** — promote that pattern into an **externalized deterministic directive** in
+   the sub-agent's long-term template (enforcement, not prose) — the session edits its own template.
+4. **Metric that rises** — reuse a **validated** metric (the binary non-diagnostic guardrail, or an
+   M1–M7 metric with a bootstrap CI). No new metric.
+5. **Control (mandatory)** — give the template the same finding as descriptive **prose** vs. as an
+   **externalized/enforced** directive. Only if externalization moves the metric is the W1 signature
+   reproduced. **Kill criterion, pre-registered:** if prose ties externalization, or the delta needs
+   Claude in the measurement loop (not offline-reproducible), it is insight-without-payoff again → it
+   stays research-track and is reported as an honest negative (itself on-message for "research agent").
+
+Offline: trace generation, consolidation, template edit, and the deterministic benchmark re-run
+(old vs new template). Live-Claude (preview only, not the headline number): Claude *autonomously*
+authoring the directive from the trace.
+
+**Guardrail extension (a real, new trap).** Session traces over NHANES contain patient-like magnitudes
+(CRP, the IL-6 proxy, ε). Consolidating to long-term memory must **never persist a physiological/patient-
+derived value as a "learning"** — long-term memory may hold only **workflow patterns and agent templates**
+(e.g. "apply survey weights in branch X"), never a derived individual magnitude. The structural
+non-diagnostic guardrail must extend to the consolidation layer with a filter that refuses to persist any
+physiological quantity. Skipping this would make the self-improvement module *violate* the very guardrail
+that is the project's core differentiator. *(Reference implementation of the memory hierarchy:
+`llmunix-marketplace/llmunix-plugin/system_files/SmartMemory.md` and `MemoryTraceManager.md`.)*
+
+**Cross-checked with an independent Fable pass**, which converged on: coherent but risk-carrying;
+rename away from "J-Lens"; research-track gated behind the must-haves; the W1-standard experiment with its
+control and kill criterion; and the memory-consolidation guardrail extension above.
 
 ---
 
