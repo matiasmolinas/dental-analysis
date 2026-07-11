@@ -21,3 +21,6 @@ results/
 # Live cross-session lever ledger (may reflect run data); schema + module are committed
 .knowledge/lever_ledger.jsonl
 .nhanes_neuro/
+
+# macOS
+.DS_Store
