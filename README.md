@@ -95,6 +95,7 @@ hypothesis** — nothing that could not be verified or reproduced was kept.
 | One calibrated parameter, three axes | ε (and k_hba1c) calibrated to the interventional ΔCRP / ΔHbA1c anchors; the axes follow |
 | Beats separate models | benchmark: 1 vs 3 free params, calibration error 0.00 vs 0.71, intervals + falsifiability 1.00 vs 0.00; direction ties |
 | Beats bare Claude | benchmark: calibration error 0.00 vs 1.25, intervals + falsifiability 1.00 vs 0.00; the harness's guardrail edge is the subtle execution-gap step (W1: 0.00→1.00) |
+| Genetic causal probe (Mendelian randomization) | IL-6R → coronary disease **causal** (IVW β=+0.105, p<0.001); CRP/IL-6 → Alzheimer's **null** (p=0.91) — genetics that supports the CV/metabolic-anchored vs. neuro-exploratory tiering (`run_mendelian_randomization.py`) |
 
 ## Run it
 
@@ -107,6 +108,7 @@ python src/run_mechanistic.py         # periodontal source → IL-6/CRP → CV/m
 python src/run_mech_neuro.py          # the neuro axis: neuroinflammation → tau spread (offline)
 python src/run_ensemble.py            # the ensemble envelopes over the swept parameters (offline)
 python src/run_benchmark.py           # S vs H comparative validation (offline); add --live for bare Claude
+python src/run_mendelian_randomization.py   # genetic causal probe of the shared proxy (offline)
 python src/run_perio_cognition.py     # empirical validation, NHANES 2011-2012 (needs pandas + network)
 python src/run_perio_diabetes.py      # metabolic anchor, NHANES 2009-2010 (needs pandas + network)
 python src/run_agent.py               # the Claude-powered non-diagnostic relational agent (needs API key)

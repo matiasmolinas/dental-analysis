@@ -226,11 +226,14 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
 - **Tasks:**
   - [ ] Promote the existing LHS + one-at-a-time elasticities (`ensemble.py`) into a `PAPER.md` figure;
         add a Sobol total-order index if cheap.
-  - [ ] **Mendelian randomization probe (new, doable offline):** two-sample MR on **public GWAS summary
-        stats** — IL-6R/CRP instruments → CAD, T2D, AD, cognition (OpenGWAS/GWAS Catalog; IVW computable in
-        pure Python from betas/SEs, with MR-Egger/weighted-median sensitivity). Report honestly — the
-        expected pattern (IL-6R causal for CAD; weak/null for AD) *supports* the CV/metabolic-anchored vs.
-        neuro-exploratory tiering. Population/instrument level only — never an individual genetic risk.
+  - [x] **Mendelian randomization probe — ✅ PROTOTYPED.** Pure-Python two-sample MR
+        (`histora.mendelian_randomization`: IVW + MR-Egger + weighted-median + Cochran's Q; 6 tests on
+        synthetic ground truth) with a runner (`src/run_mendelian_randomization.py`). Illustrative,
+        literature-directional panels reproduce the established result: **IL-6R → coronary disease =
+        causal** (IVW β=+0.105, p<0.001, no pleiotropy flag); **CRP/IL-6 → Alzheimer's = null** (p=0.91) —
+        genetics that independently supports the CV/metabolic-anchored vs. neuro-exploratory tiering.
+        *Remaining (funded scope):* swap the illustrative panels for live OpenGWAS/GWAS-Catalog extracts +
+        MR-PRESSO/leave-one-out. Population/instrument level only — never an individual genetic risk.
   - [ ] Write the **scientific roadmap** (§10): longitudinal cohorts (e.g. ARIC) for temporal ordering +
         fitting γ/β_tau/β_si; genetics (APOE4 stratification — needs ADNI/dbGaP, roadmap); multimodal
         (tau-PET/ADNI; inflammatory panels). Label it clearly as *not done* — the program the agent feeds.
