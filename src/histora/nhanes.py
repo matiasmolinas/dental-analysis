@@ -191,6 +191,10 @@ def load_cv_table(paths: dict[str, str]) -> list[dict[str, Any]]:
             "smoking": (1.0 if smoke == 1 else 0.0 if smoke == 2 else None),
             "bmi": _plausible(g("BMXBMI"), 10, 80),
             "hba1c": _plausible(g("LBXGH"), 3, 20),
+            # NHANES complex-survey design (for design-adjusted estimation; histora.nhanes_survey)
+            "weight": _plausible(g("WTMEC2YR"), 0, 1e12),
+            "sdmvstra": g("SDMVSTRA"),
+            "sdmvpsu": g("SDMVPSU"),
         })
     return records
 
@@ -223,5 +227,8 @@ def load_neuro_table(paths: dict[str, str]) -> list[dict[str, Any]]:
             "education": _plausible(g("DMDEDUC2"), 1, 5),
             "smoking": (1.0 if smoke == 1 else 0.0 if smoke == 2 else None),
             "hba1c": _plausible(g("LBXGH"), 3, 20),
+            "weight": _plausible(g("WTMEC2YR"), 0, 1e12),
+            "sdmvstra": g("SDMVSTRA"),
+            "sdmvpsu": g("SDMVPSU"),
         })
     return records

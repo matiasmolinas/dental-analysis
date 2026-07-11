@@ -1,5 +1,8 @@
 # HISTORA — Oral-Systemic case-evaluation plugin
 
+> **HISTORA is a scientific research agent, not a disease predictor or diagnostic aid.** It surfaces
+> falsifiable oral–systemic hypotheses with explicit mechanism and honest uncertainty.
+
 A Claude Code plugin that evaluates a **new oral-systemic case**, non-diagnostically: it relates a
 patient's periodontal + systemic data to **cardiovascular, metabolic, and Alzheimer's / neurodegeneration**
 research hypotheses, and runs a **mechanistic model harness** (IL-6/CRP → CV, metabolic & neuro axes,

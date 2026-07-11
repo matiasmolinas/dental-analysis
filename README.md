@@ -33,10 +33,51 @@ falsifiable object instead of three disconnected associations — and, on a pre-
 is measurably more parsimonious, coherent, calibrated, and uncertainty-honest than either applying the
 models separately or using Claude without the harness (see below).
 
+> **Positioning:** HISTORA is a **scientific research agent**, not a disease predictor or a diagnostic
+> aid. It helps a researcher form and prioritize **falsifiable** oral–systemic hypotheses with explicit
+> mechanism and honest uncertainty. Its shared driver is a **latent inflammatory proxy** (operationalized
+> as excess IL-6), not a claim that IL-6 is the sole mechanism.
+
+> **Calibration ≠ validation** (read this before quoting numbers). Two different things:
+> **calibration** pins the one uncertain edge (ε, and k for HbA1c) to real *interventional* anchors — an
+> input constraint, not a result. **Validation** is independent: the three association directions the
+> engine predicts appear, confounder-adjusted, in public NHANES; and a genetic **Mendelian-randomization**
+> probe supports the causal chain where we anchor it (CV) and withholds it where we flag it exploratory
+> (neuro). Never read the calibration as if it were the validation.
+
 > **New here?** Read [`docs/PAPER.md`](docs/PAPER.md) (the full technical report),
 > [`docs/PROBLEM.md`](docs/PROBLEM.md) (the problem, for clinicians + engineers),
-> [`docs/SOLUTION.md`](docs/SOLUTION.md) (how it works), and [`docs/BENCHMARK.md`](docs/BENCHMARK.md)
-> (how we validate that it beats the alternatives).
+> [`docs/SOLUTION.md`](docs/SOLUTION.md) (how it works), [`docs/BENCHMARK.md`](docs/BENCHMARK.md)
+> (how we validate that it beats the alternatives), and the Stage-2 plan
+> [`docs/STAGE2-WORKPLAN.md`](docs/STAGE2-WORKPLAN.md).
+
+## Architecture — who does what (Claude vs. the engine)
+
+```mermaid
+flowchart LR
+    R["Integrated record<br/>(structural bands only)"] --> C
+    subgraph C["Claude — reasoning (orchestration)"]
+      C1["relational hypotheses<br/>+ traceability + missing-data flags"]
+    end
+    C --> T["Tools: case_tools<br/>(structural stratum in)"]
+    T --> E
+    subgraph E["Deterministic engine (histora.mech_*)"]
+      P["inflammatory proxy<br/>(excess IL-6) → CRP"]
+      P --> CV["CV axis"]
+      P --> MET["metabolic axis"]
+      P --> NEU["neuro axis<br/>(exploratory module)"]
+    end
+    E --> U["Ensemble / UQ<br/>envelopes + sensitivity"]
+    U --> V["Validation<br/>NHANES signs + MR probe"]
+    V --> X["Explanation<br/>ranges + falsification condition"]
+```
+
+| **Claude decides** | **The engine decides** |
+|---|---|
+| *what* to run (which models fit the case) | the **numbers**: calibrate ε, propagate the proxy |
+| *how* to report uncertainty (routes to ranges) | the **envelopes** (Latin-hypercube sweep + sensitivity) |
+| *when* to route to falsification (the refutation) | the deterministic ODE/PDE/MR computations |
+| soft estimates **only** for un-coded edges — **weight-capped**, never a headline number | the calibrated/validated spine that always outweighs a Claude soft member |
 
 ## The hackathon
 
@@ -96,6 +137,7 @@ hypothesis** — nothing that could not be verified or reproduced was kept.
 | Beats separate models | benchmark: 1 vs 3 free params, calibration error 0.00 vs 0.71, intervals + falsifiability 1.00 vs 0.00; direction ties |
 | Beats bare Claude | benchmark: calibration error 0.00 vs 1.25, intervals + falsifiability 1.00 vs 0.00; the harness's guardrail edge is the subtle execution-gap step (W1: 0.00→1.00) |
 | Genetic causal probe (Mendelian randomization) | IL-6R → coronary disease **causal** (IVW β=+0.105, p<0.001); CRP/IL-6 → Alzheimer's **null** (p=0.91) — genetics that supports the CV/metabolic-anchored vs. neuro-exploratory tiering (`run_mendelian_randomization.py`) |
+| Survives design-adjusted stats | With NHANES survey weights + clustering + BH-FDR, CRP/CV/HbA1c and processing-speed **all survive**; two weaker cognition measures attenuate and drop — reported honestly (`run_nhanes_weighted.py`) |
 
 ## Run it
 
@@ -109,6 +151,7 @@ python src/run_mech_neuro.py          # the neuro axis: neuroinflammation → ta
 python src/run_ensemble.py            # the ensemble envelopes over the swept parameters (offline)
 python src/run_benchmark.py           # S vs H comparative validation (offline); add --live for bare Claude
 python src/run_mendelian_randomization.py   # genetic causal probe of the shared proxy (offline)
+python src/run_nhanes_weighted.py     # design-adjusted NHANES (survey weights + FDR); needs pandas+data
 python src/run_perio_cognition.py     # empirical validation, NHANES 2011-2012 (needs pandas + network)
 python src/run_perio_diabetes.py      # metabolic anchor, NHANES 2009-2010 (needs pandas + network)
 python src/run_agent.py               # the Claude-powered non-diagnostic relational agent (needs API key)
