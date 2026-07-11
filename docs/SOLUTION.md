@@ -23,9 +23,11 @@ interventional data, tests the association it predicts in a public population da
 whole thing in a guardrail that refuses to diagnose or to invent missing values.
 
 The pieces cohere because they share **one quantity**: the **effective inflammatory gain** — the
-*excess* of circulating interleukin-6 (IL-6) above its healthy baseline. (For the physician: IL-6 is a
-pro-inflammatory cytokine, a signaling protein; chronic periodontitis is a low-grade source of it. For
-the bioengineer: it is the single scalar the entire pipeline propagates.) The same excess-IL-6 quantity
+*excess* of circulating interleukin-6 (IL-6) above its healthy baseline, best understood as a **latent
+systemic-inflammation proxy operationalized as excess IL-6** (CRP, IL-1β and TNF-α co-move with it), not
+a claim that IL-6 is the sole mechanism. (For the physician: IL-6 is a pro-inflammatory cytokine, a
+signaling protein; chronic periodontitis is a low-grade source of it. For the bioengineer: it is the
+single scalar the entire pipeline propagates.) HISTORA is a **research agent, not a disease predictor**. The same excess-IL-6 quantity
 drives the cardiovascular axis, the neuro axis, and the metabolic couplings — so varying one parameter
 generates coherent, cross-axis, falsifiable hypotheses rather than a disconnected bag of models.
 

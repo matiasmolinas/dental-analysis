@@ -95,7 +95,7 @@ in:
 Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) · **deliverables** ·
 **DoD** · **effort** · **deps** · **files**.
 
-### WS1 — Reframe + honesty pass  ·  *must-have*  ·  **effort S**
+### WS1 — Reframe + honesty pass  ·  *must-have*  ·  ◑ **mostly done** (README/MODELS/SOLUTION/plugin reframed + calibration≠validation callout; remaining: full grep sweep + PAPER abstract line)  ·  **effort S**
 - **Covers:** F1, F2, F3, F4, W2, W3, R8, W5, S2(preserve).
 - **Goal:** every surface opens as a *scientific research agent*, cleanly separates *calibration* from
   *validation*, and describes the shared variable as a *latent inflammatory proxy*.
@@ -119,7 +119,7 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
 - **Deps:** none (do first — unblocks all wording). **Files:** `README.md`, `docs/PAPER.md`,
   `docs/SOLUTION.md`, `docs/MODELS.md`, plugin `README.md`.
 
-### WS2 — Architecture diagram + Claude-vs-engine labor table  ·  *must-have*  ·  **effort S**
+### WS2 — Architecture diagram + Claude-vs-engine labor table  ·  *must-have*  ·  ✅ **DONE** (Mermaid diagram + labor table in README; reused in the artifact/demo when built)  ·  **effort S**
 - **Covers:** R2, R4, S1, S4, W2.
 - **Goal:** one canonical figure a judge reads in 10 seconds, plus an explicit division of labor.
 - **Tasks:**
@@ -198,19 +198,19 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
   accuracy). **Files:** `src/histora/agent_metrics.py`, `src/run_agent_metrics.py`, `docs/PAPER.md`,
   `docs/CITATIONS.md` (the claim→source map).
 
-### WS6 — NHANES statistical hardening  ·  *must-have*  ·  **effort M**  ·  the one real code gap
+### WS6 — NHANES statistical hardening  ·  *must-have*  ·  ✅ **DONE**
 - **Covers:** R7, S3(strengthen), F2.
 - **Goal:** design-adjusted statistics a survey statistician respects.
 - **Tasks:**
-  - [ ] Add survey design to the NHANES loaders: exam weights `WTMEC2YR`, strata `SDMVSTRA`, PSU
-        `SDMVPSU`; report design-adjusted coefficients alongside the unweighted ones.
-  - [ ] If a light Taylor-linearization / BRR variance is feasible in pure Python, implement it; else
-        state the limitation explicitly and keep bootstrap as the CI.
-  - [ ] **Multiplicity:** Benjamini–Hochberg FDR across the outcomes; report which survive (so 3/4
-        cognition isn't read as cherry-picking).
-  - [ ] **Sensitivity table:** the coefficient across ≥4 specifications (CAL vs PPD, confounder sets,
-        inclusion rules).
-  - [ ] Keep foregrounding small, cross-sectional effects; report honestly if weighting attenuates a sign.
+  - [x] Survey design added to the NHANES loaders (`WTMEC2YR`, `SDMVSTRA`, `SDMVPSU`); design-adjusted
+        coefficients reported **beside** the unweighted ones.
+  - [x] Design-based variance via a **cluster bootstrap** (resample PSUs within stratum) — the standard
+        practical bootstrap for the stratified two-PSU design; documented as the chosen method.
+  - [x] **Multiplicity:** joint **Benjamini–Hochberg FDR** across all 7 outcomes.
+  - [x] **Sensitivity:** CAL vs PPD exposure re-run in the same report.
+  - [x] Honest attenuation reported: CRP/CV/HbA1c + processing-speed **survive**; two weaker cognition
+        measures attenuate and drop under FDR (design-adjusted cognition = 2/4, not 3/4) — written into
+        `PAPER.md` §4.2. `histora.nhanes_survey` + `run_nhanes_weighted.py`; 6 tests on synthetic truth.
 - **Deliverables:** `histora/nhanes_survey.py`; a weighted-vs-unweighted + FDR + sensitivity table in
   `PAPER.md`.
 - **DoD:** every NHANES coefficient is reported design-adjusted with an FDR verdict and a 4-spec

@@ -53,6 +53,17 @@ The harness implements one **calibratable pipeline** unified by a single shared 
 coupling is flagged and swept as a range, never asserted. Full catalog + confidence tiers:
 [`model-library.md`](model-library.md).
 
+> **IL-6 is a latent-proxy, not the sole mechanism.** The shared gain is best read as a **latent
+> systemic-inflammation factor operationalized as excess IL-6** — IL-6 is the convenient, measurable
+> stand-in (CRP, IL-1β, TNF-α co-move with it), and Mendelian-randomization evidence favoring IL-6/IL-1β
+> as *causal* is the justification for that choice, not a claim that IL-6 is the only driver. Read
+> "inflammatory gain / proxy" throughout, not "the IL-6 mechanism."
+>
+> **Axis tiers.** The **CV and metabolic axes are data-anchored** (their predicted directions are
+> validated in NHANES and, for CV, supported by MR). The **neuro axis is an exploratory research
+> module** — same mathematical rigor, but gated behind the failed GAIN trial and the fact that the
+> inflammatory mediator is not co-measured with cognition; it is a live hypothesis, never a result.
+
 ### 2.1 Periodontal inflammatory source → IL-6 (E2.3, E2.4)
 - **Medical relationship.** Diseased periodontal tissue is a chronic low-grade source of
   pro-inflammatory cytokines and endotoxin (LPS) that spill into the circulation; circulating IL-6

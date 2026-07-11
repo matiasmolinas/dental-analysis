@@ -179,6 +179,32 @@ withhold support exactly where we flag it as exploratory (the neuro axis) — an
 on the tiering. (The panels here are illustrative and literature-directional; the estimator is
 unit-tested on synthetic ground truth, and a definitive run substitutes live OpenGWAS extracts.)
 
+### 4.2 Design-adjusted results (survey weights + FDR)
+
+NHANES is a complex probability sample; an unweighted OLS biases the estimate (unequal selection) and
+understates variance (clustering). We re-ran every association with the survey design — exam weights
+(`WTMEC2YR`), strata (`SDMVSTRA`), PSU (`SDMVPSU`) — using weighted standardized OLS with a
+cluster bootstrap (PSU within stratum) and a joint Benjamini–Hochberg FDR across all seven outcomes
+(`histora.nhanes_survey`, `run_nhanes_weighted.py`).
+
+| Outcome (perio-CAL) | Unweighted | **Design-adjusted** | 90% design CI | FDR |
+|---|---|---|---|---|
+| CRP | +0.044 | **+0.031** | [+0.009, +0.056] | **survives** |
+| CV history | +0.128 | **+0.092** | [+0.058, +0.127] | **survives** |
+| HbA1c | +0.160 | **+0.104** | [+0.073, +0.141] | **survives** |
+| Digit Symbol (speed) | −0.181 | **−0.188** | [−0.240, −0.127] | **survives** |
+| CERAD-delayed | −0.048 | −0.052 | [−0.100, −0.006] | survives |
+| Animal Fluency | −0.098 | −0.061 | [−0.130, +0.015] | drops |
+| CERAD-immediate | −0.057 | −0.023 | [−0.072, +0.029] | drops |
+
+**Honest reading — this strengthens the paper by sharpening it.** The three data-anchored axes (CRP, CV
+history, HbA1c) **all survive** design adjustment and multiplicity control, and the strongest cognitive
+signal (processing speed) survives and even strengthens. But two weaker cognitive measures **attenuate
+and drop under FDR** — so the design-adjusted cognition picture is *2 of 4 survive*, not the unweighted
+*3 of 4*. This is exactly what we would expect if the neuro association is real but small and
+confounder-/design-sensitive — and it is further reason to treat the **neuro axis as an exploratory
+module**, not a headline result. We report the attenuation rather than the unweighted figure.
+
 ## 5. Comparative validation
 
 We pre-specified a scorecard (`histora.benchmark`, `docs/BENCHMARK.md`) and ran three arms on the same
