@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "histora"
+version = "0.1.0"
+description = "HISTORA — a non-diagnostic oral-systemic mechanistic research harness"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+# The core engine is pure-python and dependency-free (so it installs and runs anywhere,
+# and stays deterministic). Extras add the optional data / plotting / Claude layers.
+dependencies = []
+
+[project.optional-dependencies]
+data = ["pandas"]        # NHANES loaders (survey-weighted analysis, MR data pulls)
+plots = ["matplotlib"]   # the pipeline-skill figures (envelopes, sensitivity, MR, benchmark)
+agent = ["anthropic"]    # the live Claude relational agent / soft-model member
+
+[project.urls]
+Homepage = "https://github.com/matiasmolinas/dental-analysis"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

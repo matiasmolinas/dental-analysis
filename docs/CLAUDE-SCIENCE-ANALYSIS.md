@@ -161,9 +161,22 @@ After the fix, we imported and ran HISTORA **live** in Claude Science:
 
 **The guardrail held perfectly, in the platform's own flow.** This validates the whole thesis: the
 **skills layer** (reasoning / framing / guardrail / traceability) runs natively and safely in Claude
-Science with **zero code**. What this run did *not* exercise is the **deterministic engine** (calibrated
-ODE/ensemble/MR numbers) — that is the next integration step: ship the `histora` harness as a **pinned
-pipeline skill** (+ Modal/connectors) so the numbers, not just the framing, come from HISTORA. That
-boundary is exactly §2's "what must stay code": the skills reason; the pipeline computes.
+Science with **zero code**. What this run did *not* exercise is the **deterministic engine** — see the
+next section, now built.
+
+### The deterministic engine as a pipeline skill (built)
+
+The remaining half — the numbers, not just the framing — is now packaged as an **8th skill**,
+`histora-mechanistic-pipeline` (in both `skills/` and the plugin), so the whole harness imports and runs
+inside Claude Science:
+- **`run_pipeline.py`** runs the **pinned** `histora` engine on a structural case (found via installed
+  package → local repo `src/` → `pip install git+repo@ref`, so the math is versioned, not regenerated):
+  `--case` → the mechanistic ranges + counterfactuals; `--mr` → the genetic causal probe; `--benchmark`
+  → the S-vs-H scorecard.
+- **`plot_pipeline.py`** renders the outputs as figures — envelopes (ranges, not points), the sensitivity
+  tornado, the MR β-scatter, the benchmark bars — the "graphics" gain, native to a Claude Science session.
+- Packaged installable (`pyproject.toml`: `pip install histora`, pure-python core, zero deps); unit-tested
+  (`tests/test_pipeline_skill.py`). This closes §2's boundary: **the skills reason; the pipeline computes**,
+  deterministically, and Claude Science renders + reviews.
 
 *Non-diagnostic throughout; population/parameter-level only.*

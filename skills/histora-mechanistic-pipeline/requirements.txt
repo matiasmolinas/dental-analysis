@@ -1,0 +1,3 @@
+# The HISTORA engine core is pure-python (installed as the `histora` package). These are optional:
+matplotlib   # for plot_pipeline.py figures
+# pandas     # only if running the NHANES survey-weighted analysis / real MR data pulls
