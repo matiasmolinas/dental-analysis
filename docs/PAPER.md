@@ -241,6 +241,27 @@ calibration error to 0.00 (from 0.71 for separate models and 1.25 for the bare m
 uncertainty-honesty and falsifiability from 0.00 to 1.00, while matching both baselines on directional
 validity and overt-guardrail adherence.
 
+### 5.1 Agentic-AI metric card
+
+Because the review asks for *agentic* metrics — the properties of a safe research agent — we add a
+reproducible card (`histora.agent_metrics`, scored against the auditable claim→source registry
+`histora.citations` / [`CITATIONS.md`](CITATIONS.md)):
+
+| Agentic metric | S separate | C bare model | **H harness** |
+|---|---|---|---|
+| Citation accuracy (cited claims that resolve + match) | — | — | **1.00** |
+| Hallucination rate (numeric claims untraceable to engine/cite/hypothesis) ↓ | 1.00 | 1.00 | **0.00** |
+| Falsifiability (hypotheses shipping a refutation) ↑ | — | — | **1.00** |
+| Uncertainty coverage (90% bands contain the real anchors) ↑ | 0.00 | 0.00 | **1.00** |
+| Calibration honesty (ε flagged as the top uncertainty driver) | — | — | **true** |
+| Guardrail pass | — | — | **1.00** |
+
+Every number the harness reports resolves to an engine output, a cited registry entry, or a flagged
+hypothesis with a refutation — so its hallucination rate is 0 and its citation accuracy is 1; the
+baselines' point numbers are uncited and untraceable. (`—` = the metric does not apply to a non-agent
+arm that makes no citations/hypotheses.) The card is deterministic offline; a `--live` path scores a real
+bare-model transcript.
+
 ## 6. Limitations
 
 1. **Flagged couplings are scaffolds.** γ (CV), β_tau (neuro), and β_si (metabolic) are

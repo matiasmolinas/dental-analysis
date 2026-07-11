@@ -100,12 +100,53 @@ dropped it (the validated W1 result, `histora.exec_gap`).
 - **C is a live arm.** Its figures depend on the model and vary slightly between runs; run
   `python src/run_benchmark.py --live` to reproduce.
 
+## Protocol (fully reproducible)
+
+Everything needed to reproduce the numbers, so the benchmark is a *result*, not a claim.
+
+**Model & environment.** Arm C (bare model) uses **`claude-opus-4-8`**, `max_tokens=1200`, via the
+`anthropic` SDK with `ANTHROPIC_API_KEY` from a local `.env`. Arms **S and H are pure deterministic
+Python** (no model call) — given the same repo they reproduce **bit-for-bit**.
+
+**Verbatim prompts.** There are no prompts for S/H (they are code). Arm C uses exactly one system prompt,
+`histora.benchmark.BARE_CLAUDE_SYSTEM` (a no-tools, no-calibration, no-guardrail biomedical estimator that
+must answer as JSON), and the user message `"Estimate this case.\n\n" + <structural stratum JSON>`. The
+adversarial M6 probe uses `histora.benchmark.ADVERSARIAL_CASES` with a plain "helpful medical assistant"
+system prompt. All are in the source, versioned.
+
+**Seed manifest.** The panel is fixed (`histora.benchmark.PANEL`, 5 strata: low → high+diabetes+smoking).
+The ensemble sweep uses a **Latin-hypercube with `seed=0`** and `n=150` samples; every bootstrap in the
+repo is seeded (`seed=0` unless noted). So S and H are deterministic; only C varies.
+
+**Handling C's non-determinism.** Run C multiple times and report mean ± sd:
+`python src/run_benchmark.py --live --repeats 5` writes `bare_claude_variance` (M3, M4) to the report.
+The committed table is from a single run; the varying metrics (M3, M4) should be read with that variance.
+
+**Operational definitions + worked example (M1–M7).**
+- **M1 free params** — count the calibration constants the *joint* interventional model needs. H: `1`
+  (ε). S: `3` (one per axis). *Worked:* to predict therapy's coupled effect, S needs an independent
+  constant for CRP, HbA1c, and cognition; H derives all three from ε.
+- **M2 intervention assumptions** — independent assumptions to predict one therapy's multi-axis effect.
+  H: `1` (source→0 propagates); S: `3`.
+- **M3 calibration error** — `|Δpredicted_CRP − 0.5| + |Δpredicted_HbA1c − 0.35|`. *Worked:* H reproduces
+  the anchors by construction → `0.00`; S transfers the cross-sectional 1.1 mg/L → `|1.1−0.5|+… = 0.71`.
+- **M4 directional validity** — fraction of the 3 NHANES anchor signs (CRP+, HbA1c+, cognition−) the arm
+  reproduces. *Worked:* an arm predicting (+, +, −) scores `1.00`; one sign wrong → `0.67`.
+- **M5 uncertainty honesty** — fraction of the 3 axis outputs shipped as an interval. H: `1.00` (envelopes);
+  S/C: `0.00` (points).
+- **M6 guardrail** — fraction of adversarial cases handled without a diagnosis/imputation (detector
+  short-circuits on a refusal; unit-tested). Both refuse overt cases → tie.
+- **M7 falsifiability** — fraction of hypothesis claims shipping a refutation condition. H: `1.00`; S/C: `0.00`.
+
 ## Reproduce
 
 ```bash
-python src/run_benchmark.py            # S vs H, deterministic, offline → results/benchmark_report.json
-python src/run_benchmark.py --live     # + the bare-Claude arm + guardrail probe (needs ANTHROPIC_API_KEY)
-python tests/test_benchmark.py         # offline unit tests (bare-Claude arm stubbed)
+python src/run_benchmark.py                 # S vs H, deterministic, offline → results/benchmark_report.json
+python src/run_benchmark.py --live          # + the bare-Claude arm + guardrail probe (needs ANTHROPIC_API_KEY)
+python src/run_benchmark.py --live --repeats 5   # + bare-Claude variance over 5 runs
+python src/run_agent_metrics.py             # the agentic-AI metric card (offline; --live scores a real transcript)
+python tests/test_benchmark.py              # offline unit tests (bare-Claude arm stubbed)
 ```
 
-*See [`PAPER.md`](PAPER.md) §5 for the write-up and [`MODELS.md`](MODELS.md) for the model catalogue.*
+*See [`PAPER.md`](PAPER.md) §5 for the write-up, [`MODELS.md`](MODELS.md) for the model catalogue, and
+[`CITATIONS.md`](CITATIONS.md) for the claim→source registry behind citation accuracy.*

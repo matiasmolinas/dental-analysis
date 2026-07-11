@@ -152,6 +152,7 @@ python src/run_ensemble.py            # the ensemble envelopes over the swept pa
 python src/run_benchmark.py           # S vs H comparative validation (offline); add --live for bare Claude
 python src/run_mendelian_randomization.py   # genetic causal probe of the shared proxy (offline)
 python src/run_nhanes_weighted.py     # design-adjusted NHANES (survey weights + FDR); needs pandas+data
+python src/run_agent_metrics.py       # agentic-AI metric card: citation/hallucination/coverage (offline)
 python src/run_perio_cognition.py     # empirical validation, NHANES 2011-2012 (needs pandas + network)
 python src/run_perio_diabetes.py      # metabolic anchor, NHANES 2009-2010 (needs pandas + network)
 python src/run_agent.py               # the Claude-powered non-diagnostic relational agent (needs API key)

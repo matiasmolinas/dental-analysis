@@ -155,7 +155,7 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
   falsification condition; the calibration/validation split is visible; nothing diagnoses.
 - **Deps:** WS1 (framing), WS2 (diagram on the first screen). **Files:** `demo/*`, reuses `histora.*`.
 
-### WS4 — Benchmark reproducibility protocol  ·  *must-have*  ·  **effort M**
+### WS4 — Benchmark reproducibility protocol  ·  *must-have*  ·  ✅ **DONE**
 - **Covers:** W4, R5, S5(exhibit), F2.
 - **Goal:** turn the benchmark from a claim into a verifiable result.
 - **Tasks:**
@@ -170,7 +170,7 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
 - **DoD:** a stranger can reproduce S/H exactly and C within reported variance from the doc alone.
 - **Deps:** none. **Files:** `docs/BENCHMARK.md`, `src/run_benchmark.py`, `src/histora/benchmark.py`.
 
-### WS5 — Agentic-AI metrics (offline)  ·  *must-have*  ·  **effort M**
+### WS5 — Agentic-AI metrics (offline)  ·  *must-have*  ·  ✅ **DONE** (offline; live consistency remains)
 - **Covers:** R9, F3.
 - **Goal:** a reproducible metric card: hallucination rate, citation accuracy, uncertainty calibration,
   consistency, falsifiability, guardrail — attributed across arms S/C/H. (Spec in §4.)
