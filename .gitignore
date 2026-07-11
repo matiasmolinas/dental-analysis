@@ -30,3 +30,8 @@ demo/brief.json
 
 # pipeline-skill runtime clone
 _histora_repo/
+
+# python build metadata
+*.egg-info/
+build/
+dist/

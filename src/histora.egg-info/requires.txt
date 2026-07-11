@@ -1,9 +1,0 @@
-
-[agent]
-anthropic
-
-[data]
-pandas
-
-[plots]
-matplotlib
