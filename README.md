@@ -153,6 +153,7 @@ python src/run_benchmark.py           # S vs H comparative validation (offline);
 python src/run_mendelian_randomization.py   # genetic causal probe of the shared proxy (offline)
 python src/run_nhanes_weighted.py     # design-adjusted NHANES (survey weights + FDR); needs pandas+data
 python src/run_agent_metrics.py       # agentic-AI metric card: citation/hallucination/coverage (offline)
+python demo/run_demo.py               # the canonical end-to-end research brief (offline; --live for Claude)
 python src/run_perio_cognition.py     # empirical validation, NHANES 2011-2012 (needs pandas + network)
 python src/run_perio_diabetes.py      # metabolic anchor, NHANES 2009-2010 (needs pandas + network)
 python src/run_agent.py               # the Claude-powered non-diagnostic relational agent (needs API key)
@@ -179,6 +180,34 @@ dental-analysis/
   docs/                       # PAPER, PROBLEM, SOLUTION, BENCHMARK, MODELS, model-library, DATASETS, ROADMAP
   tests/                      # pure-python harness tests (no GPU)
 ```
+
+## Why now, and why Anthropic + Gladstone
+
+**Why now.** The oral–systemic literature has matured from association to candidate mechanism (IL-6/CRP
+kinetics; tau-spread validated on tau-PET); public data (NHANES) is rich enough to test directional
+predictions cheaply; and frontier models can now *orchestrate* a mechanistic pipeline — reason over
+evidence, call deterministic tools, quantify their own uncertainty, and refuse to overstep — rather than
+act as opaque predictors. A safe, transparent research agent that stitches these together is newly
+possible, in pure Python over public data.
+
+**Why Anthropic + Gladstone.** HISTORA is an AI agent whose value is that it is *honest* — uncertainty,
+falsifiability, citation integrity, and a hard non-diagnostic guardrail as features, not disclaimers —
+and its most exploratory axis is Gladstone's terrain. It touches **four of Gladstone's five institutes**:
+
+| Gladstone institute | HISTORA connection |
+|---|---|
+| Neurological Disease (tau, APOE4) | the neuro module — a novel *upstream* perturbation (periodontal inflammation → tau-α) |
+| Cardiovascular Disease | the CV axis; MR shows IL-6R is causal for coronary disease |
+| Data Science & Biotechnology | the reproducible pure-Python harness + the oral-microbiome exposure |
+| Genomic Immunology | the shared inflammatory proxy; the IL-6R/CRP MR instruments |
+
+## Delivery
+
+Two surfaces, one engine (see [`docs/DATA-AND-DELIVERY.md`](docs/DATA-AND-DELIVERY.md)): the **Claude Code
+plugin** (`plugin/`) is the portable demo surface a judge can run anywhere; **Claude Science** is the
+lab-grade target — HISTORA packages as skills + specialist agents + the `histora` harness as a reusable
+pipeline, using UniProt/PDB/GWAS connectors and the platform reviewer agent (the native version of our
+citation/guardrail metrics). A grant draft is in [`docs/grant/`](docs/grant/AI-for-Science-application.md).
 
 ## Data & guardrails
 

@@ -1,0 +1,17 @@
+{
+  "provenance": {"source": "synthetic demo case — STRUCTURAL ONLY, not a real patient"},
+  "demographics": {"age": 62},
+  "periodontal": {
+    "bop_pct": 45,
+    "diagnosis": "Stage III, Grade B periodontitis",
+    "mean_ppd_mm": 5.2
+  },
+  "shared_risk": {
+    "type2_diabetes": true,
+    "smoking_active": false,
+    "hba1c": null
+  },
+  "medical_cv": {
+    "hs_crp": null
+  }
+}

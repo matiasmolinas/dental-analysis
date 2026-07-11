@@ -95,7 +95,7 @@ in:
 Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) · **deliverables** ·
 **DoD** · **effort** · **deps** · **files**.
 
-### WS1 — Reframe + honesty pass  ·  *must-have*  ·  ◑ **mostly done** (README/MODELS/SOLUTION/plugin reframed + calibration≠validation callout; remaining: full grep sweep + PAPER abstract line)  ·  **effort S**
+### WS1 — Reframe + honesty pass  ·  *must-have*  ·  ✅ **DONE** (README/MODELS/SOLUTION/plugin/PAPER reframed + calibration≠validation callout; grep sweep clean)  ·  **effort S**
 - **Covers:** F1, F2, F3, F4, W2, W3, R8, W5, S2(preserve).
 - **Goal:** every surface opens as a *scientific research agent*, cleanly separates *calibration* from
   *validation*, and describes the shared variable as a *latent inflammatory proxy*.
@@ -136,7 +136,7 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
   that Claude never sources a number.
 - **Deps:** WS1 wording. **Files:** `docs/assets/architecture.*`, `README.md`, `docs/PAPER.md`, artifact.
 
-### WS3 — The canonical end-to-end demo  ·  *must-have*  ·  **effort M**  ·  the centerpiece
+### WS3 — The canonical end-to-end demo  ·  *must-have*  ·  ✅ **DONE** (`demo/run_demo.py` runs the 5 stages offline on a frozen case; 4 tests) — record the screen capture for the stage fallback  ·  the centerpiece
 - **Covers:** ES1, ES2, W1, R1, R3, F3, F4, S1(exhibit), S5(exhibit).
 - **Goal:** one anonymized case → hypotheses → uncertainty-quantified mechanism → NHANES validation →
   falsifiable brief, in ~3 minutes, reproducible with one command. Breadth becomes the punchline.
@@ -240,7 +240,7 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
 - **DoD:** a sensitivity figure is in the paper; the external roadmap is written and honestly out of
   hackathon scope. **Deps:** none. **Files:** `docs/PAPER.md`, `docs/ROADMAP.md`.
 
-### WS8 — Delivery + polished interface + pitch assets  ·  *nice-to-have*  ·  **effort S/M**
+### WS8 — Delivery + polished interface + pitch assets  ·  *nice-to-have*  ·  ◑ **mostly done** (delivery decision + Gladstone map + why-now in README; artifact refresh with diagram+card done)  ·  **effort S/M**
 - **Covers:** R10, R11. **See** [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) §3–4.
 - **Goal:** decide the delivery surface, ship a thin honest demo, and write the framing narrative.
 - **Tasks:**

@@ -3,9 +3,15 @@
 *HISTORA — a technical report for clinicians and biomedical engineers.*
 
 > **Non-diagnostic statement.** HISTORA is a research instrument for *hypothesis generation and
-> mechanistic exploration*. Every quantity reported here is a population-level or in-silico
-> parameter-level prediction, a swept range, or a data-collection flag. Nothing in this system
-> diagnoses an individual, imputes a missing patient value, or constitutes medical advice.
+> mechanistic exploration* — a **scientific research agent, not a disease predictor**. Every quantity
+> reported here is a population-level or in-silico parameter-level prediction, a swept range, or a
+> data-collection flag. Nothing in this system diagnoses an individual, imputes a missing patient value,
+> or constitutes medical advice.
+>
+> **Calibration ≠ validation.** Throughout: *calibration* pins the one uncertain edge (ε, and k for
+> HbA1c) to real interventional anchors — an input constraint, not a result. *Validation* is
+> independent — the predicted association directions in public NHANES (§4), and the genetic
+> Mendelian-randomization probe (§4.1). We never present the former as the latter.
 
 ---
 
