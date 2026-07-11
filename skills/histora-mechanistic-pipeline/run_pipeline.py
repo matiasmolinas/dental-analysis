@@ -79,6 +79,13 @@ def run_mr() -> dict:
     return {"note": "run src/run_mendelian_randomization.py from the repo for the panels"}
 
 
+def run_real_mr() -> dict:
+    """Real MR over public OpenGWAS summary statistics (needs OPENGWAS_JWT in the environment)."""
+    _ensure_histora()
+    from histora.real_mr import run_real_mr as _real
+    return _real()
+
+
 def run_benchmark() -> dict:
     _ensure_histora()
     from histora.benchmark import run_benchmark as _bench
@@ -100,13 +107,16 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="HISTORA mechanistic pipeline")
     ap.add_argument("--case", default=None, help="path to a structural case JSON (default: demo case)")
     ap.add_argument("--mr", action="store_true", help="run the Mendelian-randomization probe")
+    ap.add_argument("--real", action="store_true",
+                    help="with --mr: use REAL OpenGWAS summary stats (needs OPENGWAS_JWT) instead of "
+                         "the illustrative panels")
     ap.add_argument("--benchmark", action="store_true", help="run the S-vs-H benchmark")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     if args.mr:
         out = args.out or "mr_report.json"
-        json.dump(run_mr(), open(out, "w"), indent=2)
+        json.dump(run_real_mr() if args.real else run_mr(), open(out, "w"), indent=2)
     elif args.benchmark:
         out = args.out or "benchmark_report.json"
         json.dump(run_benchmark(), open(out, "w"), indent=2)
