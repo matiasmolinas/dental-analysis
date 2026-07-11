@@ -9,6 +9,11 @@
 >
 > **Non-diagnostic remains the hard invariant.** Nothing here diagnoses or imputes a patient value.
 >
+> **➜ Executable version:** [`STAGE2-WORKPLAN.md`](STAGE2-WORKPLAN.md) — the task-level work plan with a
+> full **coverage matrix** (every one of the 28 review points → a workstream), per-workstream checklists,
+> acceptance criteria, the demo script, and the metric/statistics specs. Use that to *execute*; use this
+> to understand *why*.
+>
 > *This plan was cross-checked with an independent review pass (a Fable-model agent). It converged on the
 > same core finding — the gap to "outstanding" is ~70% framing/exhibition, ~30% code — and on the single
 > substantive engineering item (NHANES survey weights). Its distinct contributions are folded in below.*
