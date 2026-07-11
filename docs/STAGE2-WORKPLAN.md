@@ -9,6 +9,10 @@
 > **Invariant (never traded away):** non-diagnostic — structural bands in, population/parameter-level
 > ranges out; a missing datum is a collection flag, never an imputed value; no patient value is ever
 > produced or persisted.
+>
+> **Data, genomics & delivery** (whether we need more data, the genetics/protein angle, and Claude
+> Science as the delivery surface) are analyzed in [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md); its
+> actionable conclusions are folded into WS5/WS7/WS8 below.
 
 ## How to use this document
 
@@ -173,7 +177,9 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
 - **Tasks:**
   - [ ] **Prerequisite (Fable-flagged):** build an auditable **claim → source** map — a structured table
         mapping each numeric anchor (ΔCRP≈0.5, ΔHbA1c≈0.35, the NHANES coefficients, CRP t½=19h, α_tau…) to
-        its reference key. Citation accuracy cannot be scored without this source-of-truth; do it first.
+        its reference key, including **UniProt/PDB** entries for the mechanism proteins (IL-6, CRP, tau,
+        gingipains) — see [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) §1C. Citation accuracy cannot be
+        scored without this source-of-truth; do it first.
   - [ ] `histora/agent_metrics.py` + `run_agent_metrics.py`.
   - [ ] **Citation accuracy** (offline): each cited claim resolves to a real reference key **in the map
         above** that supports it; check against `model-library.md`/`PAPER.md`.
@@ -213,27 +219,42 @@ Every workstream: **covers** (review IDs) · **goal** · **tasks** (checklist) �
   `src/run_perio_*.py`, `docs/PAPER.md`. **Risk:** an effect may weaken under weighting — report it
   honestly (on-message for the reframe).
 
-### WS7 — Sensitivity now + external-validation path  ·  *nice-to-have*  ·  **effort S**
-- **Covers:** R6, R12.
-- **Goal:** satisfy "sensitivity analyses" today; name the external-validation program honestly.
+### WS7 — Sensitivity + external evidence (incl. Mendelian randomization)  ·  *nice-to-have (MR is high-value)*  ·  **effort S–M**
+- **Covers:** R6, R12. **See** [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) §1–2.
+- **Goal:** satisfy "sensitivity analyses" today; add a **genetic causal probe** of the shared proxy; name
+  the longitudinal program honestly.
 - **Tasks:**
   - [ ] Promote the existing LHS + one-at-a-time elasticities (`ensemble.py`) into a `PAPER.md` figure;
         add a Sobol total-order index if cheap.
+  - [ ] **Mendelian randomization probe (new, doable offline):** two-sample MR on **public GWAS summary
+        stats** — IL-6R/CRP instruments → CAD, T2D, AD, cognition (OpenGWAS/GWAS Catalog; IVW computable in
+        pure Python from betas/SEs, with MR-Egger/weighted-median sensitivity). Report honestly — the
+        expected pattern (IL-6R causal for CAD; weak/null for AD) *supports* the CV/metabolic-anchored vs.
+        neuro-exploratory tiering. Population/instrument level only — never an individual genetic risk.
   - [ ] Write the **scientific roadmap** (§10): longitudinal cohorts (e.g. ARIC) for temporal ordering +
-        fitting γ/β_tau/β_si; genetics (APOE4 stratification; IL-6R Mendelian randomization); multimodal
+        fitting γ/β_tau/β_si; genetics (APOE4 stratification — needs ADNI/dbGaP, roadmap); multimodal
         (tau-PET/ADNI; inflammatory panels). Label it clearly as *not done* — the program the agent feeds.
 - **DoD:** a sensitivity figure is in the paper; the external roadmap is written and honestly out of
   hackathon scope. **Deps:** none. **Files:** `docs/PAPER.md`, `docs/ROADMAP.md`.
 
-### WS8 — Polished interface + pitch assets  ·  *nice-to-have*  ·  **effort S/M**
-- **Covers:** R10, R11.
-- **Goal:** a thin, honest demo surface and the narrative that frames it.
+### WS8 — Delivery + polished interface + pitch assets  ·  *nice-to-have*  ·  **effort S/M**
+- **Covers:** R10, R11. **See** [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) §3–4.
+- **Goal:** decide the delivery surface, ship a thin honest demo, and write the framing narrative.
 - **Tasks:**
+  - [ ] **Delivery decision — dual:** keep the **Claude Code plugin** as the portable hackathon-demo
+        surface; package HISTORA for **Claude Science** (skills + specialist agents + the `histora` harness
+        saved as a reusable pipeline; connectors UniProt/PDB + GWAS; the platform reviewer agent as the
+        native citation/calc check) as the lab-grade delivery/roadmap target. *Do not* build a bespoke app.
+  - [ ] Add the **Gladstone four-institute alignment map** (Neuro/CV/Data-Science/Genomic-Immunology) to
+        the pitch — HISTORA touches 4 of 5 institutes.
+  - [ ] Evaluate the **AI-for-Science program** (up to $30k credits; applications close **Jul 15, 2026**)
+        — time-sensitive decision this week.
   - [ ] Refine the one-page artifact/PDF; ensure the WS2 diagram and the metric card are on it.
   - [ ] Write **Why now / Why Anthropic + Gladstone** (draft in ROADMAP-STAGE2 §8) into README + a slide.
   - [ ] Optional thin demo UI (only after WS1–WS6) reusing the artifact palette — not a product.
-- **DoD:** the artifact carries the diagram + metric card; the why-now/why-partners text is in the README
-  and pitch. **Deps:** WS2, WS5. **Files:** artifact HTML, `README.md`.
+- **DoD:** the delivery decision is documented; the artifact carries the diagram + metric card; the
+  why-now/why-partners text + Gladstone map are in the README and pitch. **Deps:** WS2, WS5.
+  **Files:** artifact HTML, `README.md`, plugin manifest.
 
 ### WS-R — Behavioral Trace Diagnostics  ·  *research track, gated*  ·  **effort M**
 - **Covers:** beyond the review — the Jacobian-lens-via-observable-traces idea.
