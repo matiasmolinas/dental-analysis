@@ -22,10 +22,19 @@ The engine is the pinned `histora` package (pure-python, dependency-free core). 
 ```bash
 pip install "git+https://github.com/matiasmolinas/dental-analysis@main"   # or: pip install matplotlib for figures
 python run_pipeline.py --case case.json      # → predictions.json  (mechanistic ranges + counterfactuals)
-python run_pipeline.py --mr                   # → mr_report.json    (IL-6R→CAD causal; CRP→AD null)
+python run_pipeline.py --mr                   # → mr_report.json (illustrative literature-directional panels)
+python run_pipeline.py --mr --real            # → mr_report.json from REAL OpenGWAS summary stats
 python run_pipeline.py --benchmark            # → benchmark_report.json
 python plot_pipeline.py predictions.json --mr mr_report.json --benchmark benchmark_report.json
 ```
+
+**Real MR (`--real`)** replaces the illustrative panels with real public GWAS summary statistics via the
+**OpenGWAS** API. It needs a free token in the `OPENGWAS_JWT` environment variable (get one at
+https://api.opengwas.io; in Claude Science, add it as a credential — the pipeline inherits it and never
+stores it). **Modal is optional** — a single MR is laptop-light; Modal/HPC only helps to *scale* to many
+exposure–outcome pairs. The OpenGWAS study IDs in `histora.real_mr.DEFAULT_CONFIG` are versioned —
+**verify them on OpenGWAS before quoting a result**; the estimator is exact and unit-tested, the study
+choice is yours.
 
 `run_pipeline.py` finds the engine automatically (installed → local repo `src/` → pip-install at a pinned
 ref). `case.json` is a structural record: `periodontal` (bop_pct, diagnosis/stage, mean_ppd_mm),

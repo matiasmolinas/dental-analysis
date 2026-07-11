@@ -179,4 +179,16 @@ inside Claude Science:
   (`tests/test_pipeline_skill.py`). This closes §2's boundary: **the skills reason; the pipeline computes**,
   deterministically, and Claude Science renders + reviews.
 
+### Real MR over OpenGWAS (the "turn the caveat into a result" upgrade)
+
+The illustrative MR panels are now backed by a real path: `histora.real_mr` fetches public GWAS summary
+statistics from the **OpenGWAS** API for the instrument SNPs, harmonizes them to a common effect allele,
+and feeds the **same unit-tested estimator** — `python run_pipeline.py --mr --real`. It reads the free
+OpenGWAS token from `OPENGWAS_JWT` (add it as a Claude Science credential; never stored), harmonization
+is unit-tested offline (`tests/test_real_mr.py`), and the study IDs are configurable + flagged to verify.
+**Modal is *optional*** — a single MR is laptop-light; Modal/HPC only helps to scale to many
+exposure–outcome pairs or genome-wide. This is the concrete way the "illustrative panels" caveat becomes
+a real, honest result inside Claude Science. **Credentials (OpenGWAS token, Modal) are added by the user
+in Claude Science → Credentials — HISTORA never enters or stores them.**
+
 *Non-diagnostic throughout; population/parameter-level only.*
