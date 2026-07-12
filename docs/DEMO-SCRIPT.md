@@ -139,4 +139,4 @@ python demo/run_demo.py            # el brief end-to-end, offline
 ---
 
 *Guion en inglés para la entrega; puedo generar una versión 100% en español si presentás en español.
-Companion: [`PITCH.md`](PITCH.md) (la tesis) · [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) (la integración).*
+Companion: [`PITCH.md`](PITCH.md) (la tesis) · [`DATA-AND-DELIVERY.md`](internal/DATA-AND-DELIVERY.md) (la integración).*

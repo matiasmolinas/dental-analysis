@@ -374,7 +374,7 @@ technique it recommends coding next. The `agents/modeling-technique-selector` su
 Claude-Code face. The discipline is the same as everywhere else: a Claude estimate is a **flagged hypothesis
 with a falsification path** (how would we check it against data?), never a fitted result, gated by the
 non-diagnostic guardrail, and used **where the coded library cannot reach — not as a replacement** for
-the validated spine. This is what lets the case-evaluation plugin ([`ROADMAP.md`](ROADMAP.md) Objective B)
+the validated spine. This is what lets the case-evaluation plugin ([`ROADMAP.md`](internal/ROADMAP.md) Objective B)
 and the harness share one reasoning engine: Claude both *builds* coded models and *is* a member where
 equations run out.
 

@@ -68,7 +68,7 @@ The "broad scope" becomes the argument, not a weakness.
   But **yes, it integrates cleanly** via skills + connectors + specialist agents, because Claude Code and
   Claude Science share the same primitives. The same components we ship as a Claude Code plugin *are* the
   Claude Science integration. (A grant application to bring it there is drafted in
-  [`grant/`](grant/AI-for-Science-application.md).)
+  [`grant/`](internal/grant/AI-for-Science-application.md).)
 
 ## The 60-second script
 
@@ -85,5 +85,5 @@ The "broad scope" becomes the argument, not a weakness.
 
 ---
 
-*Evidence: [`PAPER.md`](PAPER.md) · [`BENCHMARK.md`](BENCHMARK.md). Delivery: [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md).
+*Evidence: [`PAPER.md`](PAPER.md) · [`BENCHMARK.md`](BENCHMARK.md). Delivery: [`DATA-AND-DELIVERY.md`](internal/DATA-AND-DELIVERY.md).
 Non-diagnostic throughout; population/parameter-level only.*

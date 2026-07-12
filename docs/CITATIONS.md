@@ -29,6 +29,6 @@
 **How it is used.** `histora.citations.supports(claim_id, value)` returns True iff the id exists and (if a
 value is asserted) it matches within tolerance. `histora.agent_metrics.citation_accuracy` scores an agent's
 cited claims against this; a dangling key or a value mismatch is a citation failure. See
-[`BENCHMARK.md`](BENCHMARK.md) (protocol) and [`STAGE2-WORKPLAN.md`](STAGE2-WORKPLAN.md) WS5.
+[`BENCHMARK.md`](BENCHMARK.md) (protocol) and [`STAGE2-WORKPLAN.md`](internal/STAGE2-WORKPLAN.md) WS5.
 
 *Protein entities cite UniProt/PDB (the Claude Science connectors); replace/extend as the mechanism grows.*

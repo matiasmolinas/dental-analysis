@@ -30,7 +30,7 @@ them.** We separate what needs *exhibiting* from what needs *building*.
 | R1 | Reduce to ONE memorable end-to-end demo | **GAP** (engine exists, demo doesn't) | Build the narrated live demo (§3) — the centerpiece |
 | R2 | Clear architecture diagram (Claude → tools → engine → validation → explanation) | **PARTIAL** (ASCII diagrams exist; no single polished visual) | One canonical diagram, reused in README/pitch/UI |
 | R3 | Separate Claude's role from the math engine | **DONE** (agent = relational hypotheses; `histora.*` = deterministic math; `case_tools` is the boundary) | Make the split *visible* in the diagram + demo narration |
-| R4 | Publish benchmark methodology + protocol | **PARTIAL** ([`BENCHMARK.md`](BENCHMARK.md) has arms/metrics/honesty notes; the *formal* protocol — exact prompts, model version, seeds, how the live C arm's non-determinism is handled — is not yet pinned) | Formal reproduction protocol: verbatim prompts, model id, seed manifest, N-run variance for arm C |
+| R4 | Publish benchmark methodology + protocol | **PARTIAL** ([`BENCHMARK.md`](../BENCHMARK.md) has arms/metrics/honesty notes; the *formal* protocol — exact prompts, model version, seeds, how the live C arm's non-determinism is handled — is not yet pinned) | Formal reproduction protocol: verbatim prompts, model id, seed manifest, N-run variance for arm C |
 | R5 | Calibration must NOT be presented as external validation | **PARTIAL** (docs say it, but the wording can still read as a "win") | Re-label everywhere: ε/k are *calibrated*; NHANES signs are the *validation* (§5) |
 | R6 | Describe IL-6 as a latent/shared inflammatory **proxy**, not the unique mechanism | **PARTIAL** | Rename the shared variable to an *inflammatory proxy* in docs + code comments (§5) |
 | R7 | Alzheimer's axis = exploratory research module | **PARTIAL** (flagged + GAIN caveat, but sits beside CV/metabolic as an equal) | Visually/structurally demote it to an "exploratory module" tier |
@@ -331,5 +331,5 @@ control and kill criterion; and the memory-consolidation guardrail extension abo
 ---
 
 *This plan responds to the external review; it adds no new biological claims and preserves the
-non-diagnostic invariant. Companion: [`ROADMAP.md`](ROADMAP.md) (Stage 1), [`PAPER.md`](PAPER.md),
-[`BENCHMARK.md`](BENCHMARK.md).*
+non-diagnostic invariant. Companion: [`ROADMAP.md`](ROADMAP.md) (Stage 1), [`PAPER.md`](../PAPER.md),
+[`BENCHMARK.md`](../BENCHMARK.md).*
