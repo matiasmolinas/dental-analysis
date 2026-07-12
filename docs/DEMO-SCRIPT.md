@@ -121,7 +121,7 @@ ver [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md).*
 > imports our skills **straight from GitHub** *[click Import → 8 skills]*. Reasoning skills *and* the
 > deterministic pipeline. We ran it: a case → a non-diagnostic analysis the platform's **reviewer agent
 > passed**; and the pipeline pulling **real genetics from OpenGWAS** — the LD-aware IL-6R probe shows
-> **coronary disease is causal, β≈0.7** *[show fig_cis_mr.png]*, while circulating CRP is null. **Same
+> **coronary disease is causal, correlated-IVW β≈+0.553 (SE 0.109)** *[show fig_cis_mr.png]*, while circulating CRP is null. **Same
 > components, no rewrite** — a Claude Code plugin today, a Claude Science skill today too."
 
 *Nota honesta (tenela lista): las **skills de razonamiento** corren nativas; el **motor determinista** corre

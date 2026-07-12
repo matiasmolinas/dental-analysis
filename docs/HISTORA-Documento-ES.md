@@ -244,7 +244,7 @@ bandera de recolección**. El motor bifurca el proxy compartido a tres ejes como
 **La línea de investigación falsable que genera** (con el ancla segura):
 - **Palanca = terapia periodontal** (no farmacológica, el borde exacto sobre el que el motor está
   *calibrado*) — ΔhsCRP predicho **0,68 mg/L**.
-- **Nodo causal = IL-6R.** MR-cis: **IL-6R → coronaria causal** (β ≈ +0,705 ajustada por LD); **CRP
+- **Nodo causal = IL-6R.** MR-cis: **IL-6R → coronaria causal** (correlated-IVW β ≈ +0,553, SE 0,109, ajustada por LD); **CRP
   circulante → coronaria nula**. El **tocilizumab** (bloqueo de IL-6Rα) se cita **solo** como prueba de que
   el nodo es causal/drogable — **nunca como tratamiento.**
 - **Hipótesis:** si el nodo IL-6R media el efecto sistémico, bajar la fuente periodontal de IL-6 debería
