@@ -96,6 +96,29 @@ como pipeline (pip-install del paquete pineado + Compute). Ambos probados en viv
 
 ---
 
+## 4b. SkillOpt — el diferenciador (opcional, ~25 s; usalo al extender a 5 min o si te lo piden)
+
+*Dirección: **corré este comando en la terminal** (offline, <1 s) y mostrá las dos filas del archivo —
+la ADOPTED y la REJECTED. Es el beat "más allá de la competencia": Claude mejorándose a sí mismo bajo
+una invariante de seguridad que es **estructuralmente imposible de evolucionar**.*
+
+```bash
+python src/run_skill_evolution.py --fresh
+```
+
+> **Say:** "One more thing — the role nobody else shows. HISTORA can **improve its own skills**. Claude
+> proposes an edit *[point to ADOPTED]*; we keep it **only if** it measurably improves — the confidence
+> interval excludes zero — **and** the non-diagnostic guardrail still passes on **every** case. Here's the
+> proof it has teeth *[point to REJECTED]*: this sibling gained the **exact same metric**, but it touched
+> the guardrail — so it's **thrown out**. Same guardrail hash on both. **Self-improvement where breaking
+> the rule scores zero — by construction.**"
+
+*Nota honesta: **una** generación, offline, con una métrica estructural ilustrativa (cobertura de
+citación de campos) — el *mecanismo*, no un resultado en vivo; la corrida definitiva cablea a Claude como
+mutador + `agent_metrics`, igual que la MR pasó de ilustrativa a viva. Ver [`EVOLUTION.md`](EVOLUTION.md).*
+
+---
+
 ## 5. Cierre — por qué ahora, por qué Anthropic + Gladstone · ~25 s
 
 > **Say:** "Why now: the science is mature, the public data is rich, and models can finally **orchestrate**
@@ -118,6 +141,7 @@ como pipeline (pip-install del paquete pineado + Compute). Ambos probados en viv
 | "Is this clinical-ready?" | "**No — and by design.** It's **non-diagnostic**: structural bands in, population-level ranges out, never a patient value. It's a research instrument for a lab, not a bedside tool." |
 | "Why not just prompt Claude?" | "We tested that — it's the **bare-model arm**. It **hallucinates uncited numbers, gives points not ranges, and isn't calibrated**. The harness is what makes Claude honest here." |
 | "What's novel for Gladstone?" | "A **parameterized, falsifiable upstream perturbation** (perio-inflammation → tau-α) they can plug into existing tau/microglia/BBB models — with the intellectual honesty, including the **failed GAIN trial**, a serious lab needs." |
+| "How is the self-improvement safe?" | "The **genome is only the prose of trainable skills** — the guardrail, the citations, and the engine are outside it, so evolution literally can't reach them. Safety is a **binary gate, not a fitness term**: any guardrail failure disqualifies the edit no matter how much metric it gained. And the archive carries the **guardrail hash, identical in parent and child** — machine-checkable proof the invariant never moved. It's `EVOLUTION.md`." |
 
 ---
 

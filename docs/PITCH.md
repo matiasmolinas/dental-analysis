@@ -40,7 +40,14 @@ The "broad scope" becomes the argument, not a weakness.
 | **Genetic causal probe** | Mendelian randomization: IL-6R→coronary disease **causal**, CRP→Alzheimer's **null** — supports our own tiering |
 | **Beats the alternatives** | pre-registered benchmark: vs separate models and bare Claude — 1 vs 3 params, calibration error 0.00, ranges + falsifiability 1.00 |
 | **Safe agent, measured** | agentic card: citation accuracy 1.0, hallucination 0.0, coverage 1.0, non-diagnostic guardrail enforced by construction |
+| **Self-improving — safely (the differentiator)** | **SkillOpt**: Claude edits its own skills; an edit is kept only if it *measurably* improves (CI excludes 0) AND leaves the guardrail untouched — an invariant **structurally impossible to evolve**. The archive shows an *adopted* edit next to a *rejected* one that gained the same metric but broke the guardrail. [`EVOLUTION.md`](EVOLUTION.md) |
 | **Gladstone-aligned** | touches 4 of 5 institutes; a **novel upstream perturbation** (periodontal inflammation → tau-α) for the neuro labs |
+
+**Claude at maximum — the full role spectrum.** HISTORA exercises Claude as: relational reasoner ·
+weight-capped ensemble member · orchestrator of a deterministic engine · adversarial guardrail-verifier ·
+pipeline/tool runner · live Claude-Science operator · **and, uniquely, a self-optimizer of its own skills
+under a safety invariant it cannot evolve.** That last meta-role is the one competitors don't show — and
+it's the one that turns "safe agent" from a promise into a structural guarantee (see below).
 
 ## How we deliver it (the integration decision)
 
