@@ -83,6 +83,7 @@ python src/run_benchmark.py             # S vs H comparative validation (offline
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
 python src/run_mendelian_randomization.py   # the genetic causal probe (offline)
 python src/run_skill_evolution.py           # SkillOpt: one gated, guardrail-safe skill-evolution generation
+python src/run_skill_evolution_live.py --gens 5   # SkillOpt LIVE: Claude evolves a real skill (needs anthropic+key)
 python src/run_nhanes_weighted.py       # design-adjusted NHANES (survey weights + FDR); needs pandas+data
 for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness tests
 ```
