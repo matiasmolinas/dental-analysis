@@ -73,18 +73,20 @@ python demo/run_demo.py
 
 ## 4. El drop-in en Claude Science — "y vive en un lab de verdad" · ~45 s
 
-*Dirección: cambiá a Chrome / Claude Science. Customize → Skills → botón "Add skill" → "Import from
-GitHub". Escribí `matiasmolinas/dental-analysis` → Preview/Import. Mostrá las skills reconocidas; si hay
-tiempo, abrí una sesión que corra una skill de HISTORA y mostrá el render.*
+*Dirección: cambiá a Chrome / Claude Science. Customize → Skills → "Add skill" → "Import from GitHub" →
+`matiasmolinas/dental-analysis` → Preview → Import (8/8 skills). Si hay tiempo, mostrá una sesión pre-corrida
+(fallback grabado): el análisis no-diagnóstico con el **reviewer agent en "no issues found"**, o la figura
+de la **cis-MR** (`fig_cis_mr.png`). Esto **ya está probado en vivo** — ver [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md).*
 
 > **Say:** "And this isn't only a CLI. **Claude Science** — Anthropic's workbench for scientists —
-> imports our skills **straight from GitHub**… *[click Import]* … it reads our plugin-marketplace layout,
-> and here are HISTORA's skills, now **first-class in a lab environment** — with native figure rendering,
-> connectors to UniProt, PDB and GWAS, and a **reviewer agent** that checks our citations. **Same
-> components, no rewrite.** A Claude Code plugin today; a Claude Science skill tomorrow."
+> imports our skills **straight from GitHub** *[click Import → 8 skills]*. Reasoning skills *and* the
+> deterministic pipeline. We ran it: a case → a non-diagnostic analysis the platform's **reviewer agent
+> passed**; and the pipeline pulling **real genetics from OpenGWAS** — the LD-aware IL-6R probe shows
+> **coronary disease is causal, β≈0.7** *[show fig_cis_mr.png]*, while circulating CRP is null. **Same
+> components, no rewrite** — a Claude Code plugin today, a Claude Science skill today too."
 
-*Nota honesta (tenela lista por si preguntan): las **skills** se importan tal cual; el **harness pesado**
-corre como pipeline/Compute. No prometas más de lo mostrado en vivo.*
+*Nota honesta (tenela lista): las **skills de razonamiento** corren nativas; el **motor determinista** corre
+como pipeline (pip-install del paquete pineado + Compute). Ambos probados en vivo. No prometas más que eso.*
 
 ---
 

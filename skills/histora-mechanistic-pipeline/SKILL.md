@@ -20,7 +20,10 @@ the reasoning skills (`oral-systemic-analysis`, `periodontal-staging`, `non-diag
 The engine is the pinned `histora` package (pure-python, dependency-free core). Install it once, then run:
 
 ```bash
-pip install "git+https://github.com/matiasmolinas/dental-analysis@main"   # or: pip install matplotlib for figures
+# public repo: plain install. Private repo: embed the connected GitHub token so the clone authenticates.
+pip install "git+https://github.com/matiasmolinas/dental-analysis@main"                       # when public
+pip install "git+https://x-access-token:${GITHUB_TOKEN}@github.com/matiasmolinas/dental-analysis@main"  # while private
+# (run_pipeline.py's auto-install fallback does this token substitution for you; add matplotlib for figures)
 python run_pipeline.py --case case.json      # → predictions.json  (mechanistic ranges + counterfactuals)
 python run_pipeline.py --mr                   # → mr_report.json (illustrative literature-directional panels)
 python run_pipeline.py --mr --real            # → mr_report.json from REAL OpenGWAS summary stats

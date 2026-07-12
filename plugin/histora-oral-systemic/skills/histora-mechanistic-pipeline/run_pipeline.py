@@ -53,7 +53,12 @@ def _ensure_histora() -> None:
                 return
             except ImportError:
                 sys.path.pop(0)
-    subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", f"git+{REPO}@main"], check=True)
+    # pip-install the pinned engine. If the repo is still private, a plain git clone can't authenticate;
+    # embed the connected GitHub token (GITHUB_TOKEN) so it works while private and, once the repo is
+    # public, unchanged without a token. --quiet keeps the token out of verbose logs.
+    token = os.environ.get("GITHUB_TOKEN", "").strip()
+    url = REPO.replace("https://", f"https://x-access-token:{token}@") if token else REPO
+    subprocess.run([sys.executable, "-m", "pip", "install", "--quiet", f"git+{url}@main"], check=True)
     import histora  # noqa: F401
 
 
