@@ -98,10 +98,9 @@ Why not "an app that runs Claude Code"? A bespoke app re-implements what Claude 
 (compute management, reviewer agent, connectors, reproducible artifacts) — effort better spent on the
 science. The plugin covers portability; Claude Science covers the lab-grade surface.
 
-**Time-sensitive opportunity:** the **AI for Science program** offers up to **$30,000 in credits** (+ up
-to $2,000 Modal compute) for ~50 projects; **applications close July 15, 2026** (projects run Sep 1 – Dec
-1, 2026). Given today's date this is imminent — HISTORA is a strong fit (biomedical, reproducible,
-safety-forward) and worth a same-week decision.
+**A natural next home:** Anthropic's **AI for Science program** (credits + Modal compute for selected
+projects) is a strong fit for HISTORA — biomedical, reproducible, safety-forward — as a path to run the
+harness and connectors at lab scale in Claude Science.
 
 **Caveat:** Claude Science is **beta** (macOS/Linux; Pro/Max/Team/Enterprise; Team/Enterprise need admin
 enablement). So the hackathon cannot *require* it — hence the plugin stays the demo surface, and Claude
@@ -132,5 +131,4 @@ Science is the delivery/roadmap target.
 
 ---
 
-*Companion: [`STAGE2-WORKPLAN.md`](STAGE2-WORKPLAN.md) (the executable plan), [`ROADMAP-STAGE2.md`](ROADMAP-STAGE2.md)
-(strategy). Non-diagnostic throughout; genetics used at the population/instrument level only.*
+*Non-diagnostic throughout; genetics used at the population/instrument level only.*

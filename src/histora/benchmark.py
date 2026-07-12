@@ -40,7 +40,7 @@ from .case_tools import case_stratum
 
 # --------------------------------------------------------------------------- real anchors (cited)
 # The three empirically-measured NHANES association SIGNS the integrated model predicts from ONE gain
-# (see docs/MODELS.md §3; results/perio_*_report.json). Sign convention: +1 marker rises with severity.
+# (see docs/model-library.md; results/perio_*_report.json). Sign convention: +1 marker rises with severity.
 NHANES_ANCHOR_SIGNS = {"crp": +1, "hba1c": +1, "cognition": -1}
 
 # Real INTERVENTIONAL anchors — the clinically actionable quantities (what periodontal therapy does):

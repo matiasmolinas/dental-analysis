@@ -17,16 +17,16 @@ from typing import Any, Optional
 CLAIMS: dict[str, dict[str, Any]] = {
     # ---- interventional calibration anchors ----
     "delta_crp_anchor": {"value": 0.5, "unit": "mg/L", "ref": "Front Immunol 2025 dynamics (meta-analytic ΔhsCRP)",
-                         "supports": "CRP reduction after periodontal therapy", "doc": "MODELS.md"},
+                         "supports": "CRP reduction after periodontal therapy", "doc": "model-library.md"},
     "delta_hba1c_anchor": {"value": 0.35, "unit": "pp", "ref": "Simpson/Cochrane 2022; Teshome 2017",
-                           "supports": "HbA1c reduction after periodontal therapy", "doc": "MODELS.md"},
+                           "supports": "HbA1c reduction after periodontal therapy", "doc": "model-library.md"},
     # ---- mechanism kinetics ----
     "crp_half_life": {"value": 19.0, "unit": "h", "ref": "Pepys & Hirschfield 2003, J Clin Invest 111:1805",
-                      "supports": "CRP plasma half-life", "doc": "MODELS.md"},
+                      "supports": "CRP plasma half-life", "doc": "model-library.md"},
     "il6_half_life": {"value": 2.0, "unit": "h", "ref": "human acute-phase IL-6 kinetics",
-                      "supports": "IL-6 clearance half-life", "doc": "MODELS.md"},
+                      "supports": "IL-6 clearance half-life", "doc": "model-library.md"},
     "alpha_tau": {"value": 0.019, "unit": "1/yr", "ref": "Schäfer et al. 2021, Front Physiol 12:702975",
-                  "supports": "baseline tau growth rate (amyloid-positive)", "doc": "MODELS.md"},
+                  "supports": "baseline tau growth rate (amyloid-positive)", "doc": "model-library.md"},
     # ---- validated public associations (this work, on NHANES) ----
     "nhanes_perio_crp": {"value": 0.041, "unit": "std beta", "ref": "NHANES 2009-2010 (this work)",
                          "supports": "perio→CRP adjusted association", "doc": "PAPER.md"},
@@ -44,7 +44,7 @@ CLAIMS: dict[str, dict[str, Any]] = {
                        "supports": "CRP/IL-6 → Alzheimer's genetically null", "doc": "PAPER.md"},
     # ---- honesty anchor ----
     "gain_trial_failed": {"value": None, "unit": None, "ref": "atuzaginstat/COR388 GAIN trial (failed)",
-                          "supports": "the direct causal test of perio→AD failed", "doc": "MODELS.md"},
+                          "supports": "the direct causal test of perio→AD failed", "doc": "model-library.md"},
     # ---- mechanism proteins (entity grounding; UniProt/PDB) ----
     "protein_il6": {"value": None, "unit": None, "ref": "UniProt P05231",
                     "supports": "Interleukin-6", "doc": "DATA-AND-DELIVERY.md"},

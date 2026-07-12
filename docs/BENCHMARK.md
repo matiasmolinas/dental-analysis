@@ -148,5 +148,5 @@ python src/run_agent_metrics.py             # the agentic-AI metric card (offlin
 python tests/test_benchmark.py              # offline unit tests (bare-Claude arm stubbed)
 ```
 
-*See [`PAPER.md`](PAPER.md) §5 for the write-up, [`MODELS.md`](MODELS.md) for the model catalogue, and
+*See [`PAPER.md`](PAPER.md) §5 for the write-up, [`model-library.md`](model-library.md) for the model catalogue, and
 [`CITATIONS.md`](CITATIONS.md) for the claim→source registry behind citation accuracy.*

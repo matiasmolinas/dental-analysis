@@ -18,8 +18,7 @@
       **token de GitHub** en Claude Science → Settings → Credentials. Sin eso el import falla con
       "repository not found or private".
 - [ ] **Assets estáticos en pestañas** (por si Mermaid no renderiza o Claude Science falla): el **PNG del
-      diagrama** (`docs/assets/architecture.png`), el **one-page PDF** (`histora-resumen.pdf`), y
-      `fig_cis_mr.png` / `fig_mr.png` de las corridas reales.
+      diagrama** (`docs/assets/architecture.png`) y `fig_cis_mr.png` / `fig_mr.png` de las corridas reales.
 - [ ] **Grabaciones de respaldo**: (a) la corrida de `run_demo.py`, (b) el import en Claude Science
       (Customize → Skills → Import from GitHub → Preview). Por si falla la conexión en vivo.
 - [ ] **Visuales de respaldo**: el one-page artifact/PDF y el diagrama de arquitectura del README, cada

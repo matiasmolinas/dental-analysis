@@ -29,7 +29,7 @@ SUBMODELS: dict[str, dict] = {
     "metabolic_insulin_resistance": {"axis": "metabolic", "tier": "flagged", "kind": "coded",
                                      "gain_param": "beta_si",
                                      "citation": "Bergman 1979 / Pritchard-Bell 2013 (E3.1/C4)"},
-    # --- Stage-3 promotions: cited-but-unbuilt models now built (see docs/internal/STAGE3-PHYSIOLOGY-PLAN.md).
+    # --- Stage-3 promotions: cited-but-unbuilt models now built.
     #     The ODE-heavy axes are surfaced via run_physiology.py with their OWN internal sweeps (not the
     #     200x Latin-hypercube ensemble, which stays lightweight); the cheap amyloid arm folds in below.
     "inflammatory_core": {"axis": "systemic", "tier": "flagged", "kind": "coded", "gain_param": "k_pos",

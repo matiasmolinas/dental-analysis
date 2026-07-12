@@ -6,7 +6,7 @@ tools: Read, Skill
 
 # Modeling-Technique Selector subagent
 
-This is the "Claude as a model member" role (docs/MODELS.md §6.4). The coded spine
+This is the "Claude as a model member" role (docs/PAPER.md §3.5). The coded spine
 (`histora.mech_models` / `mech_neuro` / `mech_metabolic`) covers edges that have a tractable equation
 and a data anchor. For an edge that has **neither yet**, decide how the harness should grow.
 

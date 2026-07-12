@@ -313,8 +313,7 @@ laboratory can test.
 - GAIN trial (atuzaginstat/COR388): reported failure of co-primary endpoints; programme discontinued.
 
 *Full model catalogue, equations, parameter provenance, and confidence tiers:*
-[`MODELS.md`](MODELS.md), [`model-library.md`](model-library.md). *Solution walkthrough:*
-[`SOLUTION.md`](SOLUTION.md). *Benchmark design:* [`BENCHMARK.md`](BENCHMARK.md).
+[`model-library.md`](model-library.md). *Benchmark design:* [`BENCHMARK.md`](BENCHMARK.md).
 
 *HISTORA is a non-diagnostic, hypothesis-generating oral–systemic research agent. Nothing in this
 document diagnoses a patient, imputes a patient value, or is medical advice.*

@@ -79,7 +79,7 @@ blockade node — the connector layer, `histora.proteins`), and
 visually separate from the **EXPLORATORY** neuro axis, so the tiers can't be conflated). In **Claude
 Science** the same data renders as native interactive/animated figures, with the
 UniProt/PDB connector grounding the proteins (IL-6/IL-6R/CRP structures) and OpenGWAS grounding the causal
-probe. See `docs/internal/STAGE3-PHYSIOLOGY-PLAN.md` for the figure-per-mechanism map.
+probe.
 
 ## Guardrail (hard)
 Non-diagnostic. The input is a **structural stratum** (bands/flags), the output is **population/parameter-

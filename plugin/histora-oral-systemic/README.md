@@ -40,7 +40,7 @@ flags, and prioritized follow-up experiments.
 
 The mechanistic harness is the [`histora`](../../src/histora/) package (`run_case_models.py` is the
 tool the flow invokes). The models, their evidence, the fitted parameters, and the honest census are in
-[`docs/MODELS.md`](../../docs/MODELS.md) and [`docs/model-library.md`](../../docs/model-library.md); the
+[`docs/model-library.md`](../../docs/model-library.md); the
 technical report is [`docs/PAPER.md`](../../docs/PAPER.md), and the comparative validation showing the
 integrated harness beats separate models and bare Claude is [`docs/BENCHMARK.md`](../../docs/BENCHMARK.md).
 Everything is **non-diagnostic**: research hypotheses and parameter-level ranges, never a patient

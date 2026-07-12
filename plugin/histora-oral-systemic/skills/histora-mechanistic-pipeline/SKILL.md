@@ -59,6 +59,28 @@ ref). `case.json` is a structural record: `periodontal` (bop_pct, diagnosis/stag
 - **Figures** (via `plot_pipeline.py`, needs matplotlib): `fig_envelopes.png` (ranges, not points),
   `fig_sensitivity.png` (tornado), `fig_mr.png` (β-scatter + IVW slope), `fig_benchmark.png` (grouped bars).
 
+## Stage-3 deepened physiology (all mechanisms)
+For the *full* mechanistic depth — the multi-cytokine inflammatory core (acute-vs-chronic bistability),
+the atherosclerosis foam-cell ODE, the Bergman glucose–insulin dynamics, the closed diabetes↔periodontitis
+loop, the keystone-dysbiosis microbiome, and the amyloid+tau (A/T) neuro axis with APOE4/age modifiers —
+run the integrative entrypoint, which also foregrounds the **"one lever, many axes"** therapy response:
+
+```bash
+python ../../src/run_physiology.py --case case.json --plot   # → physiology_report.json + Stage-3 figures
+```
+
+Figures (via `plot_pipeline.plot_stage3`, needs matplotlib): `fig_stage3_cv_plaque.png` (foam-cell process),
+`fig_stage3_glucose.png` (Bergman meal response), `fig_stage3_inflammation_phase.png` (the two-basin phase
+portrait — acute vs chronic), `fig_stage3_tau_front.png` (the tau front on the Braak chain, **flagged
+EXPLORATORY**), `fig_stage3_perio_loop.png` (the diabetes↔periodontitis fixed-point cobweb),
+`fig_stage3_proteins.png` (the IL-6→IL-6Rα/gp130→CRP signaling axis with UniProt/PDB IDs + the tocilizumab
+blockade node — the connector layer, `histora.proteins`), and
+`fig_stage3_one_lever.png` (coherent multi-axis therapy response — the **calibrated** CV/metabolic axes kept
+visually separate from the **EXPLORATORY** neuro axis, so the tiers can't be conflated). In **Claude
+Science** the same data renders as native interactive/animated figures, with the
+UniProt/PDB connector grounding the proteins (IL-6/IL-6R/CRP structures) and OpenGWAS grounding the causal
+probe.
+
 ## Guardrail (hard)
 Non-diagnostic. The input is a **structural stratum** (bands/flags), the output is **population/parameter-
 level ranges** — never a patient value, never an imputed datum (a missing mediator is a collection flag).
