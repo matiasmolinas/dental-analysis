@@ -97,11 +97,22 @@ def main() -> None:
     for lim in protocol["limitations"]:
         print(f"    · {lim}")
 
+    report = {"question": QUESTION, "funnel": funnel["funnel"], "cohort_n": funnel["cohort_n"],
+              "completeness": completeness, "integrity_checklist": checklist, "protocol": protocol}
     out = os.path.join(os.path.dirname(__file__), "cohort_report.json")
     with open(out, "w") as f:
-        json.dump({"question": QUESTION, "funnel": funnel["funnel"], "cohort_n": funnel["cohort_n"],
-                   "completeness": completeness, "integrity_checklist": checklist, "protocol": protocol}, f, indent=2)
+        json.dump(report, f, indent=2)
     print(f"\nwrote: {out}")
+
+    if "--plot" in sys.argv:
+        try:
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "skills",
+                                            "histora-mechanistic-pipeline"))
+            import plot_pipeline as pp
+            outdir = os.path.dirname(out)
+            print("figure:", pp.plot_cohort(report, os.path.join(outdir, "fig_cohort_funnel.png")))
+        except Exception as e:                             # pragma: no cover - plotting optional
+            print(f"(plot skipped: {e})")
     print("\nNON-DIAGNOSTIC · population-level · hypothesis-generation only · MR ≠ RCT · calibration ≠ validation.")
 
 
