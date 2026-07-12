@@ -1,11 +1,16 @@
 # HISTORA — Project Overview
 
-> **A non-diagnostic oral-systemic research agent.** One shared inflammatory proxy (excess IL-6 → CRP)
-> links periodontal disease to cardiovascular, metabolic, and Alzheimer's disease; Claude orchestrates a
-> calibrated, deterministic mechanistic engine to turn a fragmented case into **falsifiable,
-> uncertainty-quantified, mechanistically-explained hypotheses** — validated on public data *and*
-> genetics. It is a **research instrument a scientist can trust**, built with Claude for Life Sciences and
-> co-organized with **Gladstone Institutes**. Hypothesis-generation, never a diagnosis or a treatment claim.
+> **A non-diagnostic clinical-research copilot.** It turns fragmented clinical data into a research-ready
+> cohort and states, honestly, **what the data cannot answer** — then grounds one falsifiable, calibrated,
+> uncertainty-quantified hypothesis in genetics it runs live. Its first instantiated payload is the
+> oral–systemic question of global interest: is periodontal inflammation *just a marker*, or a **modifiable,
+> treatable, preventable contributing factor** to the shared inflammatory biology behind **heart disease and
+> diabetes**? (The Alzheimer's axis stays strictly exploratory — the genetics are null and the direct causal
+> trial failed.) One shared inflammatory proxy (excess IL-6 → CRP) links the axes; a calibrated,
+> deterministic mechanistic engine turns a case into hypotheses — validated on public data *and* genetics.
+> Built with Claude for Life Sciences, co-organized with **Gladstone Institutes**. Hypothesis-generation,
+> never a diagnosis or a treatment claim — HISTORA never says treating the mouth prevents disease; it
+> prepares the study that could test it.
 
 This document is the guided tour: the **problem** and **objective**, the **technical solution**, the
 **autonomous agentic workflow** we built and used to develop it, the **skill-evolution** capability we only
@@ -15,7 +20,8 @@ aside to focus on the hackathon.
 **📄 Shareable PDF of this document: [`HISTORA-Overview.pdf`](HISTORA-Overview.pdf).**
 
 *Front-facing companions: [`PITCH.md`](PITCH.md) (the thesis) · [`CASE-STUDY.md`](CASE-STUDY.md) (the
-flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`EVOLUTION.md`](EVOLUTION.md)
+flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`SELF-CORRECTION.md`](SELF-CORRECTION.md)
+(the agent finding and fixing a bug in its own flagship number) · [`EVOLUTION.md`](EVOLUTION.md)
 (self-improving skills) · [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md) (run it in a real lab).*
 
 ---

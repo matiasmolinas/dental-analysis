@@ -1,4 +1,4 @@
-# HISTORA — Oral-Systemic Intelligence Agent
+# HISTORA — Clinical Research Copilot
 
 <p align="center">
   <img src="docs/assets/1p9m_structure.jpeg" width="300" alt="The IL-6 / IL-6Rα / gp130 hexameric signaling complex (PDB 1P9M) — the causal node HISTORA anchors on."/>
@@ -8,24 +8,38 @@
   Claude Science. <i>Image: RCSB PDB (rcsb.org).</i></sub>
 </p>
 
-> A **scientific research instrument** a scientist can trust to generate mechanistic hypotheses: it links
-> periodontal disease to **cardiovascular, metabolic, and Alzheimer's** disease through **one shared
-> inflammatory proxy**, and turns fragmented data into **falsifiable, uncertainty-quantified,
-> mechanistically-explained hypotheses**, validated on public data and genetics. Everything it emits is
-> **population/parameter-level, traceable, and non-diagnostic** — it never fabricates an unmeasured value
-> and never makes an individual claim. That contract is a **research-integrity gate** (its sharpest clause:
-> non-diagnostic), enforced by construction — which is what makes the output citable.
+> A **clinical-research copilot** that turns fragmented clinical data into a **research-ready cohort** — and
+> tells you honestly **what the data cannot answer**. From a real public corpus (NHANES) it builds an
+> eligibility funnel, flags every missing datum as a *collection gap it never imputes*, generates a
+> **falsifiable, uncertainty-quantified hypothesis** (never a conclusion), and exports a preliminary
+> protocol. Everything it emits is **population/parameter-level, traceable, and non-diagnostic** — a
+> **research-integrity gate** (sharpest clause: non-diagnostic) enforced by construction, which is what
+> makes the output citable.
+>
+> Its first instantiated payload is the **oral–systemic** question of global interest: is what we can
+> measure in the mouth — periodontal inflammation — *just a marker*, or a **modifiable, treatable,
+> preventable contributing factor** to the shared inflammatory biology behind **heart disease and
+> diabetes**? HISTORA grounds that in genetics it runs live — the **IL-6R signaling node is genetically
+> causal for coronary disease** (circulating CRP is not) — and in a cheap, non-pharmacological lever:
+> periodontal therapy measurably lowers the shared inflammatory and metabolic markers (hs-CRP and HbA1c).
+> The **Alzheimer's
+> axis stays strictly exploratory** (the genetics are null and the direct causal trial failed). HISTORA
+> never claims that treating the mouth prevents disease — it prepares the study that could test it.
 
 *Built with Claude: Life Sciences · co-organized with **Gladstone Institutes**.*
 **→ The hackathon pitch and winning objective: [`docs/PITCH.md`](docs/PITCH.md).**
+**→ How Claude built, ran, and _audited_ this — including catching and fixing a bug in its own flagship
+number under a reviewer agent: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## What we demonstrate to win
 
-The first **safe, transparent, mechanistic** oral-systemic research agent: Claude orchestrates a
-calibrated mechanistic engine to produce hypotheses that are **coherent** (one lever → three diseases),
-**calibrated** (to real treatment data), **honest** (ranges + falsification + citations), and **validated**
-(public data + genetics) — showing coherence, calibration, and honesty that separate single-disease
-models and bare Claude structurally lack, with a hard non-diagnostic guardrail. All in one 3-minute demo:
+A **clinical-research copilot** that assembles a real cohort from fragmented data, **states what the data
+cannot answer**, and grounds one falsifiable hypothesis in genetics it runs live — then, operating its own
+pipeline under a **reviewer agent**, it **caught and fixed an error in its own flagship number** (a real
+LD-matrix bug; see [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md)). The output is **coherent** (one
+calibrated lever, multiple axes), **calibrated** (to real treatment data), **honest** (ranges +
+falsification + citations + a hard non-diagnostic guardrail), and **validated** (public data + genetics
+replicated across ancestries) — honest *by construction*. All in one 3-minute demo:
 
 ```bash
 python demo/run_demo.py        # the canonical end-to-end brief (offline; --live for the real Claude agent)
@@ -62,13 +76,15 @@ supplies weight-capped soft estimates only for un-coded edges. **The engine** de
 
 | Claim | Evidence |
 |---|---|
+| A research-ready cohort from a real corpus — with honest limits | `demo/run_cohort.py` over **real NHANES 2009–2010**: an eligibility funnel **20,905 → 9,181 → 1,396 → 448 → 442**, per-field completeness, and — the differentiator — the longitudinal question it **honestly refuses** (no repeat CRP / follow-up in a cross-sectional corpus; a *collection flag*, never imputed), plus an exported preliminary protocol |
 | The 3 predicted directions are real | NHANES perio→CRP, →HbA1c, →cognition — all in the predicted direction. Raw confounder-adjusted β +0.041 / +0.12–0.16 / −0.06 to −0.18; **design-adjusted** (survey-weighted, the demo's panel) +0.031 / +0.104 / −0.19 |
 | …and survive rigorous stats | design-adjusted (survey weights + clustering) + BH-FDR: CRP/CV/HbA1c + processing-speed **survive** |
-| One calibrated parameter, three axes | ε (and k) calibrated to the interventional ΔCRP/ΔHbA1c anchors; the axes follow |
-| Genetic causal probe | Mendelian randomization: IL-6R→coronary disease **causal**, CRP→Alzheimer's **null** |
-| A capability the alternatives structurally lack | benchmark vs separate models & bare Claude: 1 shared parameter instead of 3, plus calibrated ranges + falsification they cannot produce (calibration error 0.00 vs 0.71/1.25; ranges+falsifiability 1.00 vs 0.00) — a capability gap, not just a higher score |
+| Genetic causal probe — replicated across ancestries | Mendelian randomization over live public GWAS: **IL-6R→coronary disease causal** (LD-aware correlated-IVW β≈+0.553, SE 0.109), **replicated independently** in FinnGen (European) and BioBank Japan (East Asian); **circulating CRP→coronary null** and **CRP→Alzheimer's null** — the marker isn't causal, the *node* is |
+| The agent audited its own work | Operating its own pipeline under a reviewer agent, HISTORA **caught, retracted, and fixed an error in its own flagship MR number** — a real LD row-ordering bug that had produced an over-confident +0.705/SE 0.010; corrected to +0.553/SE 0.109 (now agreeing with FinnGen), with a **regression test**. [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md) |
+| One calibrated parameter, multiple axes | ε (and k) calibrated to the interventional ΔCRP/ΔHbA1c anchors; the axes follow |
 | Safe agent, measured | agentic card: citation accuracy 1.0, hallucination 0.0, coverage 1.0, guardrail enforced |
 | Self-improving — safely | SkillOpt (live): Claude improved **2 of its own skills** (by different mechanisms) and correctly left a **3rd untouched** because it was already optimal — no gain manufactured where none exists. Every edit is kept only if it measurably improves (CI excludes 0) **and** the guardrail stays 1.0; the guardrail sits **outside the evolvable genome** (hash-identical parent↔child proves the invariant never moved). |
+| A capability the alternatives structurally lack | *(supporting, not a horse race)* benchmark vs separate models & bare Claude: 1 shared parameter instead of 3, plus calibrated ranges + falsification they **structurally cannot** produce — a capability gap, not a higher score on a shared metric |
 
 > **Calibration ≠ validation.** *Calibration* pins the one uncertain edge (ε, k) to real *interventional*
 > anchors — an input constraint. *Validation* is independent: the NHANES association signs and the genetic
