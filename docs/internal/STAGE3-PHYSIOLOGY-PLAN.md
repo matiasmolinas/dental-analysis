@@ -81,10 +81,12 @@ audits each figure against the citation registry.**
 
 **Built offline (`run_physiology.py --plot`):** the CV foam-cell trajectory, the Bergman glucose response,
 the **two-basin inflammatory phase portrait**, the **Braak tau front** (flagged EXPLORATORY), the
-**diabetes↔perio fixed-point cobweb**, and the **one-lever** panel — the last with the *calibrated*
-CV/metabolic axes kept **visually separate** from the *EXPLORATORY* neuro axis, and `axis_tier` carried in
-the JSON, so the neuro numbers can never be quoted as a calibrated result. The remaining rows (native
-animations, 3-D protein structures) are the Claude-Science upgrade of this same data.
+**diabetes↔perio fixed-point cobweb**, the **protein signaling axis** (IL-6→IL-6Rα/gp130→CRP with UniProt/PDB
+IDs + the tocilizumab blockade node — `histora.proteins`, the connector layer), and the **one-lever** panel —
+the last with the *calibrated* CV/metabolic axes kept **visually separate** from the *EXPLORATORY* neuro
+axis, and `axis_tier` carried in the JSON, so the neuro numbers can never be quoted as a calibrated result.
+The remaining rows (native **animations** and live **3-D** protein structures) are the Claude-Science upgrade
+of this same data — the `histora.proteins` registry is exactly what its UniProt/PDB connector consumes.
 
 Workflow: the `histora-mechanistic-pipeline` skill runs the deterministic engine → connectors ground the
 figures → the reviewer agent audits each figure against `CITATIONS.md` → every figure carries its tier

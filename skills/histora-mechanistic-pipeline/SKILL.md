@@ -72,7 +72,9 @@ python ../../src/run_physiology.py --case case.json --plot   # → physiology_re
 Figures (via `plot_pipeline.plot_stage3`, needs matplotlib): `fig_stage3_cv_plaque.png` (foam-cell process),
 `fig_stage3_glucose.png` (Bergman meal response), `fig_stage3_inflammation_phase.png` (the two-basin phase
 portrait — acute vs chronic), `fig_stage3_tau_front.png` (the tau front on the Braak chain, **flagged
-EXPLORATORY**), `fig_stage3_perio_loop.png` (the diabetes↔periodontitis fixed-point cobweb), and
+EXPLORATORY**), `fig_stage3_perio_loop.png` (the diabetes↔periodontitis fixed-point cobweb),
+`fig_stage3_proteins.png` (the IL-6→IL-6Rα/gp130→CRP signaling axis with UniProt/PDB IDs + the tocilizumab
+blockade node — the connector layer, `histora.proteins`), and
 `fig_stage3_one_lever.png` (coherent multi-axis therapy response — the **calibrated** CV/metabolic axes kept
 visually separate from the **EXPLORATORY** neuro axis, so the tiers can't be conflated). In **Claude
 Science** the same data renders as native interactive/animated figures, with the
