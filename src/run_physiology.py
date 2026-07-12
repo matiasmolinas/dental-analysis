@@ -36,6 +36,7 @@ from histora.mech_metabolic import coupled_perio_metabolic, perio_metabolic_cobw
 from histora.mech_microbiome import microbiome_centerpiece
 from histora.mech_models import il6_steady, inflammatory_gain, periodontal_source
 from histora.mech_neuro import neuro_centerpiece, tau_front_pair
+from histora.proteins import protein_registry, signaling_axis
 from histora.relational_signals import case_signature
 
 DEFAULT_CASE = {"bop_band": "high", "perio_stage": "stage III", "comorbidities": ["diabetes"],
@@ -93,6 +94,8 @@ def physiology_report(case: dict) -> dict:
         "metabolic_glucose": glucose_centerpiece(features, dict(p)),
         "diabetes_perio_loop": coupled_perio_metabolic(features, p),
         "neuro_amyloid_tau": neuro_centerpiece(features, p, front=True),
+        "protein_layer": {"registry": protein_registry(), "signaling_axis": signaling_axis(),
+                          "note": "UniProt/PDB connector data — reference IDs; live 3-D via Claude Science"},
         "one_lever_many_axes": one_lever_summary(features, p),
         "guardrail": "non-diagnostic: structural bands/flags in, parameter-level ranges out",
     }
@@ -111,6 +114,7 @@ def _trajectories(case: dict) -> dict:
         "inflammation_phase": phase_trajectories(p),
         "tau_front": tau_front_pair(features, p),
         "perio_cobweb": perio_metabolic_cobweb(features, p),
+        "proteins": signaling_axis(),
     }
 
 

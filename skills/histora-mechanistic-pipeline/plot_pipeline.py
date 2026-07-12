@@ -235,6 +235,37 @@ def plot_stage3(report: dict, traj: dict, outdir: str = ".") -> list[str]:
         path = os.path.join(outdir, "fig_stage3_perio_loop.png"); fig.savefig(path, dpi=150); plt.close(fig)
         made.append(path)
 
+    # --- protein layer: the IL-6 → IL-6Rα/gp130 → CRP signaling axis (UniProt/PDB connector data) ---
+    prot = traj.get("proteins")
+    if prot:
+        nodes = prot["nodes"]
+        fig, ax = plt.subplots(figsize=(9.2, 3.4))
+        ax.set_xlim(0, len(nodes)); ax.set_ylim(0, 1); ax.axis("off")
+        for i, nd in enumerate(nodes):
+            x = i + 0.5
+            ax.add_patch(plt.Rectangle((x - 0.42, 0.34), 0.84, 0.36, fc="#EEF2F6", ec="#3A5A8C", lw=1.6))
+            ax.text(x, 0.60, nd["mediator"], ha="center", va="center", fontsize=11, fontweight="bold")
+            pdb = f" · PDB {nd['pdb']}" if nd.get("pdb") else ""
+            ax.text(x, 0.44, f"UniProt {nd['accession']}{pdb}", ha="center", va="center", fontsize=7.2,
+                    color="#3A5A8C")
+            if i < len(nodes) - 1:
+                ax.annotate("", xy=(x + 0.52, 0.52), xytext=(x + 0.42, 0.52),
+                            arrowprops=dict(arrowstyle="-|>", color="#555", lw=1.6))
+        # tocilizumab blockade on the IL-6Rα node
+        tx = 1.5
+        ax.annotate("tocilizumab\n(IL-6Rα blockade)", xy=(tx, 0.7), xytext=(tx, 0.94), ha="center",
+                    va="top", fontsize=7.5, color="#7A1F1F",
+                    arrowprops=dict(arrowstyle="-[", color="#7A1F1F", lw=1.4),
+                    bbox=dict(boxstyle="round", fc="#F6E4E4", ec="#C99"))
+        ax.text(len(nodes) / 2, 0.12,
+                "periodontal therapy lowers IL-6 at the same node tocilizumab blocks  ·  "
+                "live 3-D structures via the Claude Science UniProt/PDB connector",
+                ha="center", va="center", fontsize=7.5, style="italic", color="#555")
+        ax.set_title("Protein layer — the shared-proxy signaling axis (reference IDs)", fontsize=10)
+        fig.tight_layout()
+        path = os.path.join(outdir, "fig_stage3_proteins.png"); fig.savefig(path, dpi=150); plt.close(fig)
+        made.append(path)
+
     # --- one lever, many axes — calibrated axes vs the EXPLORATORY neuro axis, kept visually separate ---
     lever = report["one_lever_many_axes"]["coherent_multi_axis_response_to_therapy"]
     fig, (axL, axR) = plt.subplots(1, 2, figsize=(9.0, 4.3), gridspec_kw={"width_ratios": [2, 2]})
