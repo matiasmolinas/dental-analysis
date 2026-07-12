@@ -69,20 +69,48 @@ def plot_sensitivity(sensitivity: dict, output: str = "crp_mg_l", path: str = "f
     return path
 
 
+def _mr_panels(report: dict) -> list[tuple[str, dict]]:
+    """Normalize either MR report shape into (title, panel) pairs. `run_real_mr` nests results under
+    `outcomes` with the exposure at the top level; the illustrative `run_mr` uses a flat {key: panel}."""
+    if isinstance(report.get("outcomes"), dict):                 # real_mr shape
+        exp = report.get("exposure", "exposure")
+        return [(f"{p.get('exposure', exp)} → {p.get('outcome', k)}", p)
+                for k, p in report["outcomes"].items()]
+    return [(f"{p.get('exposure', '?')} → {p.get('outcome', k)}", p)   # illustrative shape
+            for k, p in report.items() if isinstance(p, dict) and "ivw" in p]
+
+
 def plot_mr(mr_report: dict, path: str = "fig_mr.png") -> str:
-    keys = list(mr_report.keys())
-    fig, axes = plt.subplots(1, len(keys), figsize=(5.2 * len(keys), 4.4), squeeze=False)
-    for ax, key in zip(axes[0], keys):
-        panel = mr_report[key]
+    """MR scatter: per-SNP instrument points (with x/y error bars) + the IVW and MR-Egger slopes when
+    the per-instrument data is present (real_mr); otherwise a bare IVW slope (illustrative)."""
+    panels = _mr_panels(mr_report)
+    if not panels:
+        raise ValueError("no MR panels found in report")
+    fig, axes = plt.subplots(1, len(panels), figsize=(4.9 * len(panels), 4.4), squeeze=False)
+    for ax, (title, panel) in zip(axes[0], panels):
         ivw = panel.get("ivw", {})
+        egg = panel.get("mr_egger", {})
         slope = ivw.get("estimate", 0.0)
+        insts = panel.get("instruments") or []
+        if insts:                                                # proper per-SNP scatter
+            bx = [i["beta_exposure"] for i in insts]
+            by = [i["beta_outcome"] for i in insts]
+            ex = [i.get("se_exposure", 0) for i in insts]
+            ey = [i.get("se_outcome", 0) for i in insts]
+            ax.errorbar(bx, by, xerr=ex, yerr=ey, fmt="o", ms=5, color="#333", ecolor="#bbb",
+                        elinewidth=0.8, capsize=2, label=f"instruments (n={len(insts)})")
         ax.axline((0, 0), slope=slope, color="#A8323F", lw=2,
                   label=f"IVW β={slope:+.3f} (p={ivw.get('p_value')})")
-        ax.axhline(0, color="#bbb", lw=0.6)
-        ax.set_xlabel("β exposure (genetic instrument)")
-        ax.set_ylabel("β outcome")
-        ax.set_title(f"{panel.get('exposure','?')} → {panel.get('outcome','?')}", fontsize=9)
-        ax.legend(fontsize=8, loc="best")
+        if egg.get("slope") is not None:
+            ax.axline((0, egg.get("intercept", 0.0)), slope=egg["slope"], color="#3A5A8C", lw=1.6,
+                      ls="--", label=f"MR-Egger β={egg['slope']:+.3f}"
+                                     + (" · pleiotropy!" if egg.get("pleiotropy_flagged") else ""))
+        ax.axhline(0, color="#ddd", lw=0.6)
+        ax.axvline(0, color="#ddd", lw=0.6)
+        ax.set_xlabel("β exposure (CRP-raising allele)")
+        ax.set_ylabel("β outcome (log-OR)")
+        ax.set_title(title, fontsize=9)
+        ax.legend(fontsize=7.5, loc="best")
     fig.suptitle("Mendelian randomization — genetic causal probe of the shared proxy", fontsize=11)
     fig.tight_layout()
     fig.savefig(path, dpi=150)
