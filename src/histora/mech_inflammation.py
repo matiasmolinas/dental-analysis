@@ -113,6 +113,23 @@ def bistability_report(load: float, p: dict | None = None) -> dict[str, Any]:
     }
 
 
+def phase_trajectories(p: dict | None = None, probe: float = 0.6,
+                       t_max: float = 60.0, dt: float = 0.05) -> dict[str, Any]:
+    """Two trajectories in cytokine space at a source inside the bistable window: one from a resolving
+    (basal) initial condition, one from a chronic IC — they converge to the two distinct basins. Powers
+    the phase-portrait figure (the picture the single scalar cannot draw)."""
+    p = inflammation_params(p)
+    pp = dict(p, _infl_source=probe)
+    out: dict[str, Any] = {"probe_source": probe}
+    for name, ic in (("resolving", _BASAL_IC), ("chronic", _CHRONIC_IC)):
+        ts, ys = integrate(inflammation_rhs, list(ic), 0.0, t_max, dt, pp)
+        out[name] = {"il6": [y[1] for y in ys], "il10": [y[2] for y in ys], "tnf": [y[0] for y in ys]}
+    rep = bistability_report(probe / p["infl_source_scale"], p)
+    out["fixed_points"] = {"low": rep["low_fixed_point"], "high": rep["high_fixed_point"],
+                           "bistable": rep["bistable"]}
+    return out
+
+
 def resolution_index(state: dict) -> float:
     """IL-10 / IL-6 at a state: high ⇒ the anti-inflammatory brake dominates (resolving); low ⇒
     pro-inflammatory signalling is unopposed (chronic). A dimensionless regime descriptor."""

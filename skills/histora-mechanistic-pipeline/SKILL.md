@@ -70,8 +70,12 @@ python ../../src/run_physiology.py --case case.json --plot   # → physiology_re
 ```
 
 Figures (via `plot_pipeline.plot_stage3`, needs matplotlib): `fig_stage3_cv_plaque.png` (foam-cell process),
-`fig_stage3_glucose.png` (Bergman meal response), `fig_stage3_one_lever.png` (coherent multi-axis therapy
-response). In **Claude Science** the same data renders as native interactive/animated figures, with the
+`fig_stage3_glucose.png` (Bergman meal response), `fig_stage3_inflammation_phase.png` (the two-basin phase
+portrait — acute vs chronic), `fig_stage3_tau_front.png` (the tau front on the Braak chain, **flagged
+EXPLORATORY**), `fig_stage3_perio_loop.png` (the diabetes↔periodontitis fixed-point cobweb), and
+`fig_stage3_one_lever.png` (coherent multi-axis therapy response — the **calibrated** CV/metabolic axes kept
+visually separate from the **EXPLORATORY** neuro axis, so the tiers can't be conflated). In **Claude
+Science** the same data renders as native interactive/animated figures, with the
 UniProt/PDB connector grounding the proteins (IL-6/IL-6R/CRP structures) and OpenGWAS grounding the causal
 probe. See `docs/internal/STAGE3-PHYSIOLOGY-PLAN.md` for the figure-per-mechanism map.
 

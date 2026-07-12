@@ -79,6 +79,13 @@ audits each figure against the citation registry.**
 | **Integrative** | **"One lever, N axes":** lower ε (= periodontal therapy) → CV, metabolic & neuro respond coherently on one timeline | native dashboard |
 | Uncertainty (built) | Envelope forest + sensitivity tornado per axis | `plot_pipeline.py` |
 
+**Built offline (`run_physiology.py --plot`):** the CV foam-cell trajectory, the Bergman glucose response,
+the **two-basin inflammatory phase portrait**, the **Braak tau front** (flagged EXPLORATORY), the
+**diabetes↔perio fixed-point cobweb**, and the **one-lever** panel — the last with the *calibrated*
+CV/metabolic axes kept **visually separate** from the *EXPLORATORY* neuro axis, and `axis_tier` carried in
+the JSON, so the neuro numbers can never be quoted as a calibrated result. The remaining rows (native
+animations, 3-D protein structures) are the Claude-Science upgrade of this same data.
+
 Workflow: the `histora-mechanistic-pipeline` skill runs the deterministic engine → connectors ground the
 figures → the reviewer agent audits each figure against `CITATIONS.md` → every figure carries its tier
 label (calibrated vs flagged) and its falsification condition, so nothing over-claims.

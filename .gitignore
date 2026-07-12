@@ -35,3 +35,4 @@ _histora_repo/
 *.egg-info/
 build/
 dist/
+physiology_report.json

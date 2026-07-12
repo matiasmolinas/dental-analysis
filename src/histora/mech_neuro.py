@@ -159,6 +159,20 @@ def tau_front_arrival(alpha_eff: float, p: dict, t_max: float = 800.0, dt: float
     return arrival
 
 
+def tau_front_pair(features: dict, p: dict | None = None) -> dict[str, Any]:
+    """Braak-chain tau-front arrival (years to threshold per region) WITH the oral source vs the baseline
+    (therapy limit), for the tau-front figure. EXPLORATORY: the inflammation→α coupling is a flagged
+    hypothesis; read the *shift* in arrival order, not the absolute years."""
+    p = neuro_params(p)
+    mods = _modifiers(features, p)
+    N = neuroinflammation(inflammatory_gain(il6_steady(periodontal_source(features, p), p)), p,
+                          bbb_mult=mods["bbb_mult"])
+    alpha_eff = tau_alpha_with_amyloid(N, amyloid_burden(N, mods, p), mods, p)
+    alpha_base = tau_alpha_with_amyloid(0.0, amyloid_burden(0.0, mods, p), mods, p)
+    return {"regions": list(BRAAK_REGIONS), "tier": "EXPLORATORY",
+            "with_oral": tau_front_arrival(alpha_eff, p), "baseline": tau_front_arrival(alpha_base, p)}
+
+
 # ------------------------------------------------------------------- the neuro centerpiece
 def neuro_centerpiece(features: dict, p: dict | None = None, front: bool = True) -> dict[str, Any]:
     """Chain oral structural severity → systemic IL-6 gain → neuroinflammation → tau-α → tau burden

@@ -113,6 +113,37 @@ def coupled_perio_metabolic(features: dict, p: dict | None = None,
     }
 
 
+def perio_metabolic_cobweb(features: dict, p: dict | None = None,
+                           feedback: float = 0.30, n: int = 40) -> dict[str, Any]:
+    """The fixed-point map g(HbA1c_shift) → HbA1c_shift behind the diabetes↔periodontitis loop, plus the
+    cobweb iteration steps, for the figure. g maps a glycaemic burden to the closed-loop shift it induces
+    (hyperglycaemia amplifies the source → the source raises the gain → the gain raises HbA1c). The
+    intersection with the identity line is the fixed point solved by `coupled_perio_metabolic`."""
+    from .mech_models import structural_load, il6_steady, IL6_BASAL
+    p = calibrated_metabolic_params(p=p) if (p is None or "k_hba1c" not in p) else metabolic_params(p)
+    base_load = structural_load(features)
+
+    def g(shift: float) -> float:
+        il6 = il6_steady(p["epsilon"] * base_load * (1.0 + feedback * shift), p)
+        return hba1c_shift_pp(max(0.0, il6 - IL6_BASAL), p)
+
+    open_shift = g(0.0)
+    seq = [0.0, open_shift]                       # cobweb: start at the open-loop shift, iterate to fixpoint
+    s = open_shift
+    for _ in range(20):
+        ns = g(s)
+        seq.append(ns)
+        if abs(ns - s) < 1e-6:
+            s = ns
+            break
+        s = ns
+    hi = max(open_shift, s) * 1.6 + 1e-3
+    xs = [hi * i / n for i in range(n + 1)]
+    return {"map_x": [round(x, 5) for x in xs], "map_y": [round(g(x), 5) for x in xs],
+            "seq": [round(v, 5) for v in seq], "fixed_point": round(s, 5),
+            "open_loop": round(open_shift, 5), "feedback": feedback}
+
+
 def metabolic_centerpiece(features: dict, p: dict | None = None) -> dict[str, Any]:
     """gain → insulin-resistance index + predicted HbA1c shift, with the periodontal-therapy
     counterfactual (removing the oral source drops HbA1c by the calibrated amount)."""

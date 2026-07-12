@@ -31,11 +31,11 @@ sys.path.insert(0, os.path.dirname(__file__))
 from histora.mech_calibrate import calibrated_params
 from histora.mech_cv import cv_plaque_centerpiece, plaque_trajectory
 from histora.mech_glucose import glucose_centerpiece, glucose_response
-from histora.mech_inflammation import inflammation_centerpiece
-from histora.mech_metabolic import coupled_perio_metabolic
+from histora.mech_inflammation import inflammation_centerpiece, phase_trajectories
+from histora.mech_metabolic import coupled_perio_metabolic, perio_metabolic_cobweb
 from histora.mech_microbiome import microbiome_centerpiece
 from histora.mech_models import il6_steady, inflammatory_gain, periodontal_source
-from histora.mech_neuro import neuro_centerpiece
+from histora.mech_neuro import neuro_centerpiece, tau_front_pair
 from histora.relational_signals import case_signature
 
 DEFAULT_CASE = {"bop_band": "high", "perio_stage": "stage III", "comorbidities": ["diabetes"],
@@ -70,7 +70,15 @@ def one_lever_summary(features: dict, p: dict) -> dict:
             "neuro_tau_onset_delay_years": neu["tau_onset_years"]["therapy_delay_years"],
             "neuro_amyloid_rel_reduction": neu["amyloid_burden"]["relative_increase"],
         },
-        "note": "one intervention, one shared parameter → three axes respond together (not three guesses)",
+        "axis_tier": {
+            "cardiovascular": "mechanistic scaffold (Ougrinovskaia E2.6); foam-cell couplings FLAGGED & swept",
+            "metabolic": "calibrated to the ~0.35 pp periodontal-therapy HbA1c anchor (Bergman E3.1)",
+            "neuro": ("EXPLORATORY — genetics do NOT support the AD link causally (CRP→AD MR null; the "
+                      "atuzaginstat/GAIN trial failed); inflammation→α and amyloid→α are FLAGGED hypotheses. "
+                      "Absolute years are illustrative — read the delta, never the magnitude."),
+        },
+        "note": ("one intervention, one shared parameter → three axes respond together (not three guesses). "
+                 "The neuro axis is EXPLORATORY and must not be read as a calibrated result — see axis_tier."),
     }
 
 
@@ -100,6 +108,9 @@ def _trajectories(case: dict) -> dict:
         "plaque_baseline": plaque_trajectory(0.0, p),
         "glucose": glucose_response(gain, p),
         "glucose_baseline": glucose_response(0.0, p),
+        "inflammation_phase": phase_trajectories(p),
+        "tau_front": tau_front_pair(features, p),
+        "perio_cobweb": perio_metabolic_cobweb(features, p),
     }
 
 
