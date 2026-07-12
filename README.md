@@ -13,8 +13,8 @@
 The first **safe, transparent, mechanistic** oral-systemic research agent: Claude orchestrates a
 calibrated mechanistic engine to produce hypotheses that are **coherent** (one lever → three diseases),
 **calibrated** (to real treatment data), **honest** (ranges + falsification + citations), and **validated**
-(public data + genetics) — provably better than separate single-disease models or bare Claude, with a
-hard non-diagnostic guardrail. All in one 3-minute demo:
+(public data + genetics) — showing coherence, calibration, and honesty that separate single-disease
+models and bare Claude structurally lack, with a hard non-diagnostic guardrail. All in one 3-minute demo:
 
 ```bash
 python demo/run_demo.py        # the canonical end-to-end brief (offline; --live for the real Claude agent)
@@ -51,13 +51,13 @@ supplies weight-capped soft estimates only for un-coded edges. **The engine** de
 
 | Claim | Evidence |
 |---|---|
-| The 3 predicted directions are real | NHANES: perio→CRP +0.041, →HbA1c +0.12–0.16, →cognition −0.06 to −0.18 — confounder-adjusted |
+| The 3 predicted directions are real | NHANES perio→CRP, →HbA1c, →cognition — all in the predicted direction. Raw confounder-adjusted β +0.041 / +0.12–0.16 / −0.06 to −0.18; **design-adjusted** (survey-weighted, the demo's panel) +0.031 / +0.104 / −0.19 |
 | …and survive rigorous stats | design-adjusted (survey weights + clustering) + BH-FDR: CRP/CV/HbA1c + processing-speed **survive** |
 | One calibrated parameter, three axes | ε (and k) calibrated to the interventional ΔCRP/ΔHbA1c anchors; the axes follow |
 | Genetic causal probe | Mendelian randomization: IL-6R→coronary disease **causal**, CRP→Alzheimer's **null** |
-| Beats separate models & bare Claude | benchmark: 1 vs 3 params, calibration error 0.00 vs 0.71/1.25, ranges+falsifiability 1.00 vs 0.00 |
+| A capability the alternatives structurally lack | benchmark vs separate models & bare Claude: 1 shared parameter instead of 3, plus calibrated ranges + falsification they cannot produce (calibration error 0.00 vs 0.71/1.25; ranges+falsifiability 1.00 vs 0.00) — a capability gap, not just a higher score |
 | Safe agent, measured | agentic card: citation accuracy 1.0, hallucination 0.0, coverage 1.0, guardrail enforced |
-| Self-improving — safely | SkillOpt: Claude edits its own skill; kept only if it measurably improves (CI excludes 0) **and** the non-diagnostic guardrail stays 1.0 — an invariant that is structurally impossible to evolve. The archive shows an *adopted* edit beside a *rejected* one that gained the same metric but broke the guardrail. |
+| Self-improving — safely | SkillOpt (live): Claude improved **2 of its own skills** (by different mechanisms) and correctly left a **3rd untouched** because it was already optimal — no gain manufactured where none exists. Every edit is kept only if it measurably improves (CI excludes 0) **and** the guardrail stays 1.0; the guardrail sits **outside the evolvable genome** (hash-identical parent↔child proves the invariant never moved). |
 
 > **Calibration ≠ validation.** *Calibration* pins the one uncertain edge (ε, k) to real *interventional*
 > anchors — an input constraint. *Validation* is independent: the NHANES association signs and the genetic

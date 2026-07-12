@@ -67,11 +67,13 @@ python demo/run_demo.py
 
 *Dirección: opcional, mostrá la tabla de headline results del README o el artifact.*
 
-> **Say:** "We didn't just build it — we **measured** it. On a pre-registered benchmark, the integrated
-> harness beats both **separate single-disease models** and **Claude without a harness**: one shared
-> parameter instead of three, **calibration error zero**, ranges and falsification where they score zero.
-> The associations **survive survey-weighted, multiplicity-controlled** statistics. Every number is
-> traceable — that's the agentic card. This is an agent that is **useful because it's honest.**"
+> **Say:** "We didn't just build it — we **measured** it. On a pre-registered benchmark the integrated
+> harness does things separate single-disease models and Claude-without-a-harness **structurally can't**:
+> one shared parameter instead of three, and **calibrated ranges with falsification** where the
+> alternatives can only give a point and no way to be wrong. That's a **capability gap**, not just a
+> higher score. And the associations **survive survey-weighted, multiplicity-controlled** statistics —
+> the design-adjusted numbers, the conservative ones. Every number is traceable. This agent is **useful
+> because it's honest.**"
 
 ---
 
@@ -98,24 +100,27 @@ como pipeline (pip-install del paquete pineado + Compute). Ambos probados en viv
 
 ## 4b. SkillOpt — el diferenciador (opcional, ~25 s; usalo al extender a 5 min o si te lo piden)
 
-*Dirección: **corré este comando en la terminal** (offline, <1 s) y mostrá las dos filas del archivo —
-la ADOPTED y la REJECTED. Es el beat "más allá de la competencia": Claude mejorándose a sí mismo bajo
-una invariante de seguridad que es **estructuralmente imposible de evolucionar**.*
+*Dirección: liderá con el **portfolio en vivo** (el resultado creíble), después mostrá el mecanismo con el
+archivo offline (ADOPTED + REJECTED) que corre en <1 s en el escenario. NO corras SkillOpt en vivo.*
 
 ```bash
-python src/run_skill_evolution.py --fresh
+python src/run_skill_evolution.py --fresh    # el mecanismo, determinista, seguro para escenario
 ```
 
-> **Say:** "One more thing — the role nobody else shows. HISTORA can **improve its own skills**. Claude
-> proposes an edit *[point to ADOPTED]*; we keep it **only if** it measurably improves — the confidence
-> interval excludes zero — **and** the non-diagnostic guardrail still passes on **every** case. Here's the
-> proof it has teeth *[point to REJECTED]*: this sibling gained the **exact same metric**, but it touched
-> the guardrail — so it's **thrown out**. Same guardrail hash on both. **Self-improvement where breaking
-> the rule scores zero — by construction.**"
+> **Say:** "One more thing — the role nobody else shows. HISTORA can **improve its own skills**, and here's
+> the honest part first: we ran it live on three skills — Claude improved **two** of them, and **correctly
+> refused a third** because that skill was already optimal. It doesn't manufacture a win. And it can
+> **never** touch the non-diagnostic guardrail — that lives outside the part it's allowed to edit, and the
+> archive carries a hash, identical before and after, that proves it. *[show the offline archive]* Here's
+> the mechanism: an edit is kept **only if** it measurably improves — CI excludes zero — **and** the
+> guardrail still passes on every case; this rejected sibling gained the same metric but broke the
+> guardrail, so it's thrown out. **Self-improvement where breaking the rule scores zero — by construction.**"
 
-*Nota honesta: **una** generación, offline, con una métrica estructural ilustrativa (cobertura de
-citación de campos) — el *mecanismo*, no un resultado en vivo; la corrida definitiva cablea a Claude como
-mutador + `agent_metrics`, igual que la MR pasó de ilustrativa a viva. Ver [`EVOLUTION.md`](EVOLUTION.md).*
+*Nota honesta: el **portfolio en vivo** (2 adoptadas por mecanismos distintos, 1 null) está corrido y
+documentado en [`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md) — Claude sonnet como mutador,
+Claude haiku como agente puntuado, métricas estructurales verificables por máquina. En escenario mostrás el
+archivo **offline** (`run_skill_evolution.py`, determinista, <1 s) como el mecanismo; el portfolio en vivo lo
+contás (o lo mostrás grabado). NO corras el loop en vivo. Ver [`EVOLUTION.md`](EVOLUTION.md).*
 
 ---
 
@@ -138,6 +143,8 @@ mutador + `agent_metrics`, igual que la MR pasó de ilustrativa a viva. Ver [`EV
 | "The Alzheimer's link didn't hold." | "Correct — the **genetics don't support it causally**, and we **flag that axis exploratory**. Reporting the null *is the feature* — an agent you can trust because it tells you what it can't show." |
 | "Are the MR numbers real?" | "Yes — we ran it **live over public OpenGWAS** in Claude Science: verified the study IDs against `gwasinfo`, harmonized, and ran the unit-tested estimator. The repo also ships illustrative panels for offline reproducibility, clearly labeled." |
 | "Wait — is it 0.105 or 0.705?" | "Different instrument *and* method. **0.105** is the established literature direction (CRP/IL-6R with **naïve IVW**). **0.705** is our **cis IL-6R** run with **correlated (LD-aware) IVW** — the valid estimator when the instruments are in LD; naïve IVW understates it with a ~7× wider SE. And circulating CRP → CAD is **null** — the marker isn't causal, the IL-6R node is." |
+| "Aren't the benchmark baselines a strawman — of course your calibrated model wins on calibration?" | "Fair, and I'll say it first: it's **not a horse race on a shared metric** — it's a **capability gap**. Separate single-disease models and bare Claude **structurally cannot** produce one shared parameter, calibrated ranges, or a falsification condition. The zeros aren't 'they scored low', they're 'they can't do this at all'. The number to trust is the **NHANES validation surviving survey-weighted, FDR-controlled** stats — that one's an honest, external test." |
+| "Isn't SkillOpt's 0.00 → 0.93 a metric you designed so your edit trivially wins?" | "It would be — if that were the whole story. That's exactly why the honest headline is the **null**: on `record-normalization` the loop **adopted nothing** because the skill was already at ceiling, and it **declined** a candidate that *lowered* the metric. It improves only where there's real, measured headroom, and it can **never** touch the guardrail. A search that improved everything it touched would be the one gaming its metric — this one doesn't." |
 | "Is this clinical-ready?" | "**No — and by design.** It's **non-diagnostic**: structural bands in, population-level ranges out, never a patient value. It's a research instrument for a lab, not a bedside tool." |
 | "Why not just prompt Claude?" | "We tested that — it's the **bare-model arm**. It **hallucinates uncited numbers, gives points not ranges, and isn't calibrated**. The harness is what makes Claude honest here." |
 | "What's novel for Gladstone?" | "A **parameterized, falsifiable upstream perturbation** (perio-inflammation → tau-α) they can plug into existing tau/microglia/BBB models — with the intellectual honesty, including the **failed GAIN trial**, a serious lab needs." |
