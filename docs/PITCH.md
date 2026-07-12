@@ -8,7 +8,9 @@
 > Claude orchestrates a calibrated mechanistic engine to turn fragmented patient data into
 > **falsifiable, uncertainty-quantified hypotheses** — validated on public data *and* genetics, and more
 > coherent, calibrated, and honest than either applying single-disease models separately or using Claude
-> without a harness can be — with a **hard non-diagnostic guardrail**. Shown end-to-end in ~3 minutes.
+> without a harness can be. Everything it produces is **population/parameter-level, traceable, and
+> non-diagnostic** — a **research-integrity gate** (its sharpest clause: non-diagnostic) that makes the
+> output citable, enforced by construction. Shown end-to-end in ~3 minutes.
 
 It is a **research agent, not a disease predictor.** The win is not accuracy; it is *mechanism +
 honesty*: uncertainty and falsifiability as product features, every number traceable, nothing diagnosed.

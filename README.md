@@ -1,9 +1,12 @@
 # HISTORA — Oral-Systemic Intelligence Agent
 
-> A **non-diagnostic scientific research agent** (not a disease predictor) that links periodontal disease
-> to **cardiovascular, metabolic, and Alzheimer's** disease through **one shared inflammatory proxy**,
-> and turns fragmented data into **falsifiable, uncertainty-quantified, mechanistically-explained
-> hypotheses** — validated on public data and genetics. It never diagnoses and never imputes a patient value.
+> A **scientific research instrument** a scientist can trust to generate mechanistic hypotheses: it links
+> periodontal disease to **cardiovascular, metabolic, and Alzheimer's** disease through **one shared
+> inflammatory proxy**, and turns fragmented data into **falsifiable, uncertainty-quantified,
+> mechanistically-explained hypotheses**, validated on public data and genetics. Everything it emits is
+> **population/parameter-level, traceable, and non-diagnostic** — it never fabricates an unmeasured value
+> and never makes an individual claim. That contract is a **research-integrity gate** (its sharpest clause:
+> non-diagnostic), enforced by construction — which is what makes the output citable.
 
 *Built with Claude: Life Sciences · co-organized with **Gladstone Institutes**.*
 **→ The hackathon pitch and winning objective: [`docs/PITCH.md`](docs/PITCH.md).**
