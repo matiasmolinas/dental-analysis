@@ -35,7 +35,7 @@ NHANES_SIGNS = [
     ("perio → processing speed", "-0.188", "[-0.240, -0.127]", "SIGNIFICANT"),
 ]
 MR_SIGNS = [
-    ("IL-6R → coronary disease", "causal (IVW β=+0.105, p<0.001)"),
+    ("IL-6R → coronary disease", "causal (naive IVW β=+0.105; LD-aware cis-MR β≈+0.705 live — the valid estimator under LD)"),
     ("CRP/IL-6 → Alzheimer's", "null (p=0.91) — supports neuro-as-exploratory"),
 ]
 

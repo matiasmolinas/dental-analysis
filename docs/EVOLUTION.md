@@ -2,9 +2,10 @@
 
 > The one Claude role HISTORA hadn't shown until now: **self-improvement.** Claude proposes an edit to one
 > of its own reasoning skills; the edit is kept **only if** it measurably improves a structural metric AND
-> leaves the non-diagnostic guardrail untouched — a safety invariant that is **structurally impossible to
-> evolve.** The differentiator for a *builder* track isn't "safe agent" (everyone says that); it's
-> *"self-improvement where breaking the rules scores zero, and here is the archive that proves it."*
+> leaves the non-diagnostic guardrail untouched — a safety invariant that sits **outside the evolvable
+> genome by construction** (the archive's parent↔child guardrail hash proves it never moved). The
+> differentiator for a *builder* track isn't "safe agent" (everyone says that); it's *"self-improvement
+> where breaking the rules scores zero, and here is the archive that proves it."*
 
 ## The loop (`histora.skill_evolution`, `run_skill_evolution.py`)
 

@@ -6,9 +6,9 @@
 
 > **The first *safe, transparent, mechanistic* scientific research agent for oral–systemic disease.**
 > Claude orchestrates a calibrated mechanistic engine to turn fragmented patient data into
-> **falsifiable, uncertainty-quantified hypotheses** — validated on public data *and* genetics, provably
-> more coherent, calibrated, and honest than either applying single-disease models separately or using
-> Claude without a harness — with a **hard non-diagnostic guardrail**. Shown end-to-end in ~3 minutes.
+> **falsifiable, uncertainty-quantified hypotheses** — validated on public data *and* genetics, and more
+> coherent, calibrated, and honest than either applying single-disease models separately or using Claude
+> without a harness can be — with a **hard non-diagnostic guardrail**. Shown end-to-end in ~3 minutes.
 
 It is a **research agent, not a disease predictor.** The win is not accuracy; it is *mechanism +
 honesty*: uncertainty and falsifiability as product features, every number traceable, nothing diagnosed.
@@ -38,9 +38,9 @@ The "broad scope" becomes the argument, not a weakness.
 | **Mechanism, not correlation** | one calibrated parameter (ε) drives all three axes; every output a range with its uncertainty named |
 | **Validated on public data** | NHANES: perio→CRP, →HbA1c, →cognition — confounder-adjusted, and **survives survey-weighted + FDR** stats |
 | **Genetic causal probe** | Mendelian randomization: IL-6R→coronary disease **causal**, CRP→Alzheimer's **null** — supports our own tiering |
-| **Beats the alternatives** | pre-registered benchmark: vs separate models and bare Claude — 1 vs 3 params, calibration error 0.00, ranges + falsifiability 1.00 |
+| **A capability the alternatives structurally lack** | pre-registered benchmark vs separate models and bare Claude: 1 shared parameter instead of 3, plus calibrated ranges + falsification they cannot produce (calibration error 0.00; ranges + falsifiability 1.00) — a capability gap, not just a higher score |
 | **Safe agent, measured** | agentic card: citation accuracy 1.0, hallucination 0.0, coverage 1.0, non-diagnostic guardrail enforced by construction |
-| **Self-improving — safely (the differentiator)** | **SkillOpt**: Claude edits its own skills; an edit is kept only if it *measurably* improves (CI excludes 0) AND leaves the guardrail untouched — an invariant **structurally impossible to evolve**. The archive shows an *adopted* edit next to a *rejected* one that gained the same metric but broke the guardrail. [`EVOLUTION.md`](EVOLUTION.md) |
+| **Self-improving — safely (the differentiator)** | **SkillOpt (run live)**: Claude improved **2 of its own skills** and correctly **left a 3rd untouched** because it was already optimal — the loop never manufactures a gain. Each edit is kept only if it *measurably* improves (CI excludes 0) AND the guardrail stays 1.0; the guardrail lives **outside the evolvable genome**, and a hash identical in parent and child proves the invariant never moved. [`EVOLUTION.md`](EVOLUTION.md) |
 | **Gladstone-aligned** | touches 4 of 5 institutes; a **novel upstream perturbation** (periodontal inflammation → tau-α) for the neuro labs |
 
 **Claude at maximum — the full role spectrum.** HISTORA exercises Claude as: relational reasoner ·
@@ -86,9 +86,9 @@ it's the one that turns "safe agent" from a promise into a structural guarantee 
 > number but a range, with the therapy's predicted effect and the shakiest assumption named. We check the
 > directions in public NHANES and probe causality with genetics — which supports the heart link and, honestly,
 > not the Alzheimer's one, so we flag that axis as exploratory. Every number is traceable; nothing is a
-> diagnosis. On a pre-registered benchmark it beats both separate models and Claude-without-a-harness on
-> coherence, calibration, and honesty. It's a Claude Code plugin today, and it drops into Claude Science as
-> skills and connectors tomorrow."*
+> diagnosis. On a pre-registered benchmark it delivers coherence, calibration, and honesty that separate
+> models and Claude-without-a-harness structurally can't. It's a Claude Code plugin today, and it drops into
+> Claude Science as skills and connectors tomorrow."*
 
 ---
 
