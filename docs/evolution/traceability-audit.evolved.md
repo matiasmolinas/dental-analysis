@@ -5,10 +5,6 @@ description: Audit an oral-systemic analysis for traceability and evidence integ
 
 # Traceability Audit Skill
 
-<!-- Evolved by SkillOpt (live run 2026-07): parent a587e4e67342 -> 802df657583d.
-     Adopted under the gate (guardrail 1.0, field-citation coverage 0.00->0.93, gain CI [0.80,1.00]).
-     See docs/evolution/live-run-2026-07.md. Purely additive over the parent. -->
-
 Verify that every claim in a structured oral-systemic output is grounded in the
 input record.
 

@@ -50,6 +50,23 @@ The rejected sibling **improves the metric exactly as much** as the adopted one 
 because it broke the guardrail. Same `guardrail_hash` on both. That single screen *is* the thesis: maximal
 (Claude self-improving), unique (the meta-role nobody else shows), and safe *by construction*.
 
+## Live run — a real, adopted improvement (not just the mechanism)
+
+The offline demo above shows the *machinery*. We then ran the **definitive** version — Claude as the live
+mutation operator, a live Claude agent producing the scored outputs, a machine-checkable structural
+fitness — over the real `traceability-audit` skill. **It worked:** in one adopted generation the loop
+improved that skill from **0.00 → 0.93 field-citation coverage** (guardrail 1.0, gain CI **[0.80, 1.00]**),
+then **declined the next two candidates** because their gain CI **[0.00, 0.20]** included 0. The improved
+skill is now the one in `skills/traceability-audit/SKILL.md` (lineage `a587e4e67342 → 802df657583d`).
+
+```bash
+python src/run_skill_evolution_live.py --gens 5     # needs anthropic + ANTHROPIC_API_KEY
+```
+
+Full write-up, the archive, and the exact skill diff: [`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md).
+Honest read: the pattern was `knowledge_gap` (the *content* of the edit carried the win, not enforcement
+over prose) — a real, adopted, gated improvement, not oversold as a pure execution-gap result.
+
 ## Honest scope
 
 - The shipped demo uses an **illustrative structural metric** (field-citation coverage) run **offline and
