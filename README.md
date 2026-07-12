@@ -95,7 +95,7 @@ for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness test
 
 ## Documentation
 
-- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`CASE-STUDY.md`](docs/CASE-STUDY.md) (the flagship research session) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
+- **Start here:** [`OVERVIEW.md`](docs/OVERVIEW.md) (the full guided tour) · [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`CASE-STUDY.md`](docs/CASE-STUDY.md) (the flagship research session) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
 - **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
 - **Reference:** [`PROBLEM.md`](docs/PROBLEM.md) (the problem framing) · [`model-library.md`](docs/model-library.md) (the model reference) · [`DATASETS.md`](docs/DATASETS.md)
 - **Internal** (planning & analysis): [`docs/internal/`](docs/internal/) — roadmaps, the Stage-2 work plan, the data/delivery and Claude-Science analyses, the external review, the grant draft.
