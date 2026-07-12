@@ -2,18 +2,33 @@
 
 *Built with Claude: Life Sciences · co-organized with Gladstone Institutes.*
 
+## Start with the problem (not the hypothesis)
+
+> *"I'm a clinical researcher. I have a hypothesis: periodontal inflammation may share mechanisms with
+> systemic disease. But testing it means reviewing hundreds of medical and dental records to assemble a
+> cohort — and that takes **weeks**."*
+
+Then Claude appears. **That** is the problem HISTORA solves — and it's the one a life-sciences jury feels
+instantly, before any biology.
+
 ## The objective we demonstrate to win
 
-> **The first *safe, transparent, mechanistic* scientific research agent for oral–systemic disease.**
-> Claude orchestrates a calibrated mechanistic engine to turn fragmented patient data into
-> **falsifiable, uncertainty-quantified hypotheses** — validated on public data *and* genetics, and more
-> coherent, calibrated, and honest than either applying single-disease models separately or using Claude
-> without a harness can be. Everything it produces is **population/parameter-level, traceable, and
-> non-diagnostic** — a **research-integrity gate** (its sharpest clause: non-diagnostic) that makes the
-> output citable, enforced by construction. Shown end-to-end in ~3 minutes.
+> **HISTORA — a clinical-research copilot that turns fragmented clinical data into a research-ready
+> cohort to test a mechanistic hypothesis.** The researcher arrives with a *question*; Claude filters the
+> corpus down to the eligible cohort, reconstructs what's there, **flags what's missing**, states plainly
+> what the data *cannot* answer, and exports a preliminary protocol. Everything it produces is
+> **population/parameter-level, traceable, and non-diagnostic** — a **research-integrity gate** (its
+> sharpest clause: non-diagnostic). The mechanism (one shared IL-6→CRP proxy, three axes) and the genetics
+> (Mendelian randomization) enter *after* the problem, as the **biological plausibility** that makes the
+> cohort worth building.
 
-It is a **research agent, not a disease predictor.** The win is not accuracy; it is *mechanism +
-honesty*: uncertainty and falsifiability as product features, every number traceable, nothing diagnosed.
+> **"Researchers don't need another chatbot. They need an AI that builds research-ready cohorts from
+> fragmented clinical data."**
+
+**IL-6/CRP is today's hypothesis — tomorrow it's another.** HISTORA is not a single-disease agent; it is
+**infrastructure to accelerate clinical research**, and the honest "here's what the data *can't* show" is
+its differentiator. Claude works *with* the researcher, not *for* them — it helps build evidence; it never
+answers, diagnoses, or recommends. The win is not accuracy; it is *mechanism + honesty*.
 
 *The stage runbook (timed lines, clicks, fallbacks, Q&A) is [`DEMO-SCRIPT.md`](DEMO-SCRIPT.md).*
 
