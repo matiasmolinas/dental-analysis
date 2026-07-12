@@ -5,10 +5,6 @@ description: Frame cardiovascular and metabolic risk factors (lipids, HbA1c/diab
 
 # Cardiometabolic Framing Skill (non-diagnostic)
 
-<!-- Evolved by SkillOpt (live run 2026-07): parent 958b984f4258 -> 1afdee2493cb.
-     Adopted under the gate (guardrail 1.0, pathway-tag coverage 0.00->0.67, gain CI [0.57,0.75],
-     pattern execution_gap — enforcement beat the prose control). See docs/evolution/live-run-2026-07.md. -->
-
 Frame the systemic cardiovascular/metabolic picture so oral-systemic relations are
 representable. This is a **research framing**, not a diagnosis or a validated risk
 score.

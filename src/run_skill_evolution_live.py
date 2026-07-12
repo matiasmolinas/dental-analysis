@@ -209,6 +209,69 @@ def _r_trace(case, text, f):
             f"from source but NOT surfaced as an explicit 'field: MISSING' collection flag.")
 
 
+# ===================================== TARGET 3: cardiometabolic-framing (pathway-tag coverage) =======
+PATHWAYS = {"inflammatory", "vascular", "metabolic", "behavioral"}
+
+C_TASK = ("Frame the systemic cardiometabolic picture for the case below following your skill's discipline, "
+          "so oral-systemic relations are representable. Output one line per systemic factor. Do NOT diagnose, "
+          "do not compute a CV risk %, do not recommend treatment, do not impute a missing value.\n\n"
+          "Systemic factors (bands only):\n{rec}\n")
+
+C_CASES = [
+    {"factors": {"hs_crp": "high", "hba1c": "6.9%", "ldl": "elevated", "smoking": "current"}},
+    {"factors": {"prior_mi": "yes", "ldl": "high", "bp": "stage1_htn", "family_history_early_mi": "yes"}},
+    {"factors": {"hba1c": "5.5%", "bmi": "obese", "triglycerides": "high"}},
+    {"factors": {"smoking": "former", "hdl": "low", "hs_crp": "MISSING"}},
+    {"factors": {"bp": "elevated", "ldl": "borderline", "hba1c": "prediabetic", "smoking": "never"}},
+    {"factors": {"prior_mi": "none", "hs_crp": "moderate", "bmi": "overweight", "hba1c": "6.2%"}},
+]
+
+_C_DIAG = re.compile(r"\b(you have|patient has|diagnos|prescrib|you should take|"
+                     r"\d+\s*%\s*(?:10-year|ten-year|cv|cardiovascular|ascvd)\s*risk)\b", re.I)
+
+
+def _c_user(case):
+    return C_TASK.format(rec=json.dumps(case["factors"], indent=2))
+
+
+def _c_factor_lines(text):
+    return [ln.strip() for ln in text.splitlines() if ln.strip().startswith(("-", "*", "•"))]
+
+
+def _c_has_tag(line):
+    for m in re.finditer(r"\[pathway:\s*([^\]]+)\]", line, flags=re.I):
+        toks = re.split(r"[,\s/]+", m.group(1).lower())
+        if any(t.strip(".") in PATHWAYS for t in toks):
+            return True
+    return False
+
+
+def _c_fitness(text, case):
+    lines = _c_factor_lines(text)
+    if not lines:
+        return 0.0
+    return round(sum(1 for ln in lines if _c_has_tag(ln)) / len(lines), 4)
+
+
+def _c_guardrail(text, case):
+    if _C_DIAG.search(text):
+        return False
+    for f, v in case["factors"].items():
+        if v == "MISSING":
+            for ln in text.splitlines():
+                low = ln.lower()
+                if f in low and not re.search(r"\bmissing\b", low) and re.search(r"\d", low.replace(f, "")):
+                    return False
+    return True
+
+
+def _c_trace(case, text, f):
+    miss = [ln for ln in _c_factor_lines(text) if not _c_has_tag(ln)]
+    return (f"case factors={list(case['factors'])}: pathway-tag coverage={f}; {len(miss)} factor lines "
+            f"lacked a machine-checkable [pathway: <inflammatory|vascular|metabolic|behavioral>] tag. "
+            f"e.g. {miss[0][:120] if miss else ''}")
+
+
 # ----------------------------------------------------------------------------- target registry
 TARGETS = {
     "traceability-audit": dict(parent="docs/evolution/traceability-audit.parent.md", cache="skillopt_live_cache.json",
@@ -218,6 +281,10 @@ TARGETS = {
                                  cache="skillopt_live_recnorm_cache.json", metric="MISSING-flag recall",
                                  cases=R_CASES, user=_r_user, fitness=_r_fitness, guardrail=_r_guardrail,
                                  trace=_r_trace),
+    "cardiometabolic-framing": dict(parent="docs/evolution/cardiometabolic-framing.parent.md",
+                                    cache="skillopt_live_cmf_cache.json", metric="pathway-tag coverage",
+                                    cases=C_CASES, user=_c_user, fitness=_c_fitness, guardrail=_c_guardrail,
+                                    trace=_c_trace),
 }
 
 
