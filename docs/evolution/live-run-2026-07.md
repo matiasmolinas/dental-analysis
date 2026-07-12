@@ -2,15 +2,26 @@
 
 > This is the **definitive run** [`EVOLUTION.md`](../EVOLUTION.md) promised — nothing stubbed. Claude was
 > the live mutation operator; a live Claude agent produced the outputs the fitness scored; the fitness was
-> a **machine-checkable structural metric**; the guardrail was the real non-diagnostic gate. The loop
-> **improved the `traceability-audit` skill from 0.00 → 0.93 field-citation coverage** in one adopted
-> generation, then **honestly declined** the next two marginal candidates. The improved skill is now the
-> one in `skills/traceability-audit/SKILL.md`.
+> a **machine-checkable structural metric**; the guardrail was the real non-diagnostic gate. We ran it on
+> **three** trainable skills, and the outcomes are honestly mixed — which is the point:
+>
+> | skill | metric | outcome |
+> |---|---|---|
+> | `traceability-audit` | field-citation coverage | **adopted** 0.00 → 0.93 (pattern *knowledge_gap*) |
+> | `cardiometabolic-framing` | pathway-tag coverage | **adopted** 0.00 → 0.67 (pattern *execution_gap*) |
+> | `record-normalization` | MISSING-flag recall | **null** — parent already at ceiling (1.00) |
+>
+> Two skills improved (by *different* mechanisms), one was correctly left alone; every generation stayed
+> non-diagnostic, and the gate declined every degrading or unsafe candidate. The two improved skills are
+> now live in `skills/`.
 
-Reproduce it (needs `anthropic` + `ANTHROPIC_API_KEY`; the eval cache in `results/` makes reruns free):
+Reproduce any of them (needs `anthropic` + `ANTHROPIC_API_KEY`; the per-skill eval cache in `results/`
+makes reruns free):
 
 ```bash
-python src/run_skill_evolution_live.py --gens 5
+python src/run_skill_evolution_live.py --skill traceability-audit      --gens 5
+python src/run_skill_evolution_live.py --skill cardiometabolic-framing --gens 5
+python src/run_skill_evolution_live.py --skill record-normalization    --gens 5
 ```
 
 ## Setup (all honest, all in the repo)
@@ -60,7 +71,37 @@ The diff vs the frozen parent is two added blocks — no parent content removed
 For an agent whose entire pitch is *auditability*, this is a genuine systems win: it turns "cites its
 fields in prose (unverifiable at scale)" into "cites its fields in a tag a machine can check."
 
-## Second skill — `record-normalization` (a null, on purpose)
+## A second adopted improvement — `cardiometabolic-framing` (execution-gap this time)
+
+We pointed the loop at a third trainable skill, `cardiometabolic-framing`, with its own purpose-faithful
+metric — **pathway-tag coverage**: the fraction of systemic-factor lines that carry a machine-checkable
+`[pathway: <inflammatory|vascular|metabolic|behavioral>]` tag (the skill's core job is to assign every
+factor to a shared-pathway group so oral-systemic relations are representable).
+
+```bash
+python src/run_skill_evolution_live.py --skill cardiometabolic-framing --gens 5
+```
+
+| gen | guardrail | pattern | base → enforced (prose) | Δbase CI90 | verdict |
+|---|---|---|---|---|---|
+| 0 | — | — | parent coverage **0.00** | — | — |
+| **1** | **1.0** | **execution_gap** | 0.00 → **0.6723** (prose 0.0952) | **[0.567, 0.752]** | **ADOPTED** |
+| 2 | 0.83 | screened | 0.6723 → 0.48 (prose 0.566) | [−0.347, −0.004] | rejected |
+| 3 | 0.83 | screened | 0.6723 → 0.48 (prose 0.566) | [−0.347, −0.004] | rejected |
+
+**A different — and stronger — signal than traceability.** Here the pattern is **`execution_gap`**:
+deploying the edited skill (enforced **0.67**) decisively beat handing the *same* guidance as prose
+(**0.095**). So the win is the **enforcement**, not just the content — the clean W1 signature the offline
+demo is engineered to show, now observed on live data. Lineage `958b984f4258 → 1afdee2493cb`; the skill is
+now live in `skills/cardiometabolic-framing/SKILL.md` (purely additive — a "machine-checkable pathway
+tagging" block + a pre-finalize check). Archive:
+[`skillopt_live_archive_cardiometabolic-framing.jsonl`](skillopt_live_archive_cardiometabolic-framing.jsonl).
+
+**And again the gate held the line.** gen2–3 tried to push coverage to 1.0 with an over-engineered
+self-check rule; it instead **lowered** coverage to 0.48 (CI [−0.35, −0.00]) and nicked the guardrail
+(0.83). Rejected twice → stop. Coverage settled at an honest **0.67**, not a suspiciously perfect 1.00.
+
+## A null — `record-normalization` (the parent was already at ceiling)
 
 We then pointed the same loop at a different trainable skill, with a different structural metric —
 **MISSING-flag recall**: the fraction of required-but-absent canonical fields that surface as an explicit

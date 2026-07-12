@@ -54,25 +54,28 @@ because it broke the guardrail. Same `guardrail_hash` on both. That single scree
 
 The offline demo above shows the *machinery*. We then ran the **definitive** version — Claude as the live
 mutation operator, a live Claude agent producing the scored outputs, a machine-checkable structural
-fitness — over the real `traceability-audit` skill. **It worked:** in one adopted generation the loop
-improved that skill from **0.00 → 0.93 field-citation coverage** (guardrail 1.0, gain CI **[0.80, 1.00]**),
-then **declined the next two candidates** because their gain CI **[0.00, 0.20]** included 0. The improved
-skill is now the one in `skills/traceability-audit/SKILL.md` (lineage `a587e4e67342 → 802df657583d`).
+fitness — over **three** real trainable skills. The outcomes are honestly mixed, which is exactly the point:
+
+| skill | metric | outcome | pattern |
+|---|---|---|---|
+| `traceability-audit` | field-citation coverage | **adopted** 0.00 → 0.93 (gain CI [0.80, 1.00]) | knowledge_gap |
+| `cardiometabolic-framing` | pathway-tag coverage | **adopted** 0.00 → 0.67 (gain CI [0.57, 0.75]) | **execution_gap** |
+| `record-normalization` | MISSING-flag recall | **null** — parent already at ceiling (1.00) | — |
 
 ```bash
-python src/run_skill_evolution_live.py --skill traceability-audit  --gens 5   # the adopted improvement
-python src/run_skill_evolution_live.py --skill record-normalization --gens 5   # a null (parent at ceiling)
+python src/run_skill_evolution_live.py --skill traceability-audit      --gens 5   # adopted (knowledge_gap)
+python src/run_skill_evolution_live.py --skill cardiometabolic-framing --gens 5   # adopted (execution_gap)
+python src/run_skill_evolution_live.py --skill record-normalization    --gens 5   # null (parent at ceiling)
 ```
 
-We then ran the **same loop on a second skill** (`record-normalization`, metric = MISSING-flag recall) —
-and it adopted **nothing**: that parent is already at ceiling (1.00), and the loop declined an off-target
-candidate that *lowered* the metric (CI [−1.00, −0.33]) rather than inventing a gain. **One skill improved,
-the other correctly left alone** — the anti-reward-hacking property that makes the adopted gain credible.
+**Two skills improved by *different* mechanisms**, one was **correctly left alone**, and in every case the
+gate declined every degrading or unsafe follow-up candidate. `cardiometabolic-framing` is the clean
+**execution_gap** result — deploying the edit (0.67) decisively beat handing the same guidance as prose
+(0.095), the W1 signature — while `record-normalization` shows the loop does **not** manufacture a gain
+where none exists (the anti-reward-hacking property that makes the adopted gains credible).
 
-Full write-up (both skills), the archives, and the exact skill diff:
-[`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md). Honest read: the traceability win's
-pattern was `knowledge_gap` (the *content* of the edit carried it, not enforcement over prose) — a real,
-adopted, gated improvement, not oversold as a pure execution-gap result.
+Full write-up (all three skills), the archives, and the exact skill diffs:
+[`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md).
 
 ## Honest scope
 
