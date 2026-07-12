@@ -208,4 +208,16 @@ now **fixed**:
    the T2D study carries a **metadata caveat**, and the IL-6R cis probe is expanded with an explicit
    **LD-aware** caveat. `run_real_mr` now also emits the per-SNP harmonized instruments + any caveat.
 
+### The IL-6R cis probe done right (LD-aware)
+
+The strong causal edge — **IL-6R signalling → coronary disease** (tocilizumab-mimicking) — uses several
+SNPs at one locus, which are in **linkage disequilibrium**, so naive IVW (independent-instrument) is wrong.
+`histora.cis_mr` implements **correlated IVW** (GLS: β = bxᵀΣ⁻¹by / bxᵀΣ⁻¹bx with Σ = diag(se)·R·diag(se)),
+fetches the LD matrix R from the OpenGWAS `/ld/matrix` endpoint, and **sign-aligns R to the harmonized
+effect alleles**. It reports the correlated estimate as primary and the naive IVW only for contrast (to
+prove LD matters — positive LD inflates the SE, exactly as it should). Run: `run_pipeline.py --cis`
+(needs `OPENGWAS_JWT`); unit-tested offline (`tests/test_cis_mr.py`: recovers the slope under LD, SE larger
+than independent, allele sign-flip, end-to-end with injected fetches). Honest limits are flagged (LD-panel
+ancestry match; PCA/conditional cis-MR and per-SNP F-statistics for a definitive run) — not omitted.
+
 *Non-diagnostic throughout; population/parameter-level only.*

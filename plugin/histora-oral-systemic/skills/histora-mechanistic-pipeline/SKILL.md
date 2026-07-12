@@ -24,9 +24,16 @@ pip install "git+https://github.com/matiasmolinas/dental-analysis@main"   # or: 
 python run_pipeline.py --case case.json      # → predictions.json  (mechanistic ranges + counterfactuals)
 python run_pipeline.py --mr                   # → mr_report.json (illustrative literature-directional panels)
 python run_pipeline.py --mr --real            # → mr_report.json from REAL OpenGWAS summary stats
+python run_pipeline.py --cis                   # → cis_mr_report.json: LD-aware IL-6R cis probe (real)
 python run_pipeline.py --benchmark            # → benchmark_report.json
 python plot_pipeline.py predictions.json --mr mr_report.json --benchmark benchmark_report.json
 ```
+
+**LD-aware IL-6R cis probe (`--cis`)** runs the strong causal test — IL-6R signalling → coronary disease
+(the tocilizumab-mimicking instrument) — correctly: the cis SNPs are in **linkage disequilibrium**, so it
+uses **correlated IVW** (GLS with the OpenGWAS LD matrix, sign-aligned to the effect alleles), not naive
+IVW. Needs `OPENGWAS_JWT`; reports the correlated estimate as primary and the naive IVW only to show the
+difference. See `histora.cis_mr`.
 
 **Real MR (`--real`)** replaces the illustrative panels with real public GWAS summary statistics via the
 **OpenGWAS** API. It needs a free token in the `OPENGWAS_JWT` environment variable (get one at

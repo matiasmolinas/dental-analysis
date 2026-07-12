@@ -70,8 +70,12 @@ def plot_sensitivity(sensitivity: dict, output: str = "crp_mg_l", path: str = "f
 
 
 def _mr_panels(report: dict) -> list[tuple[str, dict]]:
-    """Normalize either MR report shape into (title, panel) pairs. `run_real_mr` nests results under
-    `outcomes` with the exposure at the top level; the illustrative `run_mr` uses a flat {key: panel}."""
+    """Normalize any MR report shape into (title, panel) pairs. `run_cis_mr` is a single pair with a
+    `correlated_ivw`; `run_real_mr` nests results under `outcomes`; the illustrative `run_mr` is a flat
+    {key: panel}."""
+    if "correlated_ivw" in report and "instruments" in report:   # cis_mr shape
+        panel = dict(report, ivw=report["correlated_ivw"])
+        return [(f"{report.get('exposure', '?')} → {report.get('outcome', '?')}", panel)]
     if isinstance(report.get("outcomes"), dict):                 # real_mr shape
         exp = report.get("exposure", "exposure")
         return [(f"{p.get('exposure', exp)} → {p.get('outcome', k)}", p)
