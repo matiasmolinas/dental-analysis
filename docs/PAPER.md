@@ -185,6 +185,22 @@ withhold support exactly where we flag it as exploratory (the neuro axis) — an
 on the tiering. (The panels here are illustrative and literature-directional; the estimator is
 unit-tested on synthetic ground truth, and a definitive run substitutes live OpenGWAS extracts.)
 
+**Live cis-MR and cross-ancestry replication.** Because cis instruments at one locus are in linkage
+disequilibrium (LD), naïve IVW under-states the variance; we therefore add an LD-aware **correlated-IVW**
+estimator (`histora.cis_mr`; GLS with Σ = diag(se)·R·diag(se)) and run it over **live OpenGWAS** extracts.
+The LD-aware IL-6R cis probe gives **correlated-IVW β = +0.553 (SE 0.109)** for IL-6R signaling → coronary
+artery disease — the valid estimate under LD (naïve IVW ignores the SNP correlation). The direction
+**replicates independently** across consortia with no CARDIoGRAMplusC4D overlap: FinnGen R12 (European;
+`I9_CHD` +0.421, `I9_CORATHER` +0.466) and BioBank Japan (East Asian; single-SNP Wald positive), and the
+FinnGen correlated-IVW magnitudes agree with ours on the identical construction (Δ p = 0.35 / 0.54, n.s.).
+
+We report one correction transparently. An earlier figure of +0.705 (SE 0.010) was an **LD row-ordering
+bug** in our own estimator — the OpenGWAS `/ld/matrix` server returns SNPs in genomic-position order, and
+reindexing by request order injected a spurious cross-term that near-singularized the GLS and collapsed the
+SE. The agent caught it while checking the FinnGen head-to-head, retracted +0.705, corrected to the +0.553
+above, and added a regression test. See [`SELF-CORRECTION.md`](SELF-CORRECTION.md). *(MR ≠ RCT;
+population-level; non-diagnostic.)*
+
 ### 4.2 Design-adjusted results (survey weights + FDR)
 
 NHANES is a complex probability sample; an unweighted OLS biases the estimate (unequal selection) and
