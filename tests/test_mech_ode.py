@@ -57,6 +57,21 @@ def test_eigenvalues_1x1_and_2x2():
     assert abs(abs(eig[0].imag) - 1.0) < 1e-9
 
 
+def test_eigenvalues_3x3_diagonal_and_stability():
+    # diagonal 3x3 → eigenvalues are the diagonal entries (Stage-3: pure-python cubic solver)
+    eig = sorted(l.real for l in eigenvalues([[-1.0, 0.0, 0.0], [0.0, -2.0, 0.0], [0.0, 0.0, -3.0]]))
+    assert all(abs(a - b) < 1e-6 for a, b in zip(eig, [-3.0, -2.0, -1.0]))
+    # a 3x3 with a known positive eigenvalue is unstable
+    assert is_stable([[-1.0, 0.0, 0.0], [0.0, -2.0, 0.0], [0.0, 0.0, -3.0]]) is True
+    assert is_stable([[2.0, 0.0, 0.0], [0.0, -2.0, 0.0], [0.0, 0.0, -3.0]]) is False
+
+
+def test_eigenvalues_3x3_upper_triangular():
+    # eigenvalues of a triangular matrix are its diagonal, even with off-diagonal coupling
+    eig = sorted(l.real for l in eigenvalues([[-1.0, 5.0, 2.0], [0.0, -4.0, 3.0], [0.0, 0.0, -7.0]]))
+    assert all(abs(a - b) < 1e-5 for a, b in zip(eig, [-7.0, -4.0, -1.0]))
+
+
 def test_is_stable():
     assert is_stable([[-1.0, 0.0], [0.0, -2.0]]) is True
     assert is_stable([[1.0, 0.0], [0.0, -2.0]]) is False

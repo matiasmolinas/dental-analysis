@@ -144,6 +144,57 @@ def plot_benchmark(report: dict, path: str = "fig_benchmark.png") -> str:
     return path
 
 
+def plot_stage3(report: dict, traj: dict, outdir: str = ".") -> list[str]:
+    """Render the Stage-3 physiology figures (deepened mechanisms):
+      - cv_plaque   : oxLDL / macrophage / foam-cell (plaque) trajectories, oral source vs baseline.
+      - glucose     : the Bergman meal glucose response, oral inflammation vs baseline.
+      - one_lever   : the integrative 'one lever, many axes' therapy response across CV/metabolic/neuro.
+    These are the figures that make each mechanism legible; in Claude Science the same data renders as
+    native (interactive/animated) figures with UniProt/PDB + OpenGWAS connectors grounding the proteins."""
+    made = []
+
+    # --- CV plaque trajectory ---
+    p, b = traj["plaque"], traj["plaque_baseline"]
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(p["t"], p["foam"], color="#A8323F", lw=2.4, label="foam cells / plaque (with oral inflammation)")
+    ax.plot(b["t"], b["foam"], color="#A8323F", lw=1.4, ls="--", label="baseline (therapy limit)")
+    ax.plot(p["t"], p["oxldl"], color="#9C6B12", lw=1.2, alpha=0.7, label="oxLDL")
+    ax.plot(p["t"], p["macrophage"], color="#2F7D5B", lw=1.2, alpha=0.7, label="macrophages")
+    ax.set_xlabel("time (arb. units)"); ax.set_ylabel("burden")
+    ax.set_title("CV axis — atherosclerosis foam-cell process (Ougrinovskaia E2.6)", fontsize=10)
+    ax.legend(fontsize=7.5); fig.tight_layout()
+    path = os.path.join(outdir, "fig_stage3_cv_plaque.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+
+    # --- Bergman glucose response ---
+    g, gb = traj["glucose"], traj["glucose_baseline"]
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(g["t"], g["glucose"], color="#A8323F", lw=2.2, label="glucose (with oral inflammation)")
+    ax.plot(gb["t"], gb["glucose"], color="#3A5A8C", lw=1.6, ls="--", label="baseline (therapy limit)")
+    ax.set_xlabel("time (min)"); ax.set_ylabel("plasma glucose (mg/dL)")
+    ax.set_title("Metabolic axis — Bergman meal response; degraded S_I (E3.1)", fontsize=10)
+    ax.legend(fontsize=8); fig.tight_layout()
+    path = os.path.join(outdir, "fig_stage3_glucose.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+
+    # --- one lever, many axes ---
+    lever = report["one_lever_many_axes"]["coherent_multi_axis_response_to_therapy"]
+    labels = ["CV plaque\n↓ (rel)", "HbA1c\n↓ (pp)", "tau onset\ndelay (yr)", "amyloid\n↓ (rel)"]
+    keys = ["cardiovascular_plaque_rel_reduction", "metabolic_hba1c_drop_pp",
+            "neuro_tau_onset_delay_years", "neuro_amyloid_rel_reduction"]
+    vals = [lever.get(k) or 0.0 for k in keys]
+    fig, ax = plt.subplots(figsize=(7.5, 4.2))
+    ax.bar(labels, vals, color=["#A8323F", "#9C6B12", "#3A5A8C", "#2F7D5B"])
+    ax.set_title("One lever, many axes — periodontal therapy's coherent multi-axis response", fontsize=10)
+    ax.set_ylabel("axis response to source→0")
+    for i, v in enumerate(vals):
+        ax.annotate(f"{v:g}", (i, v), ha="center", va="bottom", fontsize=8)
+    fig.tight_layout()
+    path = os.path.join(outdir, "fig_stage3_one_lever.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+    return made
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Render HISTORA pipeline figures")
     ap.add_argument("predictions", nargs="?", default="predictions.json")

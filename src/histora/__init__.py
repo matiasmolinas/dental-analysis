@@ -18,7 +18,11 @@ Package layout (aligned to the solution):
     mech_ode           — ODE tools (integrate, steady state, stability, sensitivity, sweep)
     mech_models        — the centerpiece: periodontal source -> IL-6 -> CRP -> CV & neuro axes
     mech_calibrate     — calibrate the spillover to the real dHsCRP-after-therapy anchor
-    mech_neuro         — the neuro axis: neuroinflammation -> tau spread (Fisher-KPP, Braak chain)
+    mech_neuro         — the neuro axis: neuroinflammation -> amyloid -> tau spread (A/T; APOE4/age mods)
+    mech_inflammation  — Stage-3: multi-cytokine TNF/IL-6/IL-10 core, bistable acute-vs-chronic regime
+    mech_cv            — Stage-3: the atherosclerosis foam-cell ODE (Ougrinovskaia E2.6), a process not an index
+    mech_glucose       — Stage-3: the Bergman glucose-insulin dynamics; S_I degraded by inflammation (E3.1)
+    mech_microbiome    — Stage-3: reduced gLV + Allee keystone (P. gingivalis) -> a dysbiosis index (E3.5-7)
 
   Evaluation & validation
     ab_eval            — scoring (recalls, missing-data, guardrail) + the A/B runner

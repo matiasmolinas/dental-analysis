@@ -53,15 +53,58 @@ def neuro_params(p: dict | None = None) -> dict:
     p.setdefault("tau_seed", 0.05)       # initial entorhinal tau fraction
     p.setdefault("tau_threshold", 0.5)   # Braak-like crossing fraction
     p.setdefault("horizon_years", 20.0)
+    # --- amyloid arm (Hao & Friedman 2016, E2.7): neuroinflammation → amyloid → tau-α (the A of ATN) ---
+    p.setdefault("k_amyloid", 0.8)       # neuroinflammation → amyloid production  [FLAGGED]
+    p.setdefault("d_amyloid", 1.0)       # amyloid clearance (glymphatic; lowered by APOE4/age)
+    p.setdefault("beta_amyloid", 0.4)    # amyloid → tau-α coupling  [FLAGGED]
+    # --- effect modifiers (structural flags/bands, not patient values) ---
+    p.setdefault("apoe4_amyloid_mult", 1.6)   # APOE4 raises amyloid production (Huang/Gladstone)
+    p.setdefault("apoe4_clear_mult", 0.75)    # APOE4 lowers amyloid clearance
+    p.setdefault("apoe4_bbb_mult", 1.3)       # APOE4 raises BBB permeability
+    # age band → (amyloid multiplier, baseline tau-α multiplier); age is the dominant AD driver
+    p.setdefault("age_amyloid_mult", {"young": 0.6, "mid": 1.0, "old": 1.6})
+    p.setdefault("age_alpha_mult", {"young": 0.7, "mid": 1.0, "old": 1.4})
     return p
 
 
-def neuroinflammation(systemic_gain: float, p: dict) -> float:
+def _modifiers(features: dict, p: dict) -> dict[str, float]:
+    """Read the structural effect-modifier flags (APOE4 carrier, age band) — flags/bands only, never a
+    patient value — and return the amyloid-production, amyloid-clearance, BBB and baseline-α multipliers."""
+    apoe4 = bool(features.get("apoe4"))
+    age_band = (features.get("age_band") or "mid").lower()
+    a_mult = p["age_amyloid_mult"].get(age_band, 1.0)
+    al_mult = p["age_alpha_mult"].get(age_band, 1.0)
+    return {
+        "apoe4": apoe4,
+        "age_band": age_band,
+        "amyloid_production_mult": (p["apoe4_amyloid_mult"] if apoe4 else 1.0) * a_mult,
+        "amyloid_clearance_mult": p["apoe4_clear_mult"] if apoe4 else 1.0,
+        "bbb_mult": p["apoe4_bbb_mult"] if apoe4 else 1.0,
+        "alpha_baseline_mult": al_mult,
+    }
+
+
+def amyloid_burden(N: float, mods: dict, p: dict) -> float:
+    """Steady amyloid burden from neuroinflammation N: A = k·N·(production mods)/(d·clearance mods).
+    APOE4 and age raise production and lower clearance — the A of the ATN framework."""
+    prod = p["k_amyloid"] * max(0.0, N) * mods["amyloid_production_mult"]
+    clear = p["d_amyloid"] * mods["amyloid_clearance_mult"]
+    return prod / clear if clear > 0 else 0.0
+
+
+def tau_alpha_with_amyloid(N: float, A: float, mods: dict, p: dict) -> float:
+    """Tau-spread growth rate driven by BOTH inflammation and amyloid, on an age-scaled baseline:
+    α_eff = α·age·(1 + β_tau·N + β_amyloid·A). The neuro axis is now A/T, not tau-only. FLAGGED edges."""
+    return (p["alpha_tau"] * mods["alpha_baseline_mult"]
+            * (1.0 + p["beta_tau"] * max(0.0, N) + p["beta_amyloid"] * max(0.0, A)))
+
+
+def neuroinflammation(systemic_gain: float, p: dict, bbb_mult: float = 1.0) -> float:
     """Systemic IL-6 excess → neuroinflammation, gated by BBB permeability. Saturating in [0, N_max);
     BBB permeability itself rises with inflammation (E1.7), so the map is mildly super-linear then
-    saturates."""
+    saturates. `bbb_mult` lets an effect modifier (APOE4, age) further open the barrier."""
     g = max(0.0, systemic_gain)
-    bbb = 1.0 + p["bbb_gain"] * g / (p["K_gain"] + g)   # permeability increases with inflammation
+    bbb = 1.0 + bbb_mult * p["bbb_gain"] * g / (p["K_gain"] + g)   # permeability rises with inflammation
     x = bbb * g
     return p["N_max"] * x / (p["K_gain"] + x)
 
@@ -125,11 +168,14 @@ def neuro_centerpiece(features: dict, p: dict | None = None, front: bool = True)
     p = neuro_params(p)
     H, c0, theta = p["horizon_years"], p["tau_seed"], p["tau_threshold"]
 
+    mods = _modifiers(features, p)
     il6 = il6_steady(periodontal_source(features, p), p)
     gain = inflammatory_gain(il6)
-    N = neuroinflammation(gain, p)
-    alpha_eff = tau_alpha_effective(N, p)
-    alpha_base = p["alpha_tau"]   # no oral inflammation
+    N = neuroinflammation(gain, p, bbb_mult=mods["bbb_mult"])
+    amyloid = amyloid_burden(N, mods, p)                       # the A of ATN (Hao & Friedman)
+    amyloid_base = amyloid_burden(0.0, mods, p)                # no oral inflammation
+    alpha_eff = tau_alpha_with_amyloid(N, amyloid, mods, p)    # tau-α driven by inflammation AND amyloid
+    alpha_base = tau_alpha_with_amyloid(0.0, amyloid_base, mods, p)  # age-scaled baseline, no oral source
 
     burden = tau_burden_at(alpha_eff, H, c0)
     burden_base = tau_burden_at(alpha_base, H, c0)
@@ -152,7 +198,13 @@ def neuro_centerpiece(features: dict, p: dict | None = None, front: bool = True)
         "features": features,
         "systemic_gain_pg_ml": round(gain, 4),
         "neuroinflammation": round(N, 4),
-        "tau_alpha": {"baseline": alpha_base, "effective": round(alpha_eff, 5),
+        "modifiers": {"apoe4": mods["apoe4"], "age_band": mods["age_band"],
+                      "bbb_mult": round(mods["bbb_mult"], 3)},
+        "amyloid_burden": {"with_oral_inflammation": round(amyloid, 4),
+                           "baseline": round(amyloid_base, 4),
+                           "relative_increase": round(amyloid / amyloid_base - 1.0, 4) if amyloid_base else round(amyloid, 4),
+                           "note": "the A of ATN (Hao & Friedman E2.7); APOE4/age modify production & clearance"},
+        "tau_alpha": {"baseline": round(alpha_base, 5), "effective": round(alpha_eff, 5),
                       "relative_increase": round(alpha_eff / alpha_base - 1.0, 4)},
         "tau_burden_horizon": {"years": H, "with_oral_inflammation": round(burden, 4),
                                "baseline": round(burden_base, 4),
@@ -165,7 +217,8 @@ def neuro_centerpiece(features: dict, p: dict | None = None, front: bool = True)
         "tau_burden_range_over_beta": burden_range,
         "connectome_front_arrival_years": (tau_front_arrival(alpha_eff, p) if front else None),
         "confidence": "scaffold",
-        "flags": ["inflammation→α is a FLAGGED hypothesis (not fitted)",
+        "flags": ["inflammation→α and amyloid→α are FLAGGED hypotheses (not fitted)",
+                  "amyloid arm (Hao & Friedman E2.7); APOE4/age are structural effect-modifier flags/bands",
                   "atuzaginstat/GAIN trial failed → live hypothesis, not causation",
                   "non-diagnostic; hypothesis generation only"],
     }
