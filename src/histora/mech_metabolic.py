@@ -70,6 +70,80 @@ def calibrated_metabolic_params(target_pp: float = HBA1C_DROP_ANCHOR_PP, p: dict
     return p
 
 
+def coupled_perio_metabolic(features: dict, p: dict | None = None,
+                            feedback: float = 0.30, max_iter: int = 50) -> dict[str, Any]:
+    """Close the diabetes↔periodontitis loop (Graves 2026, E3.2). The one-directional model has
+    gain→HbA1c; biology is bidirectional — hyperglycaemia worsens periodontal inflammation. We add the
+    return edge: the glycaemic burden multiplies the periodontal source by (1 + feedback·HbA1c_shift),
+    then re-solve gain→HbA1c to a fixed point. Reports the open-loop vs closed-loop shift and the
+    amplification the feedback contributes. `feedback` (pp⁻¹) is a FLAGGED coupling, swept-able.
+
+    NON-DIAGNOSTIC: structural-band input; the fixed point is a population/parameter-level quantity.
+    """
+    from .mech_models import structural_load, il6_steady, IL6_BASAL
+    p = calibrated_metabolic_params(p=p) if (p is None or "k_hba1c" not in p) else metabolic_params(p)
+    base_load = structural_load(features)
+
+    def gain_from_load(load: float) -> float:
+        il6 = il6_steady(p["epsilon"] * load, p)
+        return max(0.0, il6 - IL6_BASAL)
+
+    open_shift = hba1c_shift_pp(gain_from_load(base_load), p)
+
+    shift = open_shift
+    for _ in range(max_iter):                       # fixed-point iteration on the glycaemic feedback
+        load = base_load * (1.0 + feedback * shift)
+        new_shift = hba1c_shift_pp(gain_from_load(load), p)
+        if abs(new_shift - shift) < 1e-6:
+            shift = new_shift
+            break
+        shift = new_shift
+
+    return {
+        "features": features,
+        "open_loop_hba1c_shift_pp": round(open_shift, 4),
+        "closed_loop_hba1c_shift_pp": round(shift, 4),
+        "feedback_amplification": round(shift / open_shift, 4) if open_shift else 1.0,
+        "converged_load": round(base_load * (1.0 + feedback * shift), 4),
+        "feedback_coupling": feedback,
+        "confidence": "scaffold",
+        "flags": ["bidirectional diabetes↔periodontitis (Graves 2026, E3.2); feedback FLAGGED, swept",
+                  "the return edge (hyperglycaemia→periodontal source) closes the loop the linear model omits",
+                  "non-diagnostic; population/parameter-level, never a patient value"],
+    }
+
+
+def perio_metabolic_cobweb(features: dict, p: dict | None = None,
+                           feedback: float = 0.30, n: int = 40) -> dict[str, Any]:
+    """The fixed-point map g(HbA1c_shift) → HbA1c_shift behind the diabetes↔periodontitis loop, plus the
+    cobweb iteration steps, for the figure. g maps a glycaemic burden to the closed-loop shift it induces
+    (hyperglycaemia amplifies the source → the source raises the gain → the gain raises HbA1c). The
+    intersection with the identity line is the fixed point solved by `coupled_perio_metabolic`."""
+    from .mech_models import structural_load, il6_steady, IL6_BASAL
+    p = calibrated_metabolic_params(p=p) if (p is None or "k_hba1c" not in p) else metabolic_params(p)
+    base_load = structural_load(features)
+
+    def g(shift: float) -> float:
+        il6 = il6_steady(p["epsilon"] * base_load * (1.0 + feedback * shift), p)
+        return hba1c_shift_pp(max(0.0, il6 - IL6_BASAL), p)
+
+    open_shift = g(0.0)
+    seq = [0.0, open_shift]                       # cobweb: start at the open-loop shift, iterate to fixpoint
+    s = open_shift
+    for _ in range(20):
+        ns = g(s)
+        seq.append(ns)
+        if abs(ns - s) < 1e-6:
+            s = ns
+            break
+        s = ns
+    hi = max(open_shift, s) * 1.6 + 1e-3
+    xs = [hi * i / n for i in range(n + 1)]
+    return {"map_x": [round(x, 5) for x in xs], "map_y": [round(g(x), 5) for x in xs],
+            "seq": [round(v, 5) for v in seq], "fixed_point": round(s, 5),
+            "open_loop": round(open_shift, 5), "feedback": feedback}
+
+
 def metabolic_centerpiece(features: dict, p: dict | None = None) -> dict[str, Any]:
     """gain → insulin-resistance index + predicted HbA1c shift, with the periodontal-therapy
     counterfactual (removing the oral source drops HbA1c by the calibrated amount)."""

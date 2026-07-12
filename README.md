@@ -84,6 +84,7 @@ Pure Python (no GPU). The NHANES runners need `pandas` + network; the live Claud
 python demo/run_demo.py                 # the canonical end-to-end brief (offline)
 python src/run_benchmark.py             # S vs H comparative validation (offline); --live adds bare Claude
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
+python src/run_physiology.py                 # Stage-3: all deepened mechanisms + "one lever, many axes" (--plot for figures)
 python src/run_mendelian_randomization.py   # the genetic causal probe (offline)
 python src/run_skill_evolution.py           # SkillOpt: one gated, guardrail-safe skill-evolution generation
 python src/run_skill_evolution_live.py --skill cardiometabolic-framing --gens 5   # SkillOpt LIVE: Claude evolves a real skill (needs anthropic+key)

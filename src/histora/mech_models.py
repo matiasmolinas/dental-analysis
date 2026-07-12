@@ -51,9 +51,13 @@ def default_params() -> dict:
         "base_prod_il6": IL6_BASAL * MU_IL6,   # pg/mL/h
         # oral→systemic spillover efficiency (THE calibrated edge, E2.5 ε); nominal
         "epsilon": 1.0,                # (pg/mL/h) per unit structural load
-        # comorbidity amplifiers of the inflammatory gain (E3.2 AGE-RAGE; smoking)
+        # comorbidity amplifier of the inflammatory gain (E3.2 AGE-RAGE): diabetes genuinely
+        # worsens periodontal inflammation, so it multiplies the load.
         "diabetes_amp": 1.4,
-        "smoking_amp": 1.25,
+        # smoking SUPPRESSES bleeding-on-probing, so BOP UNDER-READS true severity in smokers
+        # (a measurement bias, not a risk multiplier). Model it as an additive band-suppression
+        # correction that restores the under-counted load — the physiologically correct sign.
+        "smoking_bop_correction": 0.25,
         # CV coupling scaffold (E2.6): recruitment multiplier = 1 + gamma_cv·gain  [FLAGGED]
         "gamma_cv": 0.05,              # per pg/mL excess IL-6
         # NEURO coupling scaffold (E2.8): tau-spread α → α·(1 + beta_neuro·gain)  [FLAGGED]
@@ -77,10 +81,11 @@ def structural_load(features: dict) -> float:
     if "stage iv" in stage or "stage iii" in stage:
         load += 0.3
     comorb = set(features.get("comorbidities", []))
+    if "smoking" in comorb:
+        # BOP-suppression correction FIRST (the observed band under-reads before any amplifier acts).
+        load += p["smoking_bop_correction"]
     if "diabetes" in comorb:
         load *= p["diabetes_amp"]
-    if "smoking" in comorb:
-        load *= p["smoking_amp"]
     return load
 
 

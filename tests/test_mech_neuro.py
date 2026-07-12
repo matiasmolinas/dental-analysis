@@ -82,6 +82,24 @@ def test_therapy_delays_onset_and_sweep_gives_range():
     assert len(r["beta_tau_sweep"]) == 4
 
 
+def test_amyloid_arm_and_apoe4_age_modifiers():
+    base = {"bop_band": "high", "perio_stage": "stage III"}
+    plain = neuro_centerpiece(base, front=False)
+    apoe4 = neuro_centerpiece({**base, "apoe4": True}, front=False)
+    old = neuro_centerpiece({**base, "age_band": "old"}, front=False)
+    both = neuro_centerpiece({**base, "apoe4": True, "age_band": "old"}, front=False)
+    # the amyloid arm exists and rises with oral inflammation
+    assert plain["amyloid_burden"]["with_oral_inflammation"] > 0
+    # APOE4 and age each raise amyloid; together most of all (effect modifiers)
+    a = lambda r: r["amyloid_burden"]["with_oral_inflammation"]
+    assert a(apoe4) > a(plain) and a(old) > a(plain)
+    assert a(both) > a(apoe4) and a(both) > a(old)
+    # APOE4/age also raise tau-α (amyloid → tau-α edge)
+    assert both["tau_alpha"]["relative_increase"] > plain["tau_alpha"]["relative_increase"]
+    # modifiers are structural flags/bands, not patient values
+    assert apoe4["modifiers"]["apoe4"] is True and old["modifiers"]["age_band"] == "old"
+
+
 def test_flags_and_non_diagnostic():
     r = neuro_centerpiece({"bop_band": "high"}, P)
     assert r["confidence"] == "scaffold"

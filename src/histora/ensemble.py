@@ -45,6 +45,7 @@ def predict_case(features: dict, p: dict) -> dict[str, float]:
         "cv_recruitment_multiplier": cp["cv_axis"]["recruitment_multiplier"],
         "tau_alpha_rel_increase": nc["tau_alpha"]["relative_increase"],
         "tau_burden_rel_increase": nc["tau_burden_horizon"]["relative_increase"],
+        "amyloid_rel_increase": nc["amyloid_burden"]["relative_increase"],
         "therapy_onset_delay_yr": nc["tau_onset_years"]["therapy_delay_years"] or 0.0,
         "insulin_resistance_index": insulin_resistance_index(gain, p),
         "hba1c_shift_pp": hba1c_shift_pp(gain, p),

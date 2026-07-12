@@ -144,6 +144,124 @@ def plot_benchmark(report: dict, path: str = "fig_benchmark.png") -> str:
     return path
 
 
+def plot_stage3(report: dict, traj: dict, outdir: str = ".") -> list[str]:
+    """Render the Stage-3 physiology figures (deepened mechanisms):
+      - cv_plaque   : oxLDL / macrophage / foam-cell (plaque) trajectories, oral source vs baseline.
+      - glucose     : the Bergman meal glucose response, oral inflammation vs baseline.
+      - one_lever   : the integrative 'one lever, many axes' therapy response across CV/metabolic/neuro.
+    These are the figures that make each mechanism legible; in Claude Science the same data renders as
+    native (interactive/animated) figures with UniProt/PDB + OpenGWAS connectors grounding the proteins."""
+    made = []
+
+    # --- CV plaque trajectory ---
+    p, b = traj["plaque"], traj["plaque_baseline"]
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(p["t"], p["foam"], color="#A8323F", lw=2.4, label="foam cells / plaque (with oral inflammation)")
+    ax.plot(b["t"], b["foam"], color="#A8323F", lw=1.4, ls="--", label="baseline (therapy limit)")
+    ax.plot(p["t"], p["oxldl"], color="#9C6B12", lw=1.2, alpha=0.7, label="oxLDL")
+    ax.plot(p["t"], p["macrophage"], color="#2F7D5B", lw=1.2, alpha=0.7, label="macrophages")
+    ax.set_xlabel("time (arb. units)"); ax.set_ylabel("burden")
+    ax.set_title("CV axis — atherosclerosis foam-cell process (Ougrinovskaia E2.6)", fontsize=10)
+    ax.legend(fontsize=7.5); fig.tight_layout()
+    path = os.path.join(outdir, "fig_stage3_cv_plaque.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+
+    # --- Bergman glucose response ---
+    g, gb = traj["glucose"], traj["glucose_baseline"]
+    fig, ax = plt.subplots(figsize=(7, 4.2))
+    ax.plot(g["t"], g["glucose"], color="#A8323F", lw=2.2, label="glucose (with oral inflammation)")
+    ax.plot(gb["t"], gb["glucose"], color="#3A5A8C", lw=1.6, ls="--", label="baseline (therapy limit)")
+    ax.set_xlabel("time (min)"); ax.set_ylabel("plasma glucose (mg/dL)")
+    ax.set_title("Metabolic axis — Bergman meal response; degraded S_I (E3.1)", fontsize=10)
+    ax.legend(fontsize=8); fig.tight_layout()
+    path = os.path.join(outdir, "fig_stage3_glucose.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+
+    # --- inflammatory core: phase portrait (the two basins the single scalar can't draw) ---
+    ph = traj.get("inflammation_phase")
+    if ph:
+        fig, ax = plt.subplots(figsize=(6.6, 4.6))
+        ax.plot(ph["resolving"]["il6"], ph["resolving"]["il10"], color="#2F7D5B", lw=2.0,
+                label="from basal → resolving basin")
+        ax.plot(ph["chronic"]["il6"], ph["chronic"]["il10"], color="#A8323F", lw=2.0,
+                label="from inflamed → chronic basin")
+        lo, hi = ph["fixed_points"]["low"], ph["fixed_points"]["high"]
+        ax.scatter([lo["il6"]], [lo["il10"]], color="#2F7D5B", s=70, zorder=5, edgecolor="k")
+        ax.scatter([hi["il6"]], [hi["il10"]], color="#A8323F", s=70, zorder=5, edgecolor="k")
+        ax.set_xlabel("IL-6"); ax.set_ylabel("IL-10 (resolution brake)")
+        bi = "bistable" if ph["fixed_points"]["bistable"] else "monostable"
+        ax.set_title(f"Inflammatory core — two basins ({bi}); Reynolds/Kumar E2.1/E2.2", fontsize=10)
+        ax.legend(fontsize=8); fig.tight_layout()
+        path = os.path.join(outdir, "fig_stage3_inflammation_phase.png"); fig.savefig(path, dpi=150); plt.close(fig)
+        made.append(path)
+
+    # --- neuro tau front on the Braak chain (EXPLORATORY) ---
+    tf = traj.get("tau_front")
+    if tf:
+        n = len(tf["regions"]); xs = list(range(n))
+        wo = [tf["with_oral"].get(r) for r in tf["regions"]]
+        bl = [tf["baseline"].get(r) for r in tf["regions"]]
+        fig, ax = plt.subplots(figsize=(6.8, 4.4))
+        ax.plot(xs, [v if v is not None else float("nan") for v in bl], "o--", color="#3A5A8C",
+                lw=1.6, label="baseline (therapy limit)")
+        ax.plot(xs, [v if v is not None else float("nan") for v in wo], "o-", color="#A8323F",
+                lw=2.2, label="with oral inflammation")
+        ax.set_xticks(xs); ax.set_xticklabels(tf["regions"], fontsize=8)
+        ax.set_ylabel("years to tau threshold"); ax.set_xlabel("Braak progression →")
+        ax.set_title("Neuro axis — tau front on the Braak chain  [EXPLORATORY]", fontsize=10, color="#7A1F1F")
+        ax.text(0.5, 0.94, "EXPLORATORY — flagged coupling; read the shift, not the absolute years",
+                transform=ax.transAxes, ha="center", va="top", fontsize=7.5, color="#7A1F1F",
+                bbox=dict(boxstyle="round", fc="#F6E4E4", ec="#C99"))
+        ax.legend(fontsize=8, loc="lower right"); fig.tight_layout()
+        path = os.path.join(outdir, "fig_stage3_tau_front.png"); fig.savefig(path, dpi=150); plt.close(fig)
+        made.append(path)
+
+    # --- diabetes↔periodontitis closed loop: fixed-point cobweb ---
+    cw = traj.get("perio_cobweb")
+    if cw:
+        fig, ax = plt.subplots(figsize=(5.8, 5.4))
+        ax.plot(cw["map_x"], cw["map_y"], color="#9C6B12", lw=2.0, label="g(shift): loop response")
+        lim = max(cw["map_x"][-1], cw["map_y"][-1] if cw["map_y"] else 0)
+        ax.plot([0, lim], [0, lim], color="#555", lw=1.0, ls=":", label="identity (fixed points)")
+        seq = cw["seq"]
+        for i in range(len(seq) - 1):                    # cobweb staircase: (x,g(x))→(g(x),g(x))
+            ax.plot([seq[i], seq[i]], [seq[i], seq[i + 1]], color="#A8323F", lw=0.8)
+            ax.plot([seq[i], seq[i + 1]], [seq[i + 1], seq[i + 1]], color="#A8323F", lw=0.8)
+        ax.scatter([cw["fixed_point"]], [cw["fixed_point"]], color="#A8323F", s=70, zorder=5,
+                   edgecolor="k", label=f"fixed point {cw['fixed_point']:g} pp")
+        ax.set_xlabel("HbA1c shift in (pp)"); ax.set_ylabel("HbA1c shift out (pp)")
+        ax.set_title("Diabetes↔periodontitis closed loop — fixed point (Graves E3.2)", fontsize=10)
+        ax.legend(fontsize=8); fig.tight_layout()
+        path = os.path.join(outdir, "fig_stage3_perio_loop.png"); fig.savefig(path, dpi=150); plt.close(fig)
+        made.append(path)
+
+    # --- one lever, many axes — calibrated axes vs the EXPLORATORY neuro axis, kept visually separate ---
+    lever = report["one_lever_many_axes"]["coherent_multi_axis_response_to_therapy"]
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(9.0, 4.3), gridspec_kw={"width_ratios": [2, 2]})
+    calib = [("CV plaque\n↓ (rel)", lever.get("cardiovascular_plaque_rel_reduction") or 0.0, "#A8323F"),
+             ("HbA1c\n↓ (pp)", lever.get("metabolic_hba1c_drop_pp") or 0.0, "#9C6B12")]
+    axL.bar([c[0] for c in calib], [c[1] for c in calib], color=[c[2] for c in calib])
+    for i, c in enumerate(calib):
+        axL.annotate(f"{c[1]:g}", (i, c[1]), ha="center", va="bottom", fontsize=8)
+    axL.set_title("CV + metabolic — calibrated / scaffold", fontsize=9.5)
+    axL.set_ylabel("axis response to source→0")
+    expl = [("tau onset\ndelay (yr)", lever.get("neuro_tau_onset_delay_years") or 0.0, "#3A5A8C"),
+            ("amyloid\n↓ (rel)", lever.get("neuro_amyloid_rel_reduction") or 0.0, "#2F7D5B")]
+    bars = axR.bar([e[0] for e in expl], [e[1] for e in expl], color=[e[2] for e in expl], hatch="//",
+                   edgecolor="#7A1F1F", alpha=0.65)
+    for i, e in enumerate(expl):
+        axR.annotate(f"{e[1]:g}", (i, e[1]), ha="center", va="bottom", fontsize=8)
+    axR.set_title("neuro — EXPLORATORY (different units)", fontsize=9.5, color="#7A1F1F")
+    axR.text(0.5, 0.92, "EXPLORATORY — not calibrated;\nread the delta, not the magnitude",
+             transform=axR.transAxes, ha="center", va="top", fontsize=7.5, color="#7A1F1F",
+             bbox=dict(boxstyle="round", fc="#F6E4E4", ec="#C99"))
+    fig.suptitle("One lever, many axes — periodontal therapy's coherent multi-axis response", fontsize=10)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    path = os.path.join(outdir, "fig_stage3_one_lever.png"); fig.savefig(path, dpi=150); plt.close(fig)
+    made.append(path)
+    return made
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Render HISTORA pipeline figures")
     ap.add_argument("predictions", nargs="?", default="predictions.json")

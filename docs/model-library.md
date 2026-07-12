@@ -65,6 +65,17 @@ PMC10275298; Alzforum.*
 cognitive measures significant, confounder-adjusted — the neuro axis's empirical anchor. *Noble et al.
 2009, JNNP (PMC3073380); meta-analysis 2025 (PMID 40335202).*
 
+> **Stage-3 update (built).** Several models below have been **promoted from cited-but-unbuilt to built**
+> (pure-python, tested, non-diagnostic) — see [`internal/STAGE3-PHYSIOLOGY-PLAN.md`](internal/STAGE3-PHYSIOLOGY-PLAN.md)
+> and `run_physiology.py`: **E2.1/E2.2/E3.4 → `mech_inflammation`** (multi-cytokine TNF/IL-6/IL-10 core
+> with a bistable acute-vs-chronic regime); **E2.6 → `mech_cv`** (the foam-cell atherosclerosis ODE, no
+> longer a linear index); **E3.1 → `mech_glucose`** (the Bergman glucose–insulin dynamics, S_I degraded by
+> inflammation); **E3.2 → `mech_metabolic.coupled_perio_metabolic`** (the diabetes↔periodontitis loop
+> closed to a fixed point); **E3.5/E3.6/E3.7 → `mech_microbiome`** (a reduced gLV + Allee keystone with a
+> dysbiosis index); **E2.7 → `mech_neuro`** (the amyloid arm added — the neuro axis is now A/T, with
+> APOE4/age effect modifiers). The tier labels below mark each model's *original* commitment; the ones
+> above now run.
+
 ## 3. Flagged scaffolds — real biology, imposed math, swept as a range (never asserted)
 
 **E2.6 Systemic inflammation → early atherosclerosis (CV).** oxLDL→monocyte→macrophage→foam-cell

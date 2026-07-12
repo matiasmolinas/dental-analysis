@@ -17,6 +17,7 @@ oral-systemic models and docs/model-library.md for the science + citations.
 from __future__ import annotations
 
 import cmath
+import math
 from typing import Any, Callable
 
 RHS = Callable[[float, tuple, dict], tuple]
@@ -76,9 +77,27 @@ def jacobian(f: RHS, y, p: dict, t: float = 0.0, eps: float = 1e-6) -> list[list
     return J
 
 
+def _cubic_roots(a: float, b: float, c: float, d: float) -> list[complex]:
+    """The three (possibly complex) roots of a·x³+b·x²+c·x+d — Cardano's method, pure-python. Used to
+    get 3x3 eigenvalues (via the characteristic polynomial) with no scientific stack, so the Stage-3
+    3-D mechanistic models (inflammation, atherosclerosis) get a stability verdict like the ≤2-D spine."""
+    if abs(a) < 1e-14:                                  # degenerate → quadratic
+        disc = cmath.sqrt(c * c - 4 * b * d)
+        return [(-c + disc) / (2 * b), (-c - disc) / (2 * b)] if abs(b) > 1e-14 else [complex(-d / c)]
+    b, c, d = b / a, c / a, d / a                       # monic x³+bx²+cx+d
+    p = c - b * b / 3.0
+    q = 2 * b ** 3 / 27.0 - b * c / 3.0 + d
+    shift = -b / 3.0
+    u = cmath.sqrt((q / 2) ** 2 + (p / 3) ** 3)
+    A = (-q / 2 + u) ** (1 / 3)
+    B = -(p / 3) / A if abs(A) > 1e-14 else 0.0
+    w = complex(-0.5, math.sqrt(3) / 2)                 # primitive cube root of unity
+    return [A + B + shift, A * w + B * w.conjugate() + shift, A * w.conjugate() + B * w + shift]
+
+
 def eigenvalues(J: list[list[float]]) -> list[complex]:
-    """Eigenvalues of a small matrix. Closed-form for 1x1 and 2x2 (no dependency); numpy for
-    larger if available, else a clear error. Our mechanistic models are <=2-D."""
+    """Eigenvalues of a small matrix. Closed-form for 1x1/2x2/3x3 (no dependency, via the characteristic
+    polynomial + a pure-python cubic solver); numpy for larger if available, else a clear error."""
     n = len(J)
     if n == 1:
         return [complex(J[0][0])]
@@ -88,11 +107,19 @@ def eigenvalues(J: list[list[float]]) -> list[complex]:
         tr, det = a + d, a * d - b * c
         disc = cmath.sqrt(tr * tr - 4 * det)
         return [(tr + disc) / 2, (tr - disc) / 2]
+    if n == 3:
+        # char. poly of a 3x3: λ³ − tr·λ² + (Σ principal 2x2 minors)·λ − det = 0
+        (a11, a12, a13), (a21, a22, a23), (a31, a32, a33) = J[0], J[1], J[2]
+        tr = a11 + a22 + a33
+        minors = (a11 * a22 - a12 * a21) + (a11 * a33 - a13 * a31) + (a22 * a33 - a23 * a32)
+        det = (a11 * (a22 * a33 - a23 * a32) - a12 * (a21 * a33 - a23 * a31)
+               + a13 * (a21 * a32 - a22 * a31))
+        return _cubic_roots(1.0, -tr, minors, -det)
     try:
         import numpy as _np
         return [complex(v) for v in _np.linalg.eigvals(_np.array(J, dtype=float))]
     except ImportError as e:  # pragma: no cover - env-dependent
-        raise ValueError("eigenvalues for n>2 need numpy; models here are <=2-D") from e
+        raise ValueError("eigenvalues for n>3 need numpy; models here are <=3-D") from e
 
 
 def is_stable(J: list[list[float]]) -> bool:

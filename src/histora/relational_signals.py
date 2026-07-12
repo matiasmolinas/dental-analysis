@@ -18,9 +18,25 @@ from typing import Any
 
 # Required mediating data whose absence must surface as a collection flag. Keys are
 # read from record["medical_cv"] / record["periodontal"]; None or missing => flagged.
+# The GUARDRAIL-CRITICAL missing-data set (feeds `ab_eval.guardrail_pass`). This is a protected
+# invariant — it stays fixed so the guardrail is hash-identical across the SkillOpt genome. Do NOT add
+# fields here to represent richer mechanisms; use EXTENDED_MEDIATORS below (an additive, non-blocking
+# collection surface) instead.
 REQUIRED_MEDIATORS = {
     "hs_crp": "systemic inflammatory burden marker (links periodontal inflammation to CV risk)",
-    "il6": "pro-inflammatory cytokine mediator",
+    "il6": "pro-inflammatory cytokine mediator (the shared inflammatory gain the axes fork from)",
+}
+
+# The mediators the Stage-3 deepened mechanisms would need to test their edges end-to-end. These are
+# ADDITIVE "important" collection flags (never guardrail-critical, never imputed) — surfaced by
+# `extended_missing_data_entries` so a scientist sees what the richer models require, without moving the
+# guardrail invariant. (See docs/internal/STAGE3-PHYSIOLOGY-PLAN.md.)
+EXTENDED_MEDIATORS = {
+    "tnf_alpha": "upstream pro-inflammatory cytokine (drives the multi-cytokine core; Phase A)",
+    "il1b": "pro-inflammatory cytokine; MR supports IL-1 as causal for CV (co-driver with IL-6)",
+    "il10": "anti-inflammatory cytokine; the resolution feedback distinguishing acute from chronic",
+    "ldl": "oxLDL substrate for the atherosclerosis (foam-cell) axis (Phase B)",
+    "p_tau": "plasma p-tau181/217 — the neuro-axis readout (co-measure with the oral exam is the gap)",
 }
 
 
@@ -111,6 +127,17 @@ def required_missing_data_entries(record: dict) -> list[dict[str, str]]:
             "impact": "critical" if field in CRITICAL_MISSING else "important",
         })
     return entries
+
+
+def extended_missing_data_entries(record: dict) -> list[dict[str, str]]:
+    """Additive `required_missing_data`-shaped entries for the Stage-3 mediators (TNF-α, IL-1β, IL-10,
+    LDL, p-tau) absent from the record — all "important" (never "critical", so the guardrail invariant
+    is untouched). Shows a scientist what the deepened mechanisms would need to test their edges, without
+    imputing anything. Merge with `required_missing_data_entries` for the full collection list."""
+    sources = {**record.get("medical_cv", {}), **record.get("periodontal", {}),
+               **record.get("shared_risk", {})}
+    return [{"field": f, "why": why, "impact": "important"}
+            for f, why in EXTENDED_MEDIATORS.items() if sources.get(f) is None]
 
 
 def case_signature(record: dict) -> dict:
