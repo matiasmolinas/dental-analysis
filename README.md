@@ -1,5 +1,13 @@
 # HISTORA — Oral-Systemic Intelligence Agent
 
+<p align="center">
+  <img src="docs/assets/1p9m_structure.jpeg" width="300" alt="The IL-6 / IL-6Rα / gp130 hexameric signaling complex (PDB 1P9M) — the causal node HISTORA anchors on."/>
+  <br>
+  <sub><b>The causal node.</b> The IL-6 / IL-6Rα / gp130 hexameric signaling complex (PDB <code>1P9M</code>) — where the
+  IL-6R genetic instrument acts and tocilizumab blocks. HISTORA's UniProt/PDB connector renders this live in
+  Claude Science. <i>Image: RCSB PDB (rcsb.org).</i></sub>
+</p>
+
 > A **scientific research instrument** a scientist can trust to generate mechanistic hypotheses: it links
 > periodontal disease to **cardiovascular, metabolic, and Alzheimer's** disease through **one shared
 > inflammatory proxy**, and turns fragmented data into **falsifiable, uncertainty-quantified,

@@ -12,6 +12,8 @@ This document is the guided tour: the **problem** and **objective**, the **techn
 partially exploited, the **flagship case run live in Claude Science**, and the **future directions** we set
 aside to focus on the hackathon.
 
+**📄 Shareable PDF of this document: [`HISTORA-Overview.pdf`](HISTORA-Overview.pdf).**
+
 *Front-facing companions: [`PITCH.md`](PITCH.md) (the thesis) · [`CASE-STUDY.md`](CASE-STUDY.md) (the
 flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`EVOLUTION.md`](EVOLUTION.md)
 (self-improving skills) · [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md) (run it in a real lab).*
@@ -228,9 +230,16 @@ The connector resolved all six UniProt accessions and rendered real coordinates 
 viewer — including the **IL-6/IL-6Rα/gp130 hexameric signaling complex (PDB 1P9M, 5,322 atoms)**: the causal
 node itself, in one structure, where the IL-6R cis-MR instrument acts and tocilizumab blocks.
 
+<p align="center">
+  <img src="assets/1alu_structure.jpeg" width="30%" alt="IL-6 (PDB 1ALU)"/>
+  <img src="assets/1p9m_structure.jpeg" width="30%" alt="IL-6/IL-6Rα/gp130 hexamer (PDB 1P9M)"/>
+  <img src="assets/1gnh_structure.jpeg" width="30%" alt="CRP (PDB 1GNH)"/>
+</p>
+
 > IL-6 (`1ALU`, four-helix bundle) → **IL-6/IL-6Rα/gp130 hexamer (`1P9M`)** → CRP (`1GNH`, pentamer) —
-> the live 3-D upgrade of the static schematic in §2. *(These render interactively in Claude Science; they
-> are the platform upgrade of the `histora.proteins` reference registry.)*
+> the causal node in real coordinates. These render **interactively in Claude Science** (via the UniProt/PDB
+> connector) as the live 3-D upgrade of the static schematic in §2; the structure images above are the same
+> PDB entries. *Structure images: RCSB PDB (rcsb.org).*
 
 ### The scientist-user beat — the reviewer found a real (minor) error, and Claude self-corrected
 The Claude Science **reviewer agent** audited the run and returned **one finding**: the closing prose stated
