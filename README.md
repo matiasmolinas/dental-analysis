@@ -40,6 +40,8 @@ flowchart LR
     U --> V["Validation<br/>NHANES + MR probe"]
     V --> X["Explanation<br/>ranges + falsification"]
 ```
+*(Static PNG for slides / when Mermaid doesn't render: [`docs/assets/architecture.png`](docs/assets/architecture.png).)*
+
 
 **Claude** decides *what* to run, *how* to report uncertainty, and *when* to route to falsification — and
 supplies weight-capped soft estimates only for un-coded edges. **The engine** decides the numbers

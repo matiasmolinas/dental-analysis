@@ -1,12 +1,12 @@
 ---
 name: oral-systemic-kb
-description: Retrievable knowledge base of the biological mechanisms linking periodontal disease and cardiovascular risk (inflammatory, metabolic, behavioral, vascular pathways). Injected as context to activate the model's internal representation of mediating concepts. Reference content; used by the relational reasoner and as the KB the J-lens loop optimizes.
+description: Retrievable knowledge base of the biological mechanisms linking periodontal disease and cardiovascular risk (inflammatory, metabolic, behavioral, vascular pathways). Injected as context to activate the model's internal representation of mediating concepts. Reference content; used by the relational reasoner and as the KB the SkillOpt loop optimizes.
 ---
 
 # Oral-Systemic Knowledge Base (mediating mechanisms)
 
 Concise, retrievable mechanism notes that prime the mediating concepts. Inject the
-relevant snippet(s) as context; keep it short (the J-lens loop measures whether a
+relevant snippet(s) as context; keep it short (the SkillOpt loop measures whether a
 snippet actually raises mediator representation vs. being redundant).
 
 ## Inflammatory axis (primary)
@@ -58,4 +58,4 @@ non-causal language:
 - These are **associations and hypothesized mechanisms** for research framing, not
   causal claims about an individual patient.
 - Prefer the shortest snippet that names the mediators relevant to the case; let
-  the J-lens / probe readout decide whether it earns its place.
+  the SkillOpt A/B decide whether it earns its place.
