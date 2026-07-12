@@ -55,6 +55,24 @@ real treatment data), and intellectual honesty (uncertainty, falsification, and 
 *Who does what: **Claude** decides what to run, how to report uncertainty, and when to route to
 falsification; **the deterministic engine** decides the numbers. Claude never sources a headline number.*
 
+### The capability that makes it click — a clinical-research copilot
+
+Two expert clinician-reviewers converged on a sharpening: the researcher arrives with a *question*, not a
+patient, and the bottleneck is **assembling a cohort from fragmented records** — weeks of chart review. So
+the first thing HISTORA shows is that: it filters a corpus down to the eligible cohort, **flags what's
+missing**, and states plainly what the data *cannot* answer — then exports a preliminary protocol.
+
+> **"Researchers don't need another chatbot. They need an AI that builds research-ready cohorts from
+> fragmented clinical data."** *IL-6/CRP is today's hypothesis — tomorrow it's another.*
+
+![From fragmented records to a research-ready cohort — a real NHANES funnel + the research-integrity checklist + what the corpus can't answer.](assets/figures/fig_cohort_funnel.png)
+
+*Real over public NHANES 2009-2010 (`demo/run_cohort.py`, nothing synthetic): **20,905 → periodontitis →
++diabetes → +hs-CRP → a cohort of 442.** The corpus is cross-sectional, so HISTORA says what it can't do —
+no repeat CRP, no follow-up, no biologic-exposure timeline — as collection flags, never imputed. That honest
+"cannot answer," on real data, is the differentiator. The mechanism (below) and the genetics enter **after**,
+as the biological plausibility that makes the cohort worth building.*
+
 ---
 
 ## 2. The technical solution

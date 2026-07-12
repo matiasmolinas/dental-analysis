@@ -293,6 +293,50 @@ def plot_stage3(report: dict, traj: dict, outdir: str = ".") -> list[str]:
     return made
 
 
+def plot_cohort(report: dict, path: str = "fig_cohort_funnel.png") -> str:
+    """The clinical-research-copilot figure: the cohort funnel (real N narrowing at each stage) + the
+    research-integrity checklist + the honest 'what the corpus cannot answer'. Deterministic; stage-safe."""
+    funnel = report["funnel"]
+    labels = [s["stage"] for s in funnel]
+    ns = [s["n"] for s in funnel]
+    nmax = max(ns) or 1
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(11.5, 5.2), gridspec_kw={"width_ratios": [2.05, 1]})
+
+    # --- funnel (centered bars, width ∝ N, floored so the final cohort stays visible) ---
+    y = list(range(len(ns)))[::-1]
+    cols = ["#3A5A8C", "#2F7D5B", "#9A6B12", "#A8323F", "#0E6E6E"]
+    for i, (yy, n, lab) in enumerate(zip(y, ns, labels)):
+        w = max(0.06, n / nmax)                       # relative width, floored
+        c = cols[min(i, len(cols) - 1)]
+        axL.barh(yy, w, left=(1 - w) / 2, height=0.68, color=c, edgecolor="white")
+        axL.text(0.5, yy + 0.30, lab, ha="center", va="bottom", fontsize=8.5, color="#26323c")
+        axL.text(0.5, yy, f"{n:,}", ha="center", va="center", fontsize=12, fontweight="bold", color="white")
+    axL.set_xlim(0, 1); axL.set_ylim(-0.6, len(ns) - 0.2); axL.axis("off")
+    axL.set_title(f"From fragmented records to a research-ready cohort — {report['cohort_n']:,} participants\n"
+                  "real counts over public NHANES 2009-2010 (nothing synthetic)", fontsize=10)
+
+    # --- integrity checklist + what's missing ---
+    axR.axis("off"); axR.set_xlim(0, 1); axR.set_ylim(0, 1)
+    axR.text(0.0, 0.98, "Research integrity", fontsize=10.5, fontweight="bold", color="#0e2a3a", va="top")
+    yv = 0.90
+    for c in report["integrity_checklist"]:
+        ok = c["ok"]
+        axR.text(0.02, yv, "✓" if ok else "✗", fontsize=12, fontweight="bold",
+                 color="#2F7D5B" if ok else "#A8323F", va="top")
+        axR.text(0.12, yv, c["label"], fontsize=9, color="#26323c", va="top")
+        yv -= 0.085
+    yv -= 0.03
+    axR.text(0.0, yv, "Cannot answer (cross-sectional →", fontsize=9.2, fontweight="bold", color="#7A1F1F", va="top")
+    yv -= 0.055; axR.text(0.0, yv, "collection flags, never imputed):", fontsize=9.2, fontweight="bold", color="#7A1F1F", va="top")
+    yv -= 0.075
+    for f in report["completeness"]["longitudinal_fields_absent_in_corpus"]:
+        axR.text(0.04, yv, f"✗ {f}", fontsize=8, color="#7A1F1F", va="top")
+        yv -= 0.062
+    fig.tight_layout()
+    fig.savefig(path, dpi=150); plt.close(fig)
+    return path
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Render HISTORA pipeline figures")
     ap.add_argument("predictions", nargs="?", default="predictions.json")

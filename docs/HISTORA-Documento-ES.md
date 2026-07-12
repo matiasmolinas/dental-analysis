@@ -55,6 +55,26 @@ resultados nulos reportados como una *virtud*, no como un fracaso).
 *Quién hace qué: **Claude** decide qué correr, cómo reportar la incertidumbre y cuándo enrutar a la
 falsación; **el motor determinista** decide los números. Claude nunca inventa un número de titular.*
 
+### La capacidad que lo hace "clic" — un copiloto de investigación clínica
+
+Dos revisores clínicos expertos convergieron en un afinamiento: el investigador llega con una *pregunta*, no
+con un paciente, y el cuello de botella es **armar una cohorte a partir de registros fragmentados** — semanas
+de revisar historias. Por eso lo primero que muestra HISTORA es eso: filtra un corpus hasta la cohorte
+elegible, **marca lo que falta**, y dice con claridad qué **no** pueden responder los datos — y después
+exporta un protocolo preliminar.
+
+> **"Los investigadores no necesitan otro chatbot. Necesitan una IA que construya cohortes listas para
+> investigar a partir de datos clínicos fragmentados."** *IL-6/CRP es la hipótesis de hoy — mañana es otra.*
+
+![De registros fragmentados a una cohorte lista — un funnel real de NHANES + el checklist de integridad + lo que el corpus no puede responder.](assets/figures/fig_cohort_funnel.png)
+
+*Real, sobre el NHANES 2009-2010 público (`demo/run_cohort.py`, nada sintético): **20.905 → periodontitis →
++diabetes → +hs-CRP → una cohorte de 442.** El corpus es transversal, así que HISTORA dice qué **no** puede
+hacer — sin PCR repetida, sin seguimiento, sin timeline de exposición a biológico — como banderas de
+recolección, nunca imputadas. Ese "no puede responder" honesto, sobre datos reales, es el diferenciador. El
+mecanismo (más abajo) y la genética entran **después**, como la plausibilidad biológica que hace que valga la
+pena construir la cohorte.*
+
 ---
 
 ## Parte II — El problema
