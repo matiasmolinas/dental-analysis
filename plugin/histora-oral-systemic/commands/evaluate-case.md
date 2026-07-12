@@ -42,5 +42,5 @@ Run this flow, in order, and keep the non-diagnostic guardrail at every step:
 
 Reference material bundled with this plugin: the subagents in `agents/`, the skills in `skills/`
 (especially `non-diagnostic-guardrail`, the protected invariant). The mechanistic model catalog,
-evidence, and parameters are documented in the histora repository's `docs/MODELS.md` and
+evidence, and parameters are documented in the histora repository's `docs/model-library.md` and
 `docs/model-library.md`.

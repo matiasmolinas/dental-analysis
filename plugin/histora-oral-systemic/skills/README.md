@@ -1,7 +1,7 @@
 # Skills
 
 Reusable capability documents (Claude Code skill format: frontmatter + procedural body) for the
-HISTORA non-diagnostic relational agent. See [`SOLUTION.md`](../../../docs/SOLUTION.md).
+HISTORA non-diagnostic relational agent. See [`PAPER.md`](../../../docs/PAPER.md).
 
 | Skill | Purpose |
 |---|---|

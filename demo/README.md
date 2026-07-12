@@ -9,7 +9,7 @@ python demo/run_demo.py            # offline, deterministic (no API key) — the
 python demo/run_demo.py --live     # real Claude relational analysis (needs ANTHROPIC_API_KEY)
 ```
 
-**The five steps** (see [`../docs/STAGE2-WORKPLAN.md`](../docs/internal/STAGE2-WORKPLAN.md) §3):
+**The five steps:**
 
 1. **Input** — a structural stratum (bands only); a missing mediator (hs-CRP) shows as a **collection
    flag**, never imputed.

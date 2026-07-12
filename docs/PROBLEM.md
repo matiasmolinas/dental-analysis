@@ -9,7 +9,7 @@
 > not a clinical decision.
 >
 > **Companion documents:** the full technical write-up is [`PAPER.md`](PAPER.md); how the
-> solution works is [`SOLUTION.md`](SOLUTION.md); how we validate that it beats the alternatives
+> solution works is [`PAPER.md`](PAPER.md); how we validate that it beats the alternatives
 > (separate models, and Claude without the harness) is [`BENCHMARK.md`](BENCHMARK.md).
 
 ---

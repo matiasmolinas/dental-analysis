@@ -76,8 +76,7 @@ it's the one that turns "safe agent" from a promise into a structural guarantee 
   **Can HISTORA be "a plugin to Claude Science"?** Not by that name — Claude Science has no plugin slot.
   But **yes, it integrates cleanly** via skills + connectors + specialist agents, because Claude Code and
   Claude Science share the same primitives. The same components we ship as a Claude Code plugin *are* the
-  Claude Science integration. (A grant application to bring it there is drafted in
-  [`grant/`](internal/grant/AI-for-Science-application.md).)
+  Claude Science integration.
 
 ## The 60-second script
 

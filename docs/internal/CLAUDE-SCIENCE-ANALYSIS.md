@@ -136,13 +136,13 @@ layout is detected — the integration path is real.
 SKILL.md**)."* Our skills were flat `.md` files; Claude Science (and the current Claude Code skill spec)
 require **`skills/<name>/SKILL.md`** — each skill in its own subdirectory with a file named `SKILL.md`.
 
-**Fix applied (this PR):** the seven skills were restructured `skills/<name>.md → skills/<name>/SKILL.md`
+**Resolution:** the seven skills were restructured `skills/<name>.md → skills/<name>/SKILL.md`
 in both the plugin and the top-level `skills/`. After pushing, re-running the GitHub Preview should show
 them importable. This is the concrete, mechanical change that makes HISTORA importable into Claude Science
 — and it also aligns us with the current Claude Code skill spec, so it improves both surfaces at once.
 
 **Takeaway for the analysis:** "100% Claude Science" is not just possible in principle — the importer
-*already parses our repo*; the only blocker was a skill-file layout convention, now fixed.
+*already parses our repo*; the only blocker was a skill-file layout convention, since resolved.
 
 ### Live end-to-end run (confirmed)
 

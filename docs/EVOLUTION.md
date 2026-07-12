@@ -93,5 +93,4 @@ Full write-up (all three skills), the archives, and the exact skill diffs:
 
 *Sakana lineage:* directed mutation from failure + auditable archive (Darwin Gödel Machine); correctness
 before performance (AI CUDA Engineer); evolve the recipe not the components, and measure novelty on
-behavior not text (Evolutionary Model Merge; ASAL). See [`PITCH.md`](PITCH.md) and, for the full risk
-analysis, [`internal/ROADMAP-STAGE2.md`](internal/ROADMAP-STAGE2.md) §11.
+behavior not text (Evolutionary Model Merge; ASAL). See [`PITCH.md`](PITCH.md).

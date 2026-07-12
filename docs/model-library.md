@@ -1,6 +1,6 @@
 # Model Library — mechanistic models for oral–systemic hypothesis generation
 
-> The curated, cited catalog behind [`MODELS.md`](MODELS.md) and [`SOLUTION.md`](SOLUTION.md). Pruned to
+> The curated, cited catalog of the mechanistic models. Pruned to
 > five tiers by decreasing commitment (an honest census — most of the field we explored is *not*
 > load-bearing): **Core spine (built) → Flagged scaffolds (swept) → Staged substrate (next axes) →
 > Reference-only (cited, not built) → Explored & rejected (with the reason).** A reader sees at a glance
@@ -66,7 +66,7 @@ cognitive measures significant, confounder-adjusted — the neuro axis's empiric
 2009, JNNP (PMC3073380); meta-analysis 2025 (PMID 40335202).*
 
 > **Stage-3 update (built).** Several models below have been **promoted from cited-but-unbuilt to built**
-> (pure-python, tested, non-diagnostic) — see [`internal/STAGE3-PHYSIOLOGY-PLAN.md`](internal/STAGE3-PHYSIOLOGY-PLAN.md)
+> (pure-python, tested, non-diagnostic)
 > and `run_physiology.py`: **E2.1/E2.2/E3.4 → `mech_inflammation`** (multi-cytokine TNF/IL-6/IL-10 core
 > with a bistable acute-vs-chronic regime); **E2.6 → `mech_cv`** (the foam-cell atherosclerosis ODE, no
 > longer a linear index); **E3.1 → `mech_glucose`** (the Bergman glucose–insulin dynamics, S_I degraded by
@@ -178,4 +178,4 @@ prioritized experiments, not clinical claims.
 
 Everything sweeps **ε** and the **inflammation→α multiplier** as ranges, privileges **IL-6/IL-1β causal,
 CRP observable**, and stays strictly **non-diagnostic**. Next axes draw on §4 (staged substrate);
-richer sub-models follow the technique + ensemble discipline of [`MODELS.md`](MODELS.md) §6.
+richer sub-models follow the technique + ensemble discipline of [`PAPER.md`](PAPER.md) §3.5.

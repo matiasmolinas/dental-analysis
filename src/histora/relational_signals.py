@@ -30,7 +30,7 @@ REQUIRED_MEDIATORS = {
 # The mediators the Stage-3 deepened mechanisms would need to test their edges end-to-end. These are
 # ADDITIVE "important" collection flags (never guardrail-critical, never imputed) — surfaced by
 # `extended_missing_data_entries` so a scientist sees what the richer models require, without moving the
-# guardrail invariant. (See docs/internal/STAGE3-PHYSIOLOGY-PLAN.md.)
+# guardrail invariant.
 EXTENDED_MEDIATORS = {
     "tnf_alpha": "upstream pro-inflammatory cytokine (drives the multi-cytokine core; Phase A)",
     "il1b": "pro-inflammatory cytokine; MR supports IL-1 as causal for CV (co-driver with IL-6)",

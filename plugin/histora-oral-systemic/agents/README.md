@@ -1,7 +1,7 @@
 # Subagents
 
 The HISTORA non-diagnostic relational agent, as Claude Code subagent definitions (frontmatter
-`name` / `description` / `tools`). See [`SOLUTION.md`](../../../docs/SOLUTION.md) for how these fit
+`name` / `description` / `tools`). See [`PAPER.md`](../../../docs/PAPER.md) for how these fit
 the whole solution.
 
 ## Runtime pipeline
@@ -33,7 +33,7 @@ verifier→`non-diagnostic-guardrail` + `traceability-audit`.
 
 | File | Role |
 |---|---|
-| `modeling-technique-selector.md` | For an oral-systemic edge the coded harness cannot yet reach: recommends the technique to code next and, while it is un-coded, produces a soft falsifiable estimate that enters the ensemble as a **weight-capped Claude member** (`histora.claude_model` → `ensemble.blend_members`). See docs/MODELS.md §6.4. |
+| `modeling-technique-selector.md` | For an oral-systemic edge the coded harness cannot yet reach: recommends the technique to code next and, while it is un-coded, produces a soft falsifiable estimate that enters the ensemble as a **weight-capped Claude member** (`histora.claude_model` → `ensemble.blend_members`). See docs/PAPER.md §3.5. |
 
 This is the "Claude as a model member" role — a step toward a coded model, never a permanent
 substitute; population/parameter level, non-diagnostic, and it must ship a falsification path.

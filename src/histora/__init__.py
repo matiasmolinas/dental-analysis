@@ -1,7 +1,7 @@
 """HISTORA — a non-diagnostic oral-systemic research agent.
 
 Relates periodontal disease to cardiovascular and Alzheimer's/neurodegeneration via mechanistic
-models and an empirical-validation layer. See docs/PROBLEM.md and docs/SOLUTION.md.
+models and an empirical-validation layer. See docs/PROBLEM.md and docs/PAPER.md.
 
 Package layout (aligned to the solution):
 
