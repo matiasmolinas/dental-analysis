@@ -45,9 +45,12 @@ agent) — no "plugin" slot, but our components port directly, with **no rewrite
   null**, **CRP → Alzheimer's nominal +** (partial robustness), **CRP → T2D null + pleiotropy-flagged** —
   honestly *different* from the illustrative panels (CRP is a marker, not the causal node).
 - **LD-aware IL-6R cis-MR** — correlated IVW (GLS with the OpenGWAS LD matrix): **IL-6R → coronary disease
-  β = +0.705 (SE 0.010, p≈0)**, vs a naive-IVW SE ~7× wider — the correlated estimate is the valid one.
-  This is the **causal node** the CRP-marker result is null for. Both runs together tell the honest,
-  literature-consistent story.
+  correlated-IVW β = +0.553 (SE 0.109)** — the honest LD-aware estimate; naïve IVW ignores the SNP
+  correlation and under-states the variance, so the correlated estimate is the valid one. This is the
+  **causal node** the CRP-marker result is null for. Both runs together tell the honest,
+  literature-consistent story. *(The estimate corrects an earlier +0.705/SE 0.010 figure that was an LD
+  row-ordering bug in `histora.cis_mr` — the OpenGWAS `/ld/matrix` server returns SNPs in genomic-position
+  order, and reindexing by request order near-singularized the GLS; fixed, with a regression test.)*
 
 ## Delivery decision (in one line)
 

@@ -68,12 +68,54 @@ def test_run_cis_mr_end_to_end_with_injected_fetches():
         n = len(rsids)
         R = [[1.0 if a == b else 0.5 for b in range(n)] for a in range(n)]
         ref = {s: "A" for s in rsids}          # panel allele matches effect allele → no flips
-        return R, ref
+        return R, ref                          # legacy 2-tuple → run_cis_mr falls back to input order
 
     rep = run_cis_mr(config=CIS_CONFIG, token="fake", fetch_assoc=fake_assoc, fetch_ld=fake_ld)
     assert rep["correlated_ivw"]["estimate"] > 0            # positive causal slope recovered
     assert "naive_ivw_for_contrast" in rep and rep["caveats"]
     assert len(rep["instruments"]) == len(snps)
+
+
+def test_run_cis_mr_realigns_R_to_ld_server_row_order():
+    # Regression for the LD row-ordering bug: the OpenGWAS /ld/matrix server re-sorts SNPs by genomic
+    # position (here we model it as reversed) and labels the rows via `snplist`. run_cis_mr must realign R
+    # to those labels, NOT to the input order — reindexing by input order pairs the wrong rows and (with
+    # near-collinear cis SNPs) injects a spurious cross-term that near-singularizes the GLS and collapses
+    # the SE. With distinct pairwise LD and a non-exact by=slope*bx, the mis-ordered R yields a different
+    # estimate/SE, so this test pins the correct realignment.
+    snps = CIS_CONFIG["exposure"]["instruments"][:3]                       # s0, s1, s2
+    exp_id, out_id = CIS_CONFIG["exposure"]["id"], CIS_CONFIG["outcome"]["id"]
+    be = {s: 0.10 + 0.03 * k for k, s in enumerate(snps)}
+    dev = {snps[0]: 0.0, snps[1]: 0.012, snps[2]: -0.009}                  # break exactness → est depends on R
+    bo = {s: 0.15 * be[s] + dev[s] for s in snps}
+    ld = {frozenset({snps[0], snps[1]}): 0.8,                              # distinct pairwise LD
+          frozenset({snps[0], snps[2]}): 0.2,
+          frozenset({snps[1], snps[2]}): 0.5}
+
+    def Rmat(order):
+        return [[1.0 if a == b else ld[frozenset({order[a], order[b]})]
+                 for b in range(len(order))] for a in range(len(order))]
+
+    def fake_assoc(rsids, ids, token):
+        return [{"rsid": s, "id": sid, "ea": "A", "nea": "G",
+                 "beta": be[s] if sid == exp_id else bo[s],
+                 "se": 0.01 if sid == exp_id else 0.006}
+                for s in snps for sid in ids]
+
+    server_order = list(reversed(snps))                                   # server returns a REORDERED matrix
+    def fake_ld(rsids, token, pop):
+        return Rmat(server_order), {s: "A" for s in server_order}, list(server_order)
+
+    rep = run_cis_mr(config=CIS_CONFIG, token="fake", fetch_assoc=fake_assoc, fetch_ld=fake_ld)
+
+    # ground truth: instruments in harmonize (input) order, R aligned to THAT order
+    insts = [Instrument(s, be[s], 0.01, bo[s], 0.006, ea="A") for s in snps]
+    truth = correlated_ivw(insts, Rmat(snps))
+    buggy = correlated_ivw(insts, Rmat(server_order))                     # what the input-order bug produced
+    assert truth["se"] != buggy["se"]                                     # the scenario truly exercises the bug
+    assert rep["correlated_ivw"]["estimate"] == truth["estimate"]         # realigned, not buggy
+    assert rep["correlated_ivw"]["se"] == truth["se"]
+    assert rep["n_instruments_ld"] == 3
 
 
 if __name__ == "__main__":
