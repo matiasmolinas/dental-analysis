@@ -109,7 +109,7 @@ def harmonize(exposure_rows: list[dict], outcome_rows: list[dict]) -> list[Instr
                 bo = -bo                              # flip outcome to the exposure effect allele
         if be == 0 or see <= 0 or seo <= 0:
             continue
-        instruments.append(Instrument(str(snp), be, see, bo, seo))
+        instruments.append(Instrument(str(snp), be, see, bo, seo, ea=ea_e))
     return instruments
 
 

@@ -33,12 +33,14 @@ from typing import Any
 
 @dataclass
 class Instrument:
-    """One genetic instrument (SNP) aligned to the exposure-increasing allele."""
+    """One genetic instrument (SNP) aligned to the exposure-increasing allele. `ea` is that effect
+    allele (optional; needed by the LD-aware cis-MR to sign-align the LD matrix)."""
     snp: str
     beta_exposure: float
     se_exposure: float
     beta_outcome: float
     se_outcome: float
+    ea: str = ""
 
 
 def _normal_cdf(z: float) -> float:

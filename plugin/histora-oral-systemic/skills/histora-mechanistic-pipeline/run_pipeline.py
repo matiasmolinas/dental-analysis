@@ -86,6 +86,13 @@ def run_real_mr() -> dict:
     return _real()
 
 
+def run_cis_mr() -> dict:
+    """LD-aware IL-6R cis-MR probe over OpenGWAS (correlated IVW; needs OPENGWAS_JWT)."""
+    _ensure_histora()
+    from histora.cis_mr import run_cis_mr as _cis
+    return _cis()
+
+
 def run_benchmark() -> dict:
     _ensure_histora()
     from histora.benchmark import run_benchmark as _bench
@@ -110,13 +117,18 @@ def main() -> None:
     ap.add_argument("--real", action="store_true",
                     help="with --mr: use REAL OpenGWAS summary stats (needs OPENGWAS_JWT) instead of "
                          "the illustrative panels")
+    ap.add_argument("--cis", action="store_true",
+                    help="run the LD-aware IL-6R cis-MR probe (real; needs OPENGWAS_JWT)")
     ap.add_argument("--benchmark", action="store_true", help="run the S-vs-H benchmark")
     ap.add_argument("--plot", action="store_true",
                     help="also render the figure(s) for this run (needs matplotlib)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
-    if args.mr:
+    if args.cis:
+        kind, out = "mr", args.out or "cis_mr_report.json"    # plot_mr handles the cis shape
+        json.dump(run_cis_mr(), open(out, "w"), indent=2)
+    elif args.mr:
         kind, out = "mr", args.out or "mr_report.json"
         json.dump(run_real_mr() if args.real else run_mr(), open(out, "w"), indent=2)
     elif args.benchmark:
