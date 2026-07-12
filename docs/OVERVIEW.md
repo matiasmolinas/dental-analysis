@@ -237,8 +237,8 @@ flag**. The engine forks the shared proxy to three axes as **90% ranges**:
 **The falsifiable research line it generates** (the safe anchor):
 - **Lever = periodontal therapy** (non-pharmacological, the exact edge the engine is calibrated on) —
   predicted **ΔhsCRP 0.68 mg/L**.
-- **Causal node = IL-6R.** cis-MR: **IL-6R → CAD causal** (LD-aware β ≈ +0.705); **circulating CRP → CAD
-  null**. **Tocilizumab** (IL-6Rα blockade) is cited **only** as proof the node is druggable/causal —
+- **Causal node = IL-6R.** cis-MR: **IL-6R → CAD causal** (LD-aware correlated-IVW β ≈ +0.553, SE 0.109);
+  **circulating CRP → CAD null**. **Tocilizumab** (IL-6Rα blockade) is cited **only** as proof the node is druggable/causal —
   **never as a treatment.**
 - **Hypothesis:** if the IL-6R node mediates the systemic effect, lowering the periodontal IL-6 source
   should move the markers in the direction the genetics implies — *a testable research line, not a therapy.*

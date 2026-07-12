@@ -35,7 +35,7 @@ The missing lab is a **collection flag, never imputed** — the guardrail, in th
 engine is *calibrated* on (ΔhsCRP after therapy), so its predicted effect is anchored, not asserted.
 
 **Causal node = IL-6R.** Two-sample **cis-MR** supports **IL-6R → coronary disease as causal** (LD-aware
-β≈+0.705) while **circulating CRP → CAD is null** — the marker isn't causal, the *node* is. **Tocilizumab**
+correlated-IVW β≈+0.553, SE 0.109) while **circulating CRP → CAD is null** — the marker isn't causal, the *node* is. **Tocilizumab**
 (an IL-6Rα-blocking antibody) is cited **only** as pharmacological proof that the node is druggable and
 causal — **never as a proposed treatment.**
 

@@ -55,7 +55,7 @@ def research_line(brief: dict) -> dict:
         },
         "causal_node": {
             "node": "IL-6R (IL-6Rα, UniProt P08887) → gp130 (IL6ST) → hepatic CRP",
-            "genetic_support": "cis-MR: IL-6R → coronary disease CAUSAL (LD-aware β≈+0.705); "
+            "genetic_support": "cis-MR: IL-6R → coronary disease CAUSAL (LD-aware correlated-IVW β≈+0.553, SE 0.109); "
                                "circulating CRP → CAD NULL — the marker is not causal, the node is.",
             "pharmacological_proof_of_node": (
                 f"{toci['agent']} ({toci['action']}, DrugBank {toci['drugbank']}) shows the node is "

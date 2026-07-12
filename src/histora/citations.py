@@ -39,7 +39,7 @@ CLAIMS: dict[str, dict[str, Any]] = {
                     "ref": "IL6R MR Consortium, Lancet 2012 (direction)",
                     "supports": "IL-6R signaling causal for coronary disease — established direction "
                                 "(naïve IVW; the LD-aware cis run over live OpenGWAS gives correlated-IVW "
-                                "β≈0.705, the valid estimate when instruments are in LD)", "doc": "PAPER.md"},
+                                "β≈0.553, SE 0.109, the valid estimate when instruments are in LD)", "doc": "PAPER.md"},
     "crp_ad_mr_null": {"value": 0.0, "unit": "IVW beta", "ref": "CRP–AD MR nulls (direction)",
                        "supports": "CRP/IL-6 → Alzheimer's genetically null", "doc": "PAPER.md"},
     # ---- honesty anchor ----

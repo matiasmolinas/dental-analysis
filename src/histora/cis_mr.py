@@ -69,10 +69,17 @@ def correlated_ivw(instruments: list[Instrument], R: list[list[float]],
 
 
 def fetch_ld_matrix(rsids: list[str], token: Optional[str] = None, pop: str = "EUR",
-                    timeout: int = 30) -> tuple[list[list[float]], dict[str, str]]:
-    """Fetch the LD correlation matrix for `rsids` from OpenGWAS `/ld/matrix`. Returns (R, ref_allele)
-    where ref_allele[snp] is the allele the panel's correlations are signed to (from the row labels,
-    typically 'rsid_A1_A2'). VERIFY the endpoint's response shape against your OpenGWAS version."""
+                    timeout: int = 30) -> tuple[list[list[float]], dict[str, str], list[str]]:
+    """Fetch the LD correlation matrix for `rsids` from OpenGWAS `/ld/matrix`. Returns
+    (R, ref_allele, order) where ref_allele[snp] is the allele the panel's correlations are signed to
+    (from the row labels, typically 'rsid_A1_A2') and `order` lists the rsids in the matrix's ACTUAL row
+    order.
+
+    IMPORTANT: the OpenGWAS `/ld/matrix` server re-sorts the SNPs by genomic position and can drop SNPs
+    absent from the panel, so the returned row order is NOT the order you requested. Callers MUST realign
+    R using `order` (the server's own `snplist`), never using their input list — reindexing by input
+    order silently pairs the wrong rows and can inject a spurious ±1 cross-term that near-singularizes the
+    GLS. VERIFY the endpoint's response shape against your OpenGWAS version."""
     token = token or os.environ.get("OPENGWAS_JWT", "").strip()
     if not token:
         raise SystemExit("OPENGWAS_JWT not set — needed for the LD matrix (never stored by HISTORA).")
@@ -84,12 +91,13 @@ def fetch_ld_matrix(rsids: list[str], token: Optional[str] = None, pop: str = "E
         data = json.loads(resp.read().decode())
     matrix = data.get("matrix") if isinstance(data, dict) else data
     labels = (data.get("snplist") or data.get("snps") or []) if isinstance(data, dict) else []
-    ref = {}
+    order, ref = [], {}
     for lab in labels:
         parts = str(lab).split("_")
+        order.append(parts[0])                    # rsid in the matrix's actual row order
         if len(parts) >= 2:
             ref[parts[0]] = parts[1].upper()      # first allele = the sign reference for that SNP
-    return [[float(v) for v in row] for row in matrix], ref
+    return [[float(v) for v in row] for row in matrix], ref, order
 
 
 def align_ld_signs(R: list[list[float]], ref_allele: dict[str, str],
@@ -126,15 +134,25 @@ def run_cis_mr(config: dict = CIS_CONFIG, token: Optional[str] = None,
         return report
 
     from .mendelian_randomization import ivw as naive_ivw
-    R_raw, ref = fetch_ld(exp["instruments"], token, config.get("pop", "EUR"))
-    # order R to the harmonized instrument order
-    idx = {s: k for k, s in enumerate(exp["instruments"])}
-    order = [idx[i.snp] for i in insts if i.snp in idx]
+    ld = fetch_ld(exp["instruments"], token, config.get("pop", "EUR"))
+    R_raw, ref = ld[0], ld[1]
+    # Realign R to the LD server's OWN row order (its `snplist`), NOT the input order: the OpenGWAS
+    # /ld/matrix endpoint re-sorts SNPs by genomic position and can drop some, so reindexing by the input
+    # list pairs the wrong rows and can inject a spurious ±1 cross-term that near-singularizes the GLS
+    # (badly under-stating the SE). Older servers that omit `snplist` fall back to input order.
+    ld_order = ld[2] if len(ld) > 2 and ld[2] else list(exp["instruments"])
+    pos = {s: k for k, s in enumerate(ld_order)}
+    insts_ld = [i for i in insts if i.snp in pos]           # only SNPs actually present in the LD matrix
+    if len(insts_ld) < 2:
+        report["note"] = "fewer than 2 harmonized instruments present in the LD matrix — cannot run correlated IVW"
+        return report
+    order = [pos[i.snp] for i in insts_ld]
     R = [[R_raw[a][b] for b in order] for a in order]
-    R = align_ld_signs(R, ref, insts)
+    R = align_ld_signs(R, ref, insts_ld)
 
-    report["correlated_ivw"] = correlated_ivw(insts, R)     # primary (LD-aware)
-    report["naive_ivw_for_contrast"] = naive_ivw(insts)     # wrong on cis data — shown to prove LD matters
+    report["n_instruments_ld"] = len(insts_ld)              # SNPs surviving into the LD-aware estimate
+    report["correlated_ivw"] = correlated_ivw(insts_ld, R)  # primary (LD-aware)
+    report["naive_ivw_for_contrast"] = naive_ivw(insts_ld)  # wrong on cis data — shown to prove LD matters
     report["caveats"] = [
         "cis instruments are correlated (LD) — correlated IVW is primary; naive IVW is shown only to "
         "illustrate the difference and must NOT be quoted.",
