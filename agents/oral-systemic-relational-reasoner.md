@@ -1,6 +1,6 @@
 ---
 name: oral-systemic-relational-reasoner
-description: Core reasoning subagent. Combines the periodontal and cardiometabolic framings plus the oral-systemic knowledge base to derive relational axes (inflammatory, metabolic, shared-behavioral, vascular) and the mediating concepts that link oral and systemic health. The primary target of J-lens interpretability optimization.
+description: Core reasoning subagent. Combines the periodontal and cardiometabolic framings plus the oral-systemic knowledge base to derive relational axes (inflammatory, metabolic, shared-behavioral, vascular) and the mediating concepts that link oral and systemic health. The primary target of SkillOpt skill optimization.
 tools: Read, Skill
 ---
 
@@ -15,7 +15,7 @@ framings and the relevant `oral-systemic-kb` snippet.
   exist; each axis names its hypothesized mechanism from the KB.
 - Explicitly reason through the mediating concepts (inflammation, C-reactive
   protein, cytokines, atherosclerosis, endothelial dysfunction, bacteremia,
-  oxidative stress, cardiovascular risk) — these are what the J-lens loop optimizes
+  oxidative stress, cardiovascular risk) — these are what the SkillOpt loop optimizes
   the input format to make representable.
 - Weight mediator-based axes above axes resting only on shared factors (diabetes,
   smoking), which can be surfaced by mere co-occurrence.

@@ -13,9 +13,13 @@
       verificar (sale en <1 s, sin API key).
 - [ ] **Chrome** con **Claude Science** en `http://localhost:8765/`, logueado, en un **proyecto nuevo**
       (no el "Example project", que es read-only). Dejá abierto **Customize → Skills** listo.
-- [ ] **Precondición del drop-in en vivo** (elegí UNA): repo `matiasmolinas/dental-analysis` **público**,
-      *o* un **token de GitHub** cargado en Claude Science → Settings → Credentials. *(Sin esto, el import
-      falla con "repository not found or private" — usá el fallback grabado.)*
+- [ ] **Act 4 (Claude Science) → GRABADO por default.** Solo corré el import en vivo si TODO está verde en
+      el ensayo. Precondición del vivo (elegí UNA): repo `matiasmolinas/dental-analysis` **público**, *o* un
+      **token de GitHub** en Claude Science → Settings → Credentials. Sin eso el import falla con
+      "repository not found or private".
+- [ ] **Assets estáticos en pestañas** (por si Mermaid no renderiza o Claude Science falla): el **PNG del
+      diagrama** (`docs/assets/architecture.png`), el **one-page PDF** (`histora-resumen.pdf`), y
+      `fig_cis_mr.png` / `fig_mr.png` de las corridas reales.
 - [ ] **Grabaciones de respaldo**: (a) la corrida de `run_demo.py`, (b) el import en Claude Science
       (Customize → Skills → Import from GitHub → Preview). Por si falla la conexión en vivo.
 - [ ] **Visuales de respaldo**: el one-page artifact/PDF y el diagrama de arquitectura del README, cada
@@ -73,10 +77,12 @@ python demo/run_demo.py
 
 ## 4. El drop-in en Claude Science — "y vive en un lab de verdad" · ~45 s
 
-*Dirección: cambiá a Chrome / Claude Science. Customize → Skills → "Add skill" → "Import from GitHub" →
-`matiasmolinas/dental-analysis` → Preview → Import (8/8 skills). Si hay tiempo, mostrá una sesión pre-corrida
-(fallback grabado): el análisis no-diagnóstico con el **reviewer agent en "no issues found"**, o la figura
-de la **cis-MR** (`fig_cis_mr.png`). Esto **ya está probado en vivo** — ver [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md).*
+*Dirección: **corré este acto desde GRABACIÓN por default** (el import en vivo tiene demasiadas
+precondiciones frágiles para 3 minutos: Chrome + `localhost:8765` + proyecto nuevo + repo público/token).
+La grabación muestra: Customize → Skills → Import from GitHub → `matiasmolinas/dental-analysis` → 8/8
+skills; la sesión con el **reviewer agent en "no issues found"**; y la figura de la **cis-MR**
+(`fig_cis_mr.png`). Solo hacelo en vivo si TODO está verde en el ensayo. Está **probado en vivo** —
+ver [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md).*
 
 > **Say:** "And this isn't only a CLI. **Claude Science** — Anthropic's workbench for scientists —
 > imports our skills **straight from GitHub** *[click Import → 8 skills]*. Reasoning skills *and* the
@@ -87,6 +93,29 @@ de la **cis-MR** (`fig_cis_mr.png`). Esto **ya está probado en vivo** — ver [
 
 *Nota honesta (tenela lista): las **skills de razonamiento** corren nativas; el **motor determinista** corre
 como pipeline (pip-install del paquete pineado + Compute). Ambos probados en vivo. No prometas más que eso.*
+
+---
+
+## 4b. SkillOpt — el diferenciador (opcional, ~25 s; usalo al extender a 5 min o si te lo piden)
+
+*Dirección: **corré este comando en la terminal** (offline, <1 s) y mostrá las dos filas del archivo —
+la ADOPTED y la REJECTED. Es el beat "más allá de la competencia": Claude mejorándose a sí mismo bajo
+una invariante de seguridad que es **estructuralmente imposible de evolucionar**.*
+
+```bash
+python src/run_skill_evolution.py --fresh
+```
+
+> **Say:** "One more thing — the role nobody else shows. HISTORA can **improve its own skills**. Claude
+> proposes an edit *[point to ADOPTED]*; we keep it **only if** it measurably improves — the confidence
+> interval excludes zero — **and** the non-diagnostic guardrail still passes on **every** case. Here's the
+> proof it has teeth *[point to REJECTED]*: this sibling gained the **exact same metric**, but it touched
+> the guardrail — so it's **thrown out**. Same guardrail hash on both. **Self-improvement where breaking
+> the rule scores zero — by construction.**"
+
+*Nota honesta: **una** generación, offline, con una métrica estructural ilustrativa (cobertura de
+citación de campos) — el *mecanismo*, no un resultado en vivo; la corrida definitiva cablea a Claude como
+mutador + `agent_metrics`, igual que la MR pasó de ilustrativa a viva. Ver [`EVOLUTION.md`](EVOLUTION.md).*
 
 ---
 
@@ -107,10 +136,12 @@ como pipeline (pip-install del paquete pineado + Compute). Ambos probados en viv
 |---|---|
 | "The effect sizes are small." | "Yes — periodontitis is **one contributor among many**; that's the honest epidemiology. HISTORA is a **hypothesis generator**, not a risk score. The value is coherence + honesty, not a big number." |
 | "The Alzheimer's link didn't hold." | "Correct — the **genetics don't support it causally**, and we **flag that axis exploratory**. Reporting the null *is the feature* — an agent you can trust because it tells you what it can't show." |
-| "Are the MR numbers real?" | "The **estimator is real and unit-tested** on synthetic ground truth. The instrument panels **reproduce the established literature direction**; a definitive run swaps in **live OpenGWAS** extracts — that's exactly what the grant would fund." |
+| "Are the MR numbers real?" | "Yes — we ran it **live over public OpenGWAS** in Claude Science: verified the study IDs against `gwasinfo`, harmonized, and ran the unit-tested estimator. The repo also ships illustrative panels for offline reproducibility, clearly labeled." |
+| "Wait — is it 0.105 or 0.705?" | "Different instrument *and* method. **0.105** is the established literature direction (CRP/IL-6R with **naïve IVW**). **0.705** is our **cis IL-6R** run with **correlated (LD-aware) IVW** — the valid estimator when the instruments are in LD; naïve IVW understates it with a ~7× wider SE. And circulating CRP → CAD is **null** — the marker isn't causal, the IL-6R node is." |
 | "Is this clinical-ready?" | "**No — and by design.** It's **non-diagnostic**: structural bands in, population-level ranges out, never a patient value. It's a research instrument for a lab, not a bedside tool." |
 | "Why not just prompt Claude?" | "We tested that — it's the **bare-model arm**. It **hallucinates uncited numbers, gives points not ranges, and isn't calibrated**. The harness is what makes Claude honest here." |
 | "What's novel for Gladstone?" | "A **parameterized, falsifiable upstream perturbation** (perio-inflammation → tau-α) they can plug into existing tau/microglia/BBB models — with the intellectual honesty, including the **failed GAIN trial**, a serious lab needs." |
+| "How is the self-improvement safe?" | "The **genome is only the prose of trainable skills** — the guardrail, the citations, and the engine are outside it, so evolution literally can't reach them. Safety is a **binary gate, not a fitness term**: any guardrail failure disqualifies the edit no matter how much metric it gained. And the archive carries the **guardrail hash, identical in parent and child** — machine-checkable proof the invariant never moved. It's `EVOLUTION.md`." |
 
 ---
 

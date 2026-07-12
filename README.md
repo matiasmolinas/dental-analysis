@@ -40,6 +40,8 @@ flowchart LR
     U --> V["Validation<br/>NHANES + MR probe"]
     V --> X["Explanation<br/>ranges + falsification"]
 ```
+*(Static PNG for slides / when Mermaid doesn't render: [`docs/assets/architecture.png`](docs/assets/architecture.png).)*
+
 
 **Claude** decides *what* to run, *how* to report uncertainty, and *when* to route to falsification — and
 supplies weight-capped soft estimates only for un-coded edges. **The engine** decides the numbers
@@ -55,6 +57,7 @@ supplies weight-capped soft estimates only for un-coded edges. **The engine** de
 | Genetic causal probe | Mendelian randomization: IL-6R→coronary disease **causal**, CRP→Alzheimer's **null** |
 | Beats separate models & bare Claude | benchmark: 1 vs 3 params, calibration error 0.00 vs 0.71/1.25, ranges+falsifiability 1.00 vs 0.00 |
 | Safe agent, measured | agentic card: citation accuracy 1.0, hallucination 0.0, coverage 1.0, guardrail enforced |
+| Self-improving — safely | SkillOpt: Claude edits its own skill; kept only if it measurably improves (CI excludes 0) **and** the non-diagnostic guardrail stays 1.0 — an invariant that is structurally impossible to evolve. The archive shows an *adopted* edit beside a *rejected* one that gained the same metric but broke the guardrail. |
 
 > **Calibration ≠ validation.** *Calibration* pins the one uncertain edge (ε, k) to real *interventional*
 > anchors — an input constraint. *Validation* is independent: the NHANES association signs and the genetic
@@ -79,13 +82,14 @@ python demo/run_demo.py                 # the canonical end-to-end brief (offlin
 python src/run_benchmark.py             # S vs H comparative validation (offline); --live adds bare Claude
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
 python src/run_mendelian_randomization.py   # the genetic causal probe (offline)
+python src/run_skill_evolution.py           # SkillOpt: one gated, guardrail-safe skill-evolution generation
 python src/run_nhanes_weighted.py       # design-adjusted NHANES (survey weights + FDR); needs pandas+data
 for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness tests
 ```
 
 ## Documentation
 
-- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results)
+- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
 - **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
 - **Reference:** [`MODELS.md`](docs/MODELS.md) (the models + evidence) · [`model-library.md`](docs/model-library.md) · [`PROBLEM.md`](docs/PROBLEM.md) · [`SOLUTION.md`](docs/SOLUTION.md) · [`DATASETS.md`](docs/DATASETS.md)
 - **Internal** (planning & analysis): [`docs/internal/`](docs/internal/) — roadmaps, the Stage-2 work plan, the data/delivery and Claude-Science analyses, the external review, the grant draft.

@@ -35,8 +35,11 @@ CLAIMS: dict[str, dict[str, Any]] = {
     "nhanes_perio_dsst": {"value": -0.18, "unit": "std beta", "ref": "NHANES 2011-2012 (this work)",
                           "supports": "perio→processing-speed adjusted association", "doc": "PAPER.md"},
     # ---- genetic causal probe (direction from the literature) ----
-    "il6r_cad_mr": {"value": 0.105, "unit": "IVW beta", "ref": "IL6R MR Consortium, Lancet 2012 (direction)",
-                    "supports": "IL-6R signaling causal for coronary disease", "doc": "PAPER.md"},
+    "il6r_cad_mr": {"value": 0.105, "unit": "IVW beta (naïve, literature direction)",
+                    "ref": "IL6R MR Consortium, Lancet 2012 (direction)",
+                    "supports": "IL-6R signaling causal for coronary disease — established direction "
+                                "(naïve IVW; the LD-aware cis run over live OpenGWAS gives correlated-IVW "
+                                "β≈0.705, the valid estimate when instruments are in LD)", "doc": "PAPER.md"},
     "crp_ad_mr_null": {"value": 0.0, "unit": "IVW beta", "ref": "CRP–AD MR nulls (direction)",
                        "supports": "CRP/IL-6 → Alzheimer's genetically null", "doc": "PAPER.md"},
     # ---- honesty anchor ----
