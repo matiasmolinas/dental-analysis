@@ -60,12 +60,19 @@ then **declined the next two candidates** because their gain CI **[0.00, 0.20]**
 skill is now the one in `skills/traceability-audit/SKILL.md` (lineage `a587e4e67342 → 802df657583d`).
 
 ```bash
-python src/run_skill_evolution_live.py --gens 5     # needs anthropic + ANTHROPIC_API_KEY
+python src/run_skill_evolution_live.py --skill traceability-audit  --gens 5   # the adopted improvement
+python src/run_skill_evolution_live.py --skill record-normalization --gens 5   # a null (parent at ceiling)
 ```
 
-Full write-up, the archive, and the exact skill diff: [`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md).
-Honest read: the pattern was `knowledge_gap` (the *content* of the edit carried the win, not enforcement
-over prose) — a real, adopted, gated improvement, not oversold as a pure execution-gap result.
+We then ran the **same loop on a second skill** (`record-normalization`, metric = MISSING-flag recall) —
+and it adopted **nothing**: that parent is already at ceiling (1.00), and the loop declined an off-target
+candidate that *lowered* the metric (CI [−1.00, −0.33]) rather than inventing a gain. **One skill improved,
+the other correctly left alone** — the anti-reward-hacking property that makes the adopted gain credible.
+
+Full write-up (both skills), the archives, and the exact skill diff:
+[`evolution/live-run-2026-07.md`](evolution/live-run-2026-07.md). Honest read: the traceability win's
+pattern was `knowledge_gap` (the *content* of the edit carried it, not enforcement over prose) — a real,
+adopted, gated improvement, not oversold as a pure execution-gap result.
 
 ## Honest scope
 

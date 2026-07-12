@@ -60,6 +60,43 @@ The diff vs the frozen parent is two added blocks — no parent content removed
 For an agent whose entire pitch is *auditability*, this is a genuine systems win: it turns "cites its
 fields in prose (unverifiable at scale)" into "cites its fields in a tag a machine can check."
 
+## Second skill — `record-normalization` (a null, on purpose)
+
+We then pointed the same loop at a different trainable skill, with a different structural metric —
+**MISSING-flag recall**: the fraction of required-but-absent canonical fields that surface as an explicit
+`… MISSING` collection flag (the non-diagnostic core: *a missing datum is a flag, never a value*). Same
+setup: haiku agent, sonnet mutator, neutral task, six fragmented raw records.
+
+```bash
+python src/run_skill_evolution_live.py --skill record-normalization --gens 5
+```
+
+| gen | guardrail | pattern | base → enforced (prose) | Δbase CI90 | verdict |
+|---|---|---|---|---|---|
+| 0 | — | — | parent recall **1.00** | — | — |
+| 1 | 0.5 | screened | 1.00 → 0.333 (prose 0.667) | **[−1.00, −0.33]** | rejected |
+| 2 | 0.5 | screened | 1.00 → 0.333 (prose 0.667) | **[−1.00, −0.33]** | rejected |
+
+**The parent skill is already at ceiling (1.00).** Its completeness discipline ("emit an explicit
+`MISSING` marker for each required-but-absent field") is already reliably deployed by the agent, so there
+is nothing to win. Handed no real failures to fix, the mutation operator proposed an *off-target* edit
+(timeline/date-precision handling) that **lowered** recall to 0.33 — a strongly negative CI, the robust,
+detector-independent signal that the candidate is worse — so the gate **rejected it, twice, and stopped**.
+Nothing was adopted; `skills/record-normalization/SKILL.md` is **unchanged**. Archive:
+[`skillopt_live_archive_record-normalization.jsonl`](skillopt_live_archive_record-normalization.jsonl).
+
+**This null is the point.** The loop does **not** manufacture an improvement where none exists — the
+anti-reward-hacking property that makes the *adopted* traceability gain credible. A search that "improves"
+every skill it touches is a search that is gaming its metric. One skill improved; the other was correctly
+left alone.
+
+> *A note on the guardrail column (0.5, not 1.0).* The candidate also tripped the no-imputation check on
+> some cases, but we do **not** headline this as a "safety catch": while hardening the detector we already
+> found one false positive (the field name `il6` contains a digit, so a bare prose mention looked like an
+> imputed value — now fixed by stripping the field name before the digit check). The trustworthy,
+> detector-independent reason this candidate is rejected is the **negative fitness CI**. Honesty about the
+> tooling is part of the same discipline.
+
 ## Honest scope
 
 - **One eval model, one metric, six cases** — this is a real improvement *for this measurable property*,
