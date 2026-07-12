@@ -82,6 +82,7 @@ Pure Python (no GPU). The NHANES runners need `pandas` + network; the live Claud
 
 ```bash
 python demo/run_demo.py                 # the canonical end-to-end brief (offline)
+python demo/run_case_study.py           # the flagship research case — one falsifiable research line (offline)
 python src/run_benchmark.py             # S vs H comparative validation (offline); --live adds bare Claude
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
 python src/run_physiology.py                 # Stage-3: all deepened mechanisms + "one lever, many axes" (--plot for figures)
@@ -94,7 +95,7 @@ for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness test
 
 ## Documentation
 
-- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
+- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`CASE-STUDY.md`](docs/CASE-STUDY.md) (the flagship research session) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
 - **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
 - **Reference:** [`MODELS.md`](docs/MODELS.md) (the models + evidence) · [`model-library.md`](docs/model-library.md) · [`PROBLEM.md`](docs/PROBLEM.md) · [`SOLUTION.md`](docs/SOLUTION.md) · [`DATASETS.md`](docs/DATASETS.md)
 - **Internal** (planning & analysis): [`docs/internal/`](docs/internal/) — roadmaps, the Stage-2 work plan, the data/delivery and Claude-Science analyses, the external review, the grant draft.
