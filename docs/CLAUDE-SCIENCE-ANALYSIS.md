@@ -191,4 +191,21 @@ exposure–outcome pairs or genome-wide. This is the concrete way the "illustrat
 a real, honest result inside Claude Science. **Credentials (OpenGWAS token, Modal) are added by the user
 in Claude Science → Credentials — HISTORA never enters or stores them.**
 
+### Confirmed live, and hardened by the run
+
+The real MR **ran end-to-end inside Claude Science** against live OpenGWAS data: it installed the pinned
+engine from GitHub, verified all four study IDs against `gwasinfo`, harmonized, and reported real results
+(CRP → CAD **null**, CRP → Alzheimer's **nominal +**, CRP → T2D **null + pleiotropy-flagged**) with a
+per-SNP scatter — honestly *different* from the illustrative panels, which is the point (circulating CRP
+is a marker, not the causal node; IL-6R signalling is). The live run surfaced three real code issues,
+now **fixed**:
+1. `plot_mr` assumed the illustrative flat shape; it now **normalizes both** the flat and the `run_real_mr`
+   nested (`outcomes`) shapes and draws a proper **per-SNP scatter** (points + error bars + IVW & MR-Egger
+   slopes + the pleiotropy flag), not just a bare slope line.
+2. `run_pipeline.py` gained a **`--plot`** flag that renders robustly regardless of the kernel cwd (it
+   puts the skill dir on `sys.path` before importing the sibling `plot_pipeline`).
+3. `real_mr.DEFAULT_CONFIG` was corrected/annotated: the AD label now reads **Kunkle 2019 (IGAP-affiliated)**,
+   the T2D study carries a **metadata caveat**, and the IL-6R cis probe is expanded with an explicit
+   **LD-aware** caveat. `run_real_mr` now also emits the per-SNP harmonized instruments + any caveat.
+
 *Non-diagnostic throughout; population/parameter-level only.*

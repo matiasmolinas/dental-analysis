@@ -55,6 +55,29 @@ def test_plot_functions_when_matplotlib_present(tmpdir="/tmp"):
     assert os.path.exists(path) and os.path.getsize(path) > 1000
 
 
+def test_plot_mr_handles_both_report_shapes(tmpdir="/tmp"):
+    try:
+        import matplotlib  # noqa: F401
+    except ImportError:
+        print("  (matplotlib absent — MR plot test skipped)")
+        return
+    import plot_pipeline
+    # real_mr shape: nested under `outcomes`, with per-SNP instruments + egger pleiotropy flag
+    real = {"exposure": "CRP", "outcomes": {"T2D": {
+        "outcome": "T2D", "exposure": "CRP", "n_instruments": 3,
+        "instruments": [{"snp": f"rs{k}", "beta_exposure": 0.1 + 0.05 * k, "se_exposure": 0.01,
+                         "beta_outcome": -0.005 + 0.003 * k, "se_outcome": 0.007} for k in range(3)],
+        "ivw": {"estimate": -0.01, "p_value": 0.6},
+        "mr_egger": {"slope": -0.02, "intercept": 0.004, "pleiotropy_flagged": True}}}}
+    illustrative = {"pairA": {"exposure": "IL6R", "outcome": "CAD",
+                              "ivw": {"estimate": 0.105, "p_value": 0.001}}}
+    assert len(plot_pipeline._mr_panels(real)) == 1
+    assert len(plot_pipeline._mr_panels(illustrative)) == 1
+    for name, rep in (("real", real), ("illustrative", illustrative)):
+        path = plot_pipeline.plot_mr(rep, os.path.join(tmpdir, f"test_fig_mr_{name}.png"))
+        assert os.path.exists(path) and os.path.getsize(path) > 1000
+
+
 if __name__ == "__main__":
     fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for fn in fns:

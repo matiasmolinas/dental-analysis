@@ -57,6 +57,25 @@ def test_run_real_mr_with_injected_fetch():
     first = next(iter(rep["outcomes"].values()))
     assert first["n_instruments"] == len(snps)
     assert first["ivw"]["estimate"] > 0 and first["ivw"]["p_value"] < 0.05   # recovers the causal slope
+    # per-SNP harmonized instruments are included (so a proper MR scatter can be drawn)
+    assert len(first["instruments"]) == len(snps)
+    assert set(first["instruments"][0]) == {"snp", "beta_exposure", "se_exposure",
+                                            "beta_outcome", "se_outcome"}
+
+
+def test_config_caveats_are_passed_through():
+    # the T2D outcome carries a metadata caveat; it must surface in the report entry
+    snps = DEFAULT_CONFIG["exposure"]["instruments"]
+    exp_id = DEFAULT_CONFIG["exposure"]["id"]
+
+    def fake_fetch(rsids, ids, token):
+        return [{"rsid": s, "id": sid, "ea": "A", "nea": "G",
+                 "beta": 0.1 if sid == exp_id else 0.01, "se": 0.01}
+                for s in rsids for sid in ids]
+
+    rep = run_real_mr(config=DEFAULT_CONFIG, token="fake", fetch=fake_fetch)
+    t2d = next(v for k, v in rep["outcomes"].items() if "diabetes" in k)
+    assert "caveat" in t2d and "cautiously" in t2d["caveat"]
 
 
 def test_missing_token_fails_cleanly():

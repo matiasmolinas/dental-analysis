@@ -111,20 +111,41 @@ def main() -> None:
                     help="with --mr: use REAL OpenGWAS summary stats (needs OPENGWAS_JWT) instead of "
                          "the illustrative panels")
     ap.add_argument("--benchmark", action="store_true", help="run the S-vs-H benchmark")
+    ap.add_argument("--plot", action="store_true",
+                    help="also render the figure(s) for this run (needs matplotlib)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
 
     if args.mr:
-        out = args.out or "mr_report.json"
+        kind, out = "mr", args.out or "mr_report.json"
         json.dump(run_real_mr() if args.real else run_mr(), open(out, "w"), indent=2)
     elif args.benchmark:
-        out = args.out or "benchmark_report.json"
+        kind, out = "benchmark", args.out or "benchmark_report.json"
         json.dump(run_benchmark(), open(out, "w"), indent=2)
     else:
+        kind, out = "case", args.out or "predictions.json"
         case = json.load(open(args.case)) if args.case else DEFAULT_CASE
-        out = args.out or "predictions.json"
         json.dump(compute(case), open(out, "w"), indent=2)
     print("NON-DIAGNOSTIC: structural bands in, parameter-level ranges out. wrote:", out)
+
+    if args.plot:
+        print("rendered:", _render(kind, out))
+
+
+def _render(kind: str, json_path: str) -> str:
+    """Render the figure for a run by importing the sibling plot_pipeline (robust to the kernel cwd:
+    the skill directory is added to sys.path so the import never depends on where python was launched)."""
+    import importlib
+    here = os.path.dirname(os.path.abspath(__file__))
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    pp = importlib.import_module("plot_pipeline")
+    data = json.load(open(json_path))
+    if kind == "mr":
+        return pp.plot_mr(data, os.path.join(os.path.dirname(json_path) or ".", "fig_mr.png"))
+    if kind == "benchmark":
+        return pp.plot_benchmark(data, os.path.join(os.path.dirname(json_path) or ".", "fig_benchmark.png"))
+    return pp.plot_envelopes(data, os.path.join(os.path.dirname(json_path) or ".", "fig_envelopes.png"))
 
 
 if __name__ == "__main__":

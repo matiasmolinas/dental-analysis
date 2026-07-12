@@ -30,17 +30,27 @@ OPENGWAS_BASE = "https://api.opengwas.io/api"
 # --- default probe configuration (VERIFY the OpenGWAS study IDs before quoting; they are versioned) ---
 # Exposure: circulating CRP (the measurable readout of the shared IL-6 inflammatory proxy), instrumented
 # by GWAS-significant cis/trans CRP SNPs. Outcomes: coronary disease, Alzheimer's, type-2 diabetes.
+# Labels below were verified against live OpenGWAS `gwasinfo` metadata (2026-07); still re-verify, IDs
+# are versioned. `caveat` surfaces a known metadata issue so it is reported, not hidden.
 DEFAULT_CONFIG: dict[str, Any] = {
-    "exposure": {"id": "ieu-b-35", "label": "CRP (Ligthart 2018) — inflammatory proxy",  # VERIFY id
+    "exposure": {"id": "ieu-b-35", "label": "CRP (Ligthart 2018, PMID 30388399) — inflammatory proxy",
                  "instruments": ["rs2794520", "rs1130864", "rs1205", "rs3091244",
                                  "rs1800947", "rs1417938", "rs3093077"]},
     "outcomes": [
-        {"id": "ieu-a-7", "label": "coronary artery disease (CARDIoGRAMplusC4D)"},        # VERIFY id
-        {"id": "ieu-b-2", "label": "Alzheimer's disease (IGAP)"},                          # VERIFY id
-        {"id": "ebi-a-GCST006867", "label": "type-2 diabetes (Xue 2018)"},                # VERIFY id
+        {"id": "ieu-a-7", "label": "coronary artery disease (CARDIoGRAMplusC4D, Nikpay 2015)"},
+        {"id": "ieu-b-2", "label": "Alzheimer's disease (Kunkle 2019, IGAP-affiliated)"},
+        {"id": "ebi-a-GCST006867", "label": "type-2 diabetes (Xue 2018)",
+         "caveat": "OpenGWAS metadata reports an implausible ncontrol for this record — treat the "
+                   "outcome SEs (and this pair's verdict) cautiously; consider an alternative T2D GWAS."},
     ],
-    # a cis-only IL-6R probe (the tocilizumab-mimicking instrument); needs LD handling for >1 SNP
-    "il6r_cis": {"id": "ieu-b-35", "label": "IL-6R cis (rs2228145)", "instruments": ["rs2228145"]},
+    # ALTERNATIVE exposure — a cis-IL-6R probe (the tocilizumab-mimicking instrument): the IL6R-locus
+    # effect on CRP. NOT auto-run by run_real_mr (swap it in as `exposure`). cis SNPs are in LD, so a
+    # naive multi-instrument IVW violates the independence assumption — a rigorous run needs LD clumping
+    # or a correlation-matrix method (e.g. GRAPPLE / correlated-IVW). Provided as a documented starting set.
+    "il6r_cis": {"id": "ieu-b-35", "label": "IL-6R cis (IL6R locus → CRP)",
+                 "instruments": ["rs2228145", "rs4129267", "rs7529229", "rs4845625", "rs4537545"],
+                 "caveat": "cis instruments are correlated (LD) — run with LD-aware MR, not naive IVW; "
+                           "this is why the single-SNP form cannot support the >=3-instrument checks."},
 }
 
 
@@ -115,8 +125,16 @@ def run_real_mr(config: dict = DEFAULT_CONFIG, token: Optional[str] = None,
         exp_rows = [r for r in rows if r.get("id") == exposure["id"]]
         out_rows = [r for r in rows if r.get("id") == outcome["id"]]
         insts = harmonize(exp_rows, out_rows)
-        entry: dict[str, Any] = {"outcome": outcome["label"], "n_instruments": len(insts),
-                                 "exposure_id": exposure["id"], "outcome_id": outcome["id"]}
+        entry: dict[str, Any] = {"outcome": outcome["label"], "exposure": exposure["label"],
+                                 "n_instruments": len(insts),
+                                 "exposure_id": exposure["id"], "outcome_id": outcome["id"],
+                                 # per-SNP harmonized data, so a proper MR scatter can be drawn
+                                 "instruments": [{"snp": i.snp, "beta_exposure": i.beta_exposure,
+                                                  "se_exposure": i.se_exposure,
+                                                  "beta_outcome": i.beta_outcome,
+                                                  "se_outcome": i.se_outcome} for i in insts]}
+        if outcome.get("caveat"):
+            entry["caveat"] = outcome["caveat"]
         if len(insts) >= 3:
             entry.update(run_mr(insts))
         else:
