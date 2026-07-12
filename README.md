@@ -66,8 +66,8 @@ supplies weight-capped soft estimates only for un-coded edges. **The engine** de
 portable demo a judge runs anywhere. Its home is **Claude Science**, whose native extension model is
 **skills + connectors** (not "plugins"): HISTORA's `skills/` become skills, the `histora` harness a
 reusable pipeline, `agents/` the specialist agents, and UniProt/PDB/GWAS/NHANES the connectors — the same
-components, ported directly. Full rationale + the integration table: [`docs/PITCH.md`](docs/PITCH.md) and
-[`docs/DATA-AND-DELIVERY.md`](docs/DATA-AND-DELIVERY.md).
+components, ported directly. Quickstart + proven live results: [`docs/CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md);
+full rationale + the integration table: [`docs/PITCH.md`](docs/PITCH.md).
 
 ## Run it
 
@@ -85,10 +85,10 @@ for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness test
 
 ## Documentation
 
-- **Pitch & delivery:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`DATA-AND-DELIVERY.md`](docs/DATA-AND-DELIVERY.md) (data, genomics, Claude Science) · [`CLAUDE-SCIENCE-ANALYSIS.md`](docs/CLAUDE-SCIENCE-ANALYSIS.md) (integrated vs. Claude Science)
-- **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md)
-- **Reference:** [`MODELS.md`](docs/MODELS.md) (the models + evidence) · [`PROBLEM.md`](docs/PROBLEM.md) · [`SOLUTION.md`](docs/SOLUTION.md) · [`DATASETS.md`](docs/DATASETS.md)
-- **Plan:** [`ROADMAP-STAGE2.md`](docs/ROADMAP-STAGE2.md) + [`STAGE2-WORKPLAN.md`](docs/STAGE2-WORKPLAN.md)
+- **Start here:** [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results)
+- **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
+- **Reference:** [`MODELS.md`](docs/MODELS.md) (the models + evidence) · [`model-library.md`](docs/model-library.md) · [`PROBLEM.md`](docs/PROBLEM.md) · [`SOLUTION.md`](docs/SOLUTION.md) · [`DATASETS.md`](docs/DATASETS.md)
+- **Internal** (planning & analysis): [`docs/internal/`](docs/internal/) — roadmaps, the Stage-2 work plan, the data/delivery and Claude-Science analyses, the external review, the grant draft.
 
 ## Layout
 
@@ -101,7 +101,8 @@ dental-analysis/
   src/run_*.py                # entrypoints (demo backend, benchmark, MR, weighted NHANES, agent, …)
   agents/ skills/             # the Claude Code agent + skill catalog
   plugin/                     # the case-evaluation Claude Code plugin (→ Claude Science skills/connectors)
-  docs/                       # PITCH, PAPER, BENCHMARK, MODELS, DATA-AND-DELIVERY, …
+  docs/                       # PITCH · DEMO-SCRIPT · CLAUDE-SCIENCE · PAPER · BENCHMARK · MODELS · …
+    internal/                 #   planning & analysis (roadmaps, work plan, reviews, grant)
   tests/                      # pure-python harness tests (no GPU)
 ```
 

@@ -385,5 +385,5 @@ None claimed as done — this is the falsification/validation program the agent 
 ---
 
 *Companion strategy: [`ROADMAP-STAGE2.md`](ROADMAP-STAGE2.md). Stage 1: [`ROADMAP.md`](ROADMAP.md).
-Evidence & models: [`PAPER.md`](PAPER.md), [`BENCHMARK.md`](BENCHMARK.md), [`MODELS.md`](MODELS.md).
+Evidence & models: [`PAPER.md`](../PAPER.md), [`BENCHMARK.md`](../BENCHMARK.md), [`MODELS.md`](../MODELS.md).
 Non-diagnostic throughout; no patient value is produced or persisted.*

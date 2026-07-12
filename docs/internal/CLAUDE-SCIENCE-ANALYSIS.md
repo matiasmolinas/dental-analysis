@@ -3,7 +3,7 @@
 > For *our* problem (a non-diagnostic oral-systemic research agent), is our **integrated** harness better
 > or worse than **Claude Science**? Is a **100% Claude-Science** solution possible — and what do we lose
 > and gain? Grounded in a hands-on exploration of a local Claude Science (beta) instance.
-> Companion to [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) and [`PITCH.md`](PITCH.md).
+> Companion to [`DATA-AND-DELIVERY.md`](DATA-AND-DELIVERY.md) and [`PITCH.md`](../PITCH.md).
 
 ## 1. What Claude Science actually is (verified hands-on)
 

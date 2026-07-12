@@ -9,7 +9,7 @@
 
 The goal: a mechanistic + relational agent whose predictions are *validated against public data* and
 whose modeling harness Claude can *extend and ensemble* under the tier/guardrail discipline of
-[`MODELS.md`](MODELS.md).
+[`MODELS.md`](../MODELS.md).
 
 - **A1. Empirical anchors on complete datasets** — turn each axis from a scaffold into a data-touched
   result, confounder-adjusted with bootstrap CIs.
@@ -19,12 +19,12 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
   - ✅ **perio → HbA1c** (NHANES 2009-2010) — the metabolic-axis anchor; HbA1c is co-measured with the
     periodontal exam in this cycle. Confounder-adjusted standardized coef **+0.160** (CAL) / **+0.119**
     (PPD), CI90 excludes 0, n=8744 — the direction the C4 coupling predicts (`run_perio_diabetes.py`).
-- **A2. The ensemble scaffold** ([`MODELS.md`](MODELS.md) §6) — a **model registry** (one dict per
+- **A2. The ensemble scaffold** ([`MODELS.md`](../MODELS.md) §6) — a **model registry** (one dict per
   sub-model with a `gain_coupling` hook + a `tier`), a **composition layer** (series / parallel-fork /
   feedback / operator-split), and an **ensemble/UQ driver** (Latin-hypercube sweeps, Sobol sensitivity,
   Bayesian model averaging, Gillespie for rare events) that outputs an **envelope over the ε/`gain`
   sweep**, never a point. This is what makes "adjust the ensemble" a real operation.
-- **A3. The next axes as code** — the disciplined additions from [`MODELS.md`](MODELS.md) §5, each with a
+- **A3. The next axes as code** — the disciplined additions from [`MODELS.md`](../MODELS.md) §5, each with a
   data path: CV inflammation-wave (A3), microglial hub (B2), the diabetes coupling (C4). Only models
   that couple to the shared `gain` **and** have a public-data anchor. ✅ **C4 metabolic axis** built
   (`histora.mech_metabolic`: gain → insulin-resistance index → HbA1c shift, calibrated to the
@@ -47,12 +47,12 @@ whose modeling harness Claude can *extend and ensemble* under the tier/guardrail
   *same* reasoning engine: Claude both selects/constructs coded models and contributes soft estimates
   where equations run out.
 
-- **A5. Comparative validation** ✅ — a pre-specified scorecard ([`BENCHMARK.md`](BENCHMARK.md),
+- **A5. Comparative validation** ✅ — a pre-specified scorecard ([`BENCHMARK.md`](../BENCHMARK.md),
   `histora.benchmark`) that runs the integrated harness (H) against separate single-axis models (S) and
   bare Claude (C) on one severity panel. H wins on parsimony (1 vs 3 free params), calibration error
   (0.00 vs 0.71 / 1.25), uncertainty honesty and falsifiability (1.00 vs 0.00), and ties on directional
   validity and overt-guardrail adherence — the earned advantage is coherence + calibration, written up
-  in [`PAPER.md`](PAPER.md) §5.
+  in [`PAPER.md`](../PAPER.md) §5.
 
 **"Stable" means:** every built axis has a bootstrap-CI'd anchor on public data, the ensemble reports
 ranges with tier labels, the comparative benchmark favors the integration, and the guardrail/traceability
