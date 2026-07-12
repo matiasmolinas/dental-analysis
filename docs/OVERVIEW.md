@@ -200,6 +200,11 @@ portfolio at three: two adopted, one null. Extending this *safely* is a future d
 
 We ran the **flagship case** end-to-end inside Claude Science, on the current `main` engine, with the real
 connectors. This is *"scripted like a demo, real like an experiment"* — the path is real; nothing is faked.
+The screenshots below are the actual session.
+
+![The human directs; Claude updates the engine to the latest main, rebuilds, and runs the case study.](assets/claude-science/01-workflow-directive.png)
+
+*The workflow: a directive in, and Claude — as operator — updates the pinned engine and runs the pipeline.*
 
 ### The case and the research line (real engine output)
 A structural stratum — **Stage III periodontitis · high BOP · type-2 diabetes · hs-CRP MISSING → collection
@@ -224,6 +229,11 @@ flag**. The engine forks the shared proxy to three axes as **90% ranges**:
   (population→stratum transfer, untested).
 
 Claude Science **verified every honesty red-line programmatically** against `case_study.json` ✓.
+
+![The engine ranges, the genetic node (IL-6R→CAD causal, CRP→AD null), and the falsifiable research line — beside the live IL-6R hexamer structure.](assets/claude-science/02-research-line.png)
+
+*The science, live in Claude Science: the engine's 90% ranges, the MR node, and the falsifiable research
+line, next to the IL-6/IL-6Rα/gp130 hexamer (1P9M) rendered in the interactive Mol\* viewer.*
 
 ### The molecular node — real 3-D structures via the UniProt/PDB connector
 The connector resolved all six UniProt accessions and rendered real coordinates in the interactive Mol\*
@@ -250,6 +260,11 @@ prose slipped. **Claude read the finding and corrected itself** immediately. Not
 This is the honesty loop working in the open: a qualified reviewer catches a real slip, the agent fixes it,
 and the record stays accurate — *shown, not dramatized.* (An earlier Stage-3 run had a similar honest
 finding, since resolved.)
+
+![The reviewer agent's finding and Claude's self-correction — "1P9M is 3.65 Å… only my closing prose misstated it" — with the hexamer structure and "All 2 findings fixed".](assets/claude-science/04-reviewer-finding-hexamer.png)
+
+*The scientist-user beat, captured live: the reviewer flags the resolution slip, Claude self-corrects, and
+the panel reads **"All 2 findings fixed."** The honesty is in the loop, not a caption.*
 
 ---
 

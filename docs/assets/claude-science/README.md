@@ -1,23 +1,14 @@
 # Claude Science — live-run captures
 
-Screenshots of HISTORA running **live in Claude Science** (the flagship case study, §5 of
-[`../../OVERVIEW.md`](../../OVERVIEW.md)). These are UI captures of the real session — the skill import, the
-engine run, the connector-resolved 3-D structures, and the reviewer agent's audit.
+Real UI screenshots of the HISTORA **flagship case study running live in Claude Science** (§5 of
+[`../../OVERVIEW.md`](../../OVERVIEW.md) and the Spanish document). These are the actual session — the
+directive, the engine run, the connector-resolved 3-D structures, and the reviewer agent's audit.
+*Everything shown is public.*
 
-> **How these get here (the browser tool can't write them to disk).** Capture each view from the Claude
-> Science session with a macOS region screenshot — **`⌘⇧4`**, then drag a box around the panel — and save
-> the file into **this folder** with the filename below. Frame the capture to **exclude the left project
-> sidebar** (start the box at the conversation/viewer panel) so no other private project names appear.
-> Once the files are here, they are embedded in `OVERVIEW.md` §5.
-
-| Filename | What to capture |
+| File | What it shows |
 |---|---|
-| `01-skill-import.png` | the session loading the HISTORA skill + the non-diagnostic guardrail (the "Loaded 2 skills" step) |
-| `02-engine-run.png` | `run_case_study.py` running / the falsifiable research-line output in the chat |
-| `03-node-hexamer-3d.png` | the **IL-6/IL-6Rα/gp130 hexamer (1P9M)** open in the interactive Mol\* viewer (right panel only) |
-| `04-reviewer-finding.png` | the reviewer agent's finding (1P9M is 3.65 Å, not 2.4 Å) **and** Claude's self-correction |
-| `05-artifacts-tray.png` | the "GENERATED" artifacts tray (case_study.json + the .cif structures) |
+| `01-workflow-directive.png` | the **workflow**: a directive in, and Claude — as operator — updating the pinned engine to the latest `main` and running the case study |
+| `02-research-line.png` | the **science**: the engine's 90% ranges, the genetic node (IL-6R→CAD causal, CRP→AD null), and the falsifiable research line, beside the live IL-6/IL-6Rα/gp130 hexamer (`1P9M`) in the Mol\* viewer |
+| `04-reviewer-finding-hexamer.png` | the **scientist-user beat**: the reviewer agent's finding (`1P9M` is 3.65 Å, not 2.4 Å) and Claude's self-correction, with "All 2 findings fixed" |
 
-*Non-diagnostic throughout; molecular/population-level only. The structure images in `OVERVIEW.md` are the
-same PDB entries from RCSB PDB (rcsb.org); these captures show the same structures rendered **inside Claude
-Science**.*
+*Non-diagnostic throughout; molecular / population-level only.*
