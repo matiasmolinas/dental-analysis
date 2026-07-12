@@ -27,19 +27,51 @@
 
 ---
 
-## 1. Hook — el problema y la tesis · ~20 s
+## 1. Hook — el problema del investigador (NO la hipótesis) · ~25 s
 
-*Direccción: parado, sin pantalla todavía o con el diagrama de arquitectura de fondo.*
+*Dirección: parado, sin pantalla todavía. Empezá con el DOLOR, no con IL-6. (Cambio pedido por los dos
+revisores clínicos: primero el problema, después la solución, después la ciencia.)*
 
-> **Say:** "Gum disease, heart disease, diabetes, and Alzheimer's are studied in separate silos — but
-> they may share one upstream driver: inflammation. HISTORA is a Claude-powered research agent that makes
-> that idea **testable** — coherently, and honestly. It's a research agent, not a diagnostic tool."
+> **Say (as the researcher):** "I'm a clinical researcher. I have a hypothesis — periodontal inflammation
+> may share mechanisms with systemic disease. But testing it means reviewing **hundreds of medical and
+> dental records** to build a cohort. That takes **weeks**." *(pausa)* "…and only then do I find out the
+> data I need is missing."
+
+> **Say:** "Researchers don't need another chatbot. They need an AI that builds **research-ready cohorts**
+> from fragmented clinical data. That's HISTORA — a **clinical-research copilot**. It works *with* you."
 
 ---
 
-## 2. El demo portátil — "the inflammatory-proxy walk" · ~90 s
+## 2. El demo que gana — el copiloto de cohortes · ~75 s
 
-*Dirección: cambiá a la terminal y corré el comando. Narrá mientras imprime los 5 pasos.*
+*Dirección: corré esto PRIMERO (la capacidad que el jurado entiende al instante). Números 100% reales sobre
+NHANES 2009-2010 — nada sintético. Narrá el funnel mientras imprime.*
+
+```bash
+python demo/run_cohort.py
+```
+
+> **Say (mientras aparece cada bloque):**
+> - **El funnel:** "The researcher asks a question — not a patient. Claude filters the corpus:
+>   **20,905 → periodontitis → + diabetes → + hs-CRP → a real cohort.** Seconds, not weeks. Every number
+>   is real, public NHANES."
+> - **② Completeness / lo que falta:** "And here's the honest part — Claude tells you what the data
+>   **can't** answer: no repeat CRP, no follow-up, no biologic-exposure timeline. A missing datum is a
+>   **collection flag, never guessed.** No researcher wants to discover that three months in."
+> - **③ Hipótesis, no conclusión + ④ integrity checklist:** "Claude poses a **falsifiable hypothesis**,
+>   consistent with the IL-6R genetics as *plausibility, not proof* — and the card says it plainly:
+>   ✓ cohort, ✗ causality, ✗ diagnosis, ✗ therapy."
+> - **⑤ Export:** "One button — a **preliminary protocol**: variables, inclusion/exclusion, limitations.
+>   It prepares the study. It doesn't do the study."
+
+> **Say (remate):** "That's the copilot. Now — *why* is this cohort worth building? The biology." *(→ Act 3)*
+
+---
+
+## 2b. La ciencia que da plausibilidad — "the inflammatory-proxy walk" · ~75 s
+
+*Dirección: SOLO AHORA aparece IL-6. La profundidad mecanística es tu diferenciador frente a otros equipos;
+no la amputes — secuenciala como la plausibilidad biológica de la cohorte.*
 
 ```bash
 python demo/run_demo.py
@@ -125,13 +157,15 @@ contás (o lo mostrás grabado). NO corras el loop en vivo. Ver [`EVOLUTION.md`]
 
 ## 5. Cierre — por qué ahora, por qué Anthropic + Gladstone · ~25 s
 
-> **Say:** "Why now: the science is mature, the public data is rich, and models can finally **orchestrate**
-> a mechanistic pipeline instead of guessing. Why here: HISTORA touches **four of Gladstone's five
-> institutes**, and hands its neuro labs a **novel upstream perturbation** — periodontal inflammation to
-> tau — as a falsifiable hypothesis. It's honest by construction — a **research-integrity gate**: it never
-> fabricates a value, never makes an individual claim, never diagnoses; everything is a range, falsifiable,
-> and cited. That's the kind of scientific agent that earns trust — and accelerates research **safely**.
-> Thank you."
+> **Say:** "It's honest by construction — a **research-integrity gate**: it never fabricates a value, never
+> makes an individual claim, never diagnoses; everything is a range, falsifiable, and cited. And the neuro /
+> Alzheimer's axis? **One sentence: exploratory — the model extends to other inflammatory axes, but it's not
+> a conclusion here.** That discipline is the point."
+
+*Dirección (cierre — Cambio 10 de los revisores): no termines hablando del futuro. Terminá en el PRESENTE.*
+
+> **Say (cierre):** "So — today, preparing a research cohort takes **weeks**." *(pausa)* "HISTORA:
+> **it's already prepared.** Thank you."
 
 ---
 
@@ -145,6 +179,7 @@ contás (o lo mostrás grabado). NO corras el loop en vivo. Ver [`EVOLUTION.md`]
 | "Wait — is it 0.105 or 0.705?" | "Different instrument *and* method. **0.105** is the established literature direction (CRP/IL-6R with **naïve IVW**). **0.705** is our **cis IL-6R** run with **correlated (LD-aware) IVW** — the valid estimator when the instruments are in LD; naïve IVW understates it with a ~7× wider SE. And circulating CRP → CAD is **null** — the marker isn't causal, the IL-6R node is." |
 | "Aren't the benchmark baselines a strawman — of course your calibrated model wins on calibration?" | "Fair, and I'll say it first: it's **not a horse race on a shared metric** — it's a **capability gap**. Separate single-disease models and bare Claude **structurally cannot** produce one shared parameter, calibrated ranges, or a falsification condition. The zeros aren't 'they scored low', they're 'they can't do this at all'. The number to trust is the **NHANES validation surviving survey-weighted, FDR-controlled** stats — that one's an honest, external test." |
 | "Isn't SkillOpt's 0.00 → 0.93 a metric you designed so your edit trivially wins?" | "It would be — if that were the whole story. That's exactly why the honest headline is the **null**: on `record-normalization` the loop **adopted nothing** because the skill was already at ceiling, and it **declined** a candidate that *lowered* the metric. It improves only where there's real, measured headroom, and it can **never** touch the guardrail. A search that improved everything it touched would be the one gaming its metric — this one doesn't." |
+| "Is the cohort real, or did you fake it?" | "**Real.** The funnel runs over **public NHANES 2009-2010** — 20,905 participants down to a real cohort; every N is a real count, nothing synthetic. NHANES is **cross-sectional**, so we say it plainly: it can't answer the *longitudinal* question (repeat CRP, follow-up, biologic timeline) — that needs a real EHR. Showing what the data **can't** do, on real data, is the whole point." |
 | "Is this clinical-ready?" | "**No — and by design.** It's **non-diagnostic**: structural bands in, population-level ranges out, never a patient value. It's a research instrument for a lab, not a bedside tool." |
 | "Why not just prompt Claude?" | "We tested that — it's the **bare-model arm**. It **hallucinates uncited numbers, gives points not ranges, and isn't calibrated**. The harness is what makes Claude honest here." |
 | "What's novel for Gladstone?" | "A **parameterized, falsifiable upstream perturbation** (perio-inflammation → tau-α) they can plug into existing tau/microglia/BBB models — with the intellectual honesty, including the **failed GAIN trial**, a serious lab needs." |

@@ -37,3 +37,4 @@ build/
 dist/
 physiology_report.json
 demo/case_study.json
+demo/cohort_report.json

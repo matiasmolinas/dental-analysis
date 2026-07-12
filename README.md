@@ -91,6 +91,7 @@ Pure Python (no GPU). The NHANES runners need `pandas` + network; the live Claud
 ```bash
 python demo/run_demo.py                 # the canonical end-to-end brief (offline)
 python demo/run_case_study.py           # the flagship research case — one falsifiable research line (offline)
+python demo/run_cohort.py               # the clinical-research copilot — a REAL cohort funnel over NHANES + protocol export (needs pandas+data)
 python src/run_benchmark.py             # S vs H comparative validation (offline); --live adds bare Claude
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
 python src/run_physiology.py                 # Stage-3: all deepened mechanisms + "one lever, many axes" (--plot for figures)
