@@ -129,9 +129,10 @@ contás (o lo mostrás grabado). NO corras el loop en vivo. Ver [`EVOLUTION.md`]
 > **Say:** "Why now: the science is mature, the public data is rich, and models can finally **orchestrate**
 > a mechanistic pipeline instead of guessing. Why here: HISTORA touches **four of Gladstone's five
 > institutes**, and hands its neuro labs a **novel upstream perturbation** — periodontal inflammation to
-> tau — as a falsifiable hypothesis. It's honest by construction: **ranges, falsification, citations, and
-> a hard non-diagnostic guardrail.** That's the kind of scientific agent that earns trust — and
-> accelerates research **safely**. Thank you."
+> tau — as a falsifiable hypothesis. It's honest by construction — a **research-integrity gate**: it never
+> fabricates a value, never makes an individual claim, never diagnoses; everything is a range, falsifiable,
+> and cited. That's the kind of scientific agent that earns trust — and accelerates research **safely**.
+> Thank you."
 
 ---
 
