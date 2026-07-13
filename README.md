@@ -37,12 +37,13 @@ flagship number: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## ▶ 3-minute demo
 
-<video src="https://github.com/matiasmolinas/dental-analysis/raw/main/docs/assets/HISTORA-demo.mp4" controls muted width="100%"></video>
+<video src="https://github.com/matiasmolinas/dental-analysis/raw/main/docs/assets/HISTORA-demo.mp4" controls width="100%"></video>
 
-The builder-track submission video (muted, captioned, 1080p): the problem and the promise → the copilot
-building a real cohort → biology grounded live in Claude Science → the agent catching and fixing a bug in
-its own flagship number → the promise delivered. **▶ [Watch / download the demo](docs/assets/HISTORA-demo.mp4)**
-(MP4, ~3 min). Shot list and written summary: [`docs/SUBMISSION.md`](docs/SUBMISSION.md).
+The builder-track submission video (narrated + captioned, 1080p, ~2 min): the problem and the promise → how
+it was built (Claude Code, in a supervised autonomous loop, operating Claude Science) → the copilot building
+a real cohort → biology grounded live in Claude Science → the agent catching and fixing a bug in its own
+flagship number → the promise delivered. **▶ [Watch / download the demo](docs/assets/HISTORA-demo.mp4)**
+(MP4). Shot list, written summary, and the muted/voice-over + HeyGen kit: [`docs/SUBMISSION.md`](docs/SUBMISSION.md).
 
 ## What we demonstrate to win
 
