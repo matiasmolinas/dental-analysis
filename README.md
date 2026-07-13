@@ -33,6 +33,15 @@
 **→ How Claude built, ran, and _audited_ this — including catching and fixing a bug in its own flagship
 number under a reviewer agent: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
+## ▶ 3-minute demo
+
+<video src="https://github.com/matiasmolinas/dental-analysis/raw/main/docs/assets/HISTORA-demo.mp4" controls muted width="100%"></video>
+
+The builder-track submission video (muted, captioned, 1080p): the problem and the promise → the copilot
+building a real cohort → biology grounded live in Claude Science → the agent catching and fixing a bug in
+its own flagship number → the promise delivered. **▶ [Watch / download the demo](docs/assets/HISTORA-demo.mp4)**
+(MP4, ~3 min). Shot list and written summary: [`docs/SUBMISSION.md`](docs/SUBMISSION.md).
+
 ## What we demonstrate to win
 
 A **clinical-research copilot** that assembles a real cohort from fragmented data, **states what the data
