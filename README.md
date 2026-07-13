@@ -30,8 +30,10 @@
 
 *Built with Claude: Life Sciences · co-organized with **Gladstone Institutes**.*
 **→ The hackathon pitch and winning objective: [`docs/PITCH.md`](docs/PITCH.md).**
-**→ How Claude built, ran, and _audited_ this — including catching and fixing a bug in its own flagship
-number under a reviewer agent: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
+**→ How it was built — the _supervised autonomous loop_ (Claude Code operating Claude Science through the
+Claude for Chrome extension, as the scientist; evolution + correction):
+[`docs/HOW-IT-WAS-BUILT.md`](docs/HOW-IT-WAS-BUILT.md) · the self-audit that caught a bug in its own
+flagship number: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## ▶ 3-minute demo
 
@@ -134,7 +136,7 @@ for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness test
 - **Start here:** [`OVERVIEW.md`](docs/OVERVIEW.md) (the full guided tour) · [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`CASE-STUDY.md`](docs/CASE-STUDY.md) (the flagship research session) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
 - **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
 - **Reference:** [`PROBLEM.md`](docs/PROBLEM.md) (the problem framing) · [`model-library.md`](docs/model-library.md) (the model reference) · [`DATASETS.md`](docs/DATASETS.md)
-- **The build story:** [`SELF-CORRECTION.md`](docs/SELF-CORRECTION.md) (the agent finding &amp; fixing a bug in its own flagship number)
+- **The build story:** [`HOW-IT-WAS-BUILT.md`](docs/HOW-IT-WAS-BUILT.md) (the supervised autonomous loop — Claude Code operating Claude Science via the Chrome extension, with evolution + correction) · [`SELF-CORRECTION.md`](docs/SELF-CORRECTION.md) (the agent finding &amp; fixing a bug in its own flagship number)
 - **Internal** (analysis &amp; provenance): [`docs/internal/`](docs/internal/) — the data/delivery and Claude-Science analyses.
 
 ## Layout

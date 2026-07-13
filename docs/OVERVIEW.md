@@ -18,7 +18,8 @@ partially exploited, the **flagship case run live in Claude Science**, and the *
 aside to focus on the hackathon.
 
 *Front-facing companions: [`PITCH.md`](PITCH.md) (the thesis) · [`CASE-STUDY.md`](CASE-STUDY.md) (the
-flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`SELF-CORRECTION.md`](SELF-CORRECTION.md)
+flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`HOW-IT-WAS-BUILT.md`](HOW-IT-WAS-BUILT.md)
+(the supervised autonomous build loop) · [`SELF-CORRECTION.md`](SELF-CORRECTION.md)
 (the agent finding and fixing a bug in its own flagship number) · [`EVOLUTION.md`](EVOLUTION.md)
 (self-improving skills) · [`CLAUDE-SCIENCE.md`](CLAUDE-SCIENCE.md) (run it in a real lab).*
 
