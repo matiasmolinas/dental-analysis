@@ -49,6 +49,15 @@ Rebuild it any time from `scratchpad/video/` (`gen.py` → Chrome-headless frame
 Captures live in [`assets/claude-science/`](assets/claude-science/) (01, 02, 04, 05, 06, 07) and
 [`assets/figures/fig_cohort_funnel.png`](assets/figures/fig_cohort_funnel.png).
 
+### Voice-over / HeyGen alternative — [`assets/heygen/`](assets/heygen/)
+If you'd rather narrate (your own voice — recommended — or a HeyGen avatar): a **thinned-caption** cut
+([`HISTORA-demo-vo.mp4`](assets/heygen/HISTORA-demo-vo.mp4), captions reduced to key phrases + numbers so
+they don't fight the narration), the **12 slides** ([`slides/`](assets/heygen/slides/)) as scene
+backgrounds, a **PDF deck** ([`HISTORA-presentation.pdf`](assets/heygen/HISTORA-presentation.pdf)), and the
+**per-scene narration script** ([`HEYGEN-SCRIPT.md`](assets/heygen/HEYGEN-SCRIPT.md)). Fable's ranking:
+your own real voice-over > muted-captioned as-is > HeyGen voice-only > HeyGen full-frame avatar (avoid — a
+talking head competes with the captures, which are the evidence).
+
 ---
 
 ## Written summary (100–200 words) — submission-ready (~170)
