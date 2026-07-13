@@ -13,7 +13,7 @@ hypothesis and faces weeks of chart review before a testable cohort exists.
 > *"This isn't a study about IL-6 — it's the tool a researcher uses to build the study. IL-6 is just the
 > payload we loaded to prove the instrument works. Tomorrow it's a different hypothesis."*
 
-**THE PROMISE** — stated at 0:15, proven at 2:35:
+**THE PROMISE** — stated up front, proven at the close:
 
 > *"A working tool that takes a researcher from a hypothesis to a research-ready cohort and a self-audited,
 > falsifiable, non-diagnostic research line — in minutes, on real public data, with no one from our team in
@@ -23,9 +23,10 @@ hypothesis and faces weeks of chart review before a testable cohort exists.
 
 ## Delivered video — [`assets/HISTORA-demo.mp4`](assets/HISTORA-demo.mp4)
 
-**Muted, on-screen captions, 1920×1080, 30fps, ~175.5s** (safely under the 3-min cap). Twelve frames,
-0.5s crossfades, dark editorial theme; the real Claude Science captures 01–07 + the cohort-funnel figure.
-Rebuild it any time from `scratchpad/video/` (`gen.py` → Chrome-headless frames → `build.py` → ffmpeg).
+**Narrated** (real avatar, small top-right corner) + voice + burned-in captions, **1920×1080, AAC audio,
+~2:06 (125.9s)** — under the 3-min cap. The table below is the **storyboard** the narrated cut follows
+(timings approximate — the narrated cut is tighter than the original 12-beat muted reference). The muted cut
+and voice-over kit are the alternatives, in [`assets/heygen/`](assets/heygen/).
 
 | # | ~Time | On-screen slide | Caption (verbatim) | Builder-track element |
 |---|---|---|---|---|

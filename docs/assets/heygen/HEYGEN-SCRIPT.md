@@ -7,8 +7,7 @@ play. This folder has everything you need:
   so they sit *under* narration without a read-vs-listen conflict. Use these as scene backgrounds.
 - **`HISTORA-demo-vo.mp4`** — the same thinned slides already assembled into a muted ~176.5s video (use it
   as a single background clip if HeyGen lets you overlay an avatar over a video).
-- **`HISTORA-presentation.pdf`** — the deck (one slide per page) for import or screen-recording. *(A
-  self-contained arrow-key-navigable `presentation.html` can be regenerated from `scratchpad/video/`.)*
+- **`HISTORA-presentation.pdf`** — the deck (one slide per page) for import or screen-recording.
 - The narration script is below, keyed to each slide with its duration.
 
 > The standalone muted+captioned video (`../HISTORA-demo.mp4`) is the safe default and is submission-ready
