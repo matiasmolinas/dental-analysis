@@ -37,7 +37,7 @@ flagship number: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## ▶ 3-minute demo
 
-<video src="https://github.com/matiasmolinas/dental-analysis/raw/main/docs/assets/HISTORA-demo.mp4" controls width="100%"></video>
+[![▶ Watch the 2-minute narrated demo](docs/assets/demo-poster.png)](https://github.com/matiasmolinas/dental-analysis/blob/main/docs/assets/HISTORA-demo.mp4)
 
 The builder-track submission video (narrated + captioned, 1080p, ~2 min): the problem and the promise → how
 it was built (Claude Code, in a supervised autonomous loop, operating Claude Science) → the copilot building
