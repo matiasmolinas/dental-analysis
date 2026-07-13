@@ -1,7 +1,7 @@
 # Claude Science — live-run captures
 
 Real UI screenshots of the HISTORA **flagship case study running live in Claude Science** (§5 of
-[`../../OVERVIEW.md`](../../OVERVIEW.md) and the Spanish document). These are the actual session — the
+[`../../OVERVIEW.md`](../../OVERVIEW.md)). These are the actual session — the
 directive, the engine run, the connector-resolved 3-D structures, and the reviewer agent's audit.
 *Everything shown is public.*
 
