@@ -37,7 +37,7 @@ flagship number: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## ▶ 3-minute demo
 
-<video src="https://github.com/user-attachments/assets/b7d275fc-414f-4507-a9ad-04e3415a3696" controls></video>
+<video src="https://github.com/user-attachments/assets/a17600c0-3180-489c-a710-47bb4d9b9d79" controls></video>
 
 The builder-track submission video (narrated + captioned, 1080p, ~2 min): the problem and the promise → how
 it was built (Claude Code, in a supervised autonomous loop, operating Claude Science) → the navigator building
