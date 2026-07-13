@@ -1,0 +1,24 @@
+HISTORA
+Copyright 2026 Matias Molinas
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this project except in compliance with the License.
+A copy of the License is in the LICENSE file, or at
+http://www.apache.org/licenses/LICENSE-2.0
+
+This product includes or derives insight from public resources,
+attributed here with gratitude:
+
+  - NHANES — CDC / National Center for Health Statistics.
+    Public, de-identified survey data (2009-2010, 2011-2012 cycles).
+  - OpenGWAS / IEU GWAS database (MRC IEU, University of Bristol).
+    Public GWAS summary statistics and LD reference panels used for
+    the Mendelian-randomization / cis-MR probes.
+  - FinnGen and BioBank Japan — public PheWAS summary statistics used
+    for the independent cross-ancestry replication.
+  - RCSB Protein Data Bank (rcsb.org) — protein structure images.
+  - UniProt — protein accessions and annotations.
+
+HISTORA is a NON-DIAGNOSTIC research instrument. It produces
+population/parameter-level, hypothesis-generating output only. It is
+not medical advice, not a diagnosis, and not a treatment recommendation.

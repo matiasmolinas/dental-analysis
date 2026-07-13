@@ -17,8 +17,6 @@ This document is the guided tour: the **problem** and **objective**, the **techn
 partially exploited, the **flagship case run live in Claude Science**, and the **future directions** we set
 aside to focus on the hackathon.
 
-**📄 Shareable PDF of this document: [`HISTORA-Overview.pdf`](HISTORA-Overview.pdf).**
-
 *Front-facing companions: [`PITCH.md`](PITCH.md) (the thesis) · [`CASE-STUDY.md`](CASE-STUDY.md) (the
 flagship session) · [`PAPER.md`](PAPER.md) (the technical report) · [`SELF-CORRECTION.md`](SELF-CORRECTION.md)
 (the agent finding and fixing a bug in its own flagship number) · [`EVOLUTION.md`](EVOLUTION.md)

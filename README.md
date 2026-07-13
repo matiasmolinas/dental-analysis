@@ -1,5 +1,7 @@
 # HISTORA — Clinical Research Copilot
 
+**License:** [Apache-2.0](LICENSE) · A **non-diagnostic** research instrument (population-level, hypothesis-generating; not medical advice).
+
 <p align="center">
   <img src="docs/assets/1p9m_structure.jpeg" width="300" alt="The IL-6 / IL-6Rα / gp130 hexameric signaling complex (PDB 1P9M) — the causal node HISTORA anchors on."/>
   <br>
@@ -123,8 +125,8 @@ for t in tests/test_*.py; do python3 "$t"; done   # the pure-python harness test
 - **Start here:** [`OVERVIEW.md`](docs/OVERVIEW.md) (the full guided tour) · [`PITCH.md`](docs/PITCH.md) (how we present & win) · [`CASE-STUDY.md`](docs/CASE-STUDY.md) (the flagship research session) · [`DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) (the stage runbook) · [`CLAUDE-SCIENCE.md`](docs/CLAUDE-SCIENCE.md) (run it in Claude Science + proven results) · [`EVOLUTION.md`](docs/EVOLUTION.md) (SkillOpt — self-improving, safely)
 - **Evidence:** [`PAPER.md`](docs/PAPER.md) (technical report) · [`BENCHMARK.md`](docs/BENCHMARK.md) (comparative validation) · [`CITATIONS.md`](docs/CITATIONS.md) (claim → source registry)
 - **Reference:** [`PROBLEM.md`](docs/PROBLEM.md) (the problem framing) · [`model-library.md`](docs/model-library.md) (the model reference) · [`DATASETS.md`](docs/DATASETS.md)
-- **Detailed docs (with PDFs):** [`OVERVIEW.md`](docs/OVERVIEW.md) → [`HISTORA-Overview.pdf`](docs/HISTORA-Overview.pdf) (English) · [`HISTORA-Documento-ES.md`](docs/HISTORA-Documento-ES.md) → [`HISTORA-Documento-ES.pdf`](docs/HISTORA-Documento-ES.pdf) (**español**, for doctors / dentists / bioengineers)
-- **Internal** (analysis & provenance): [`docs/internal/`](docs/internal/) — the data/delivery and Claude-Science analyses, and the external review.
+- **The build story:** [`SELF-CORRECTION.md`](docs/SELF-CORRECTION.md) (the agent finding &amp; fixing a bug in its own flagship number)
+- **Internal** (analysis &amp; provenance): [`docs/internal/`](docs/internal/) — the data/delivery and Claude-Science analyses.
 
 ## Layout
 
@@ -138,7 +140,7 @@ dental-analysis/
   agents/ skills/             # the Claude Code agent + skill catalog
   plugin/                     # the case-evaluation Claude Code plugin (→ Claude Science skills/connectors)
   docs/                       # PITCH · DEMO-SCRIPT · CLAUDE-SCIENCE · PAPER · BENCHMARK · MODELS · …
-    internal/                 #   planning & analysis (roadmaps, work plan, reviews, grant)
+    internal/                 #   analysis & provenance (data/delivery + Claude-Science analyses)
   tests/                      # pure-python harness tests (no GPU)
 ```
 
