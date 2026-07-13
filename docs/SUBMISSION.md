@@ -29,7 +29,7 @@ Rebuild it any time from `scratchpad/video/` (`gen.py` → Chrome-headless frame
 
 | # | ~Time | On-screen slide | Caption (verbatim) | Builder-track element |
 |---|---|---|---|---|
-| 0 | 0:00 (10s) | Text — **the problem** | "Testing one hypothesis means **weeks** of chart review — and often the data isn't even there." | Names the pain |
+| 0 | 0:00 (11s) | Text — **the problem · why it matters** | "The mouth is a cheap, modifiable window into the inflammation behind **heart disease and diabetes**. But testing that link means **weeks** of chart review — and often the data was never collected." | Names the pain **+ the global stakes** |
 | 1 | 0:10 (10s) | Text — **the promise** | "A tool that takes a researcher from a hypothesis to a **research-ready cohort** and a self-audited, falsifiable, **non-diagnostic** research line — in minutes, on real public data, with no one from our team in the room." | Frames a **tool** |
 | 2 | 0:20 (16s) | Capture **01** + chips | "Built with **Claude Code** — under my direction it wrote the engine, the tests, and the guardrail, then **operated Claude Science** to run and check the science." | **Claude Code = builder** |
 | **2b** | **0:36 (14s)** | **The build-loop diagram** | "A **supervised autonomous loop**: I direct; Claude Code drives Claude Science through the **Chrome extension**, as the scientist — and it **evolves and corrects itself**." | **The dev process: Claude Code ⇄ Claude Science via Claude for Chrome; supervised loop; evolution + correction** |
