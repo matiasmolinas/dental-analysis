@@ -21,22 +21,30 @@ hypothesis and faces weeks of chart review before a testable cohort exists.
 
 ---
 
-## Demo shot list — 180s exact
+## Delivered video — [`assets/HISTORA-demo.mp4`](assets/HISTORA-demo.mp4)
 
-| Beat | Time | On screen / capture | Voiceover (self-contained) | Builder-track element |
+**Muted, on-screen captions, 1920×1080, 30fps, ~175.5s** (safely under the 3-min cap). Twelve frames,
+0.5s crossfades, dark editorial theme; the real Claude Science captures 01–07 + the cohort-funnel figure.
+Rebuild it any time from `scratchpad/video/` (`gen.py` → Chrome-headless frames → `build.py` → ffmpeg).
+
+| # | ~Time | On-screen slide | Caption (verbatim) | Builder-track element |
 |---|---|---|---|---|
-| **0 · Problem + promise** | 0:00–0:20 (20s) | Text-only cold open: "Testing one hypothesis = **weeks** of chart review." → the promise card. | "A clinical researcher has a hypothesis. Between them and a testable cohort: weeks of chart review — and often the data isn't even there. We built the tool that fixes this. **[read THE PROMISE]**" | Names **the user**; frames a **tool**, not a finding. |
-| **1 · How it was built** | 0:20–0:40 (20s) | Capture **01** (human directs → Claude updates engine, runs). Flash `tests/` passing + the Apache `LICENSE`. | "HISTORA was built with **Claude Code** — an autonomous agent under human direction: it wrote the engine, the tests, and the guardrail. Pinned, reproducible, Apache-licensed. Built to outlast the week." | **Claude Code = builder**; supervised loop; "outlast the week." |
-| **2 · The copilot delivers** | 0:40–1:15 (35s) | `fig_cohort_funnel.png` (20,905→442) + integrity checklist ✓/✗ + Capture **05** (4 real NHANES participants, ranges). | "The researcher asks a question — not a patient. On real public NHANES, Claude builds the eligibility funnel: 20,905 down to 442. Then the honest part — it tells you what the data **cannot** answer: a missing datum is a collection flag, **never** imputed. Population-level ranges out, never a patient value." | Reviewer-endorsed hero; **non-diagnostic by construction**. |
-| **3 · Biology, grounded live** | 1:15–1:55 (40s) | Capture **02** (research line + 1P9M hexamer in Mol\*) + Capture **06** (MR replication across ancestries). | "Why is this cohort worth building? The biology — run live in **Claude Science**. One falsifiable research line: the IL-6R node is **genetically causal** for coronary disease; circulating CRP is **not**. It replicates across European and East-Asian cohorts. The Alzheimer's axis stays **exploratory** — the genetics are null and the direct trial failed. It never says treating the mouth prevents disease." | **Claude Science = runtime + connectors**; honesty / scope discipline. |
-| **4 · It audits itself (climax)** | 1:55–2:35 (40s) | Capture **04** (reviewer finding + "All findings fixed") + Capture **07** (buggy +0.705 greyed/✗ beside corrected +0.553). | "Then the part that matters most. Operating its own pipeline under a **reviewer agent**, HISTORA caught a bug **in its own flagship number** — retracted +0.705, corrected to +0.553, and shipped a **regression test**. A tool that can only ever agree with itself is worthless. This one told us its headline was wrong." | **Failure-detection + human review + reviewer agent + Claude Code wrote the fix.** |
-| **5 · Promise delivered + close** | 2:35–3:00 (25s) | Promise card re-shown, each clause ✓. End card: repo URL + `Apache-2.0` + `python demo/run_cohort.py`. | "Hypothesis → cohort → self-audited research line. Minutes, real data, non-diagnostic by construction — and you can clone it and run it yourself, with no one from our team in the room. That's HISTORA." | Proves **"usable without you"**; verifiable repo. |
+| 0 | 0:00 (10s) | Text — **the problem** | "Testing one hypothesis means **weeks** of chart review — and often the data isn't even there." | Names the pain |
+| 1 | 0:10 (10s) | Text — **the promise** | "A tool that takes a researcher from a hypothesis to a **research-ready cohort** and a self-audited, falsifiable, **non-diagnostic** research line — in minutes, on real public data, with no one from our team in the room." | Frames a **tool** |
+| 2 | 0:20 (16s) | Capture **01** + chips | "Built with **Claude Code** — under my direction it wrote the engine, the tests, and the guardrail, then **operated Claude Science** to run and check the science." | **Claude Code = builder** |
+| **2b** | **0:36 (14s)** | **The build-loop diagram** | "A **supervised autonomous loop**: I direct; Claude Code drives Claude Science through the **Chrome extension**, as the scientist — and it **evolves and corrects itself**." | **The dev process: Claude Code ⇄ Claude Science via Claude for Chrome; supervised loop; evolution + correction** |
+| 3 | 0:50 (18s) | `fig_cohort_funnel` | "A **research-ready cohort** in seconds: the eligibility funnel, **20,905 → 442**." | Reviewer-endorsed hero |
+| 4 | 1:08 (17s) | Capture **05** | "It tells you what the data **cannot** answer. A missing datum is a collection flag — **never imputed**. Population-level ranges out, never a patient value." | **Non-diagnostic by construction** |
+| 5 | 1:25 (17s) | Capture **02** | "One falsifiable research line: the **IL-6R node is genetically causal** for coronary disease. Circulating CRP is **not**." | **Claude Science = runtime + connectors** |
+| 6 | 1:42 (17s) | Capture **06** | "Replicates across **European** (FinnGen) and **East-Asian** (BioBank Japan) cohorts. The Alzheimer's axis stays **exploratory**." | Honesty / scope discipline |
+| 7 | 1:59 (17s) | Capture **04** | "Operating its own pipeline under a **reviewer agent**, it audits its own work — and fixes what it flags." | **Correction mechanism** |
+| 8 | 2:16 (20s) | Capture **07** | "It caught a bug in **its own flagship number**. Retracted **+0.705** → corrected **+0.553**. Shipped a regression test." | **Self-correction (climax)** |
+| 9 | 2:36 (13s) | Checklist ✓ | "Promise delivered" — 5 clauses ticked | Proves the promise |
+| 10 | 2:49 (12s) | End card | repo · `Apache-2.0` · `python demo/run_cohort.py` — "Clone it. Run it. No one from our team in the room." | **Usable without you** |
 
-Sum: 20 + 20 + 35 + 40 + 40 + 25 = **180s.**
-
-- **Open on:** the researcher's pain + the promise (never IL-6 first).
-- **End on:** promise-delivered + "clone and run it" repo/license card.
-- **Cut entirely** (stays in the repo, not the video): SkillOpt, the benchmark table, the Stage-3 ODE gallery, any protein deep-dive beyond the single Capture 02 shot.
+- **Open on:** the researcher's pain + the promise (never IL-6 first). **End on:** promise-delivered + the "clone and run it" repo/license card.
+- **The dev-process beat (2b)** is the builder-track centerpiece — see [`HOW-IT-WAS-BUILT.md`](HOW-IT-WAS-BUILT.md).
+- **Cut** (stays in the repo, not the video): the benchmark table, the Stage-3 ODE gallery, protein deep-dives beyond Capture 02. SkillOpt appears only as the "evolution" node in beat 2b.
 
 Captures live in [`assets/claude-science/`](assets/claude-science/) (01, 02, 04, 05, 06, 07) and
 [`assets/figures/fig_cohort_funnel.png`](assets/figures/fig_cohort_funnel.png).
