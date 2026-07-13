@@ -1,6 +1,6 @@
 # HISTORA — Project Overview
 
-> **A non-diagnostic clinical-research copilot.** It turns fragmented clinical data into a research-ready
+> **A non-diagnostic, agentic clinical-research navigator.** It turns fragmented clinical data into a research-ready
 > cohort and states, honestly, **what the data cannot answer** — then grounds one falsifiable, calibrated,
 > uncertainty-quantified hypothesis in genetics it runs live. Its first instantiated payload is the
 > oral–systemic question of global interest: is periodontal inflammation *just a marker*, or a **modifiable,
@@ -60,7 +60,7 @@ real treatment data), and intellectual honesty (uncertainty, falsification, and 
 *Who does what: **Claude** decides what to run, how to report uncertainty, and when to route to
 falsification; **the deterministic engine** decides the numbers. Claude never sources a headline number.*
 
-### The capability that makes it click — a clinical-research copilot
+### The capability that makes it click — a clinical-research navigator
 
 Two expert clinician-reviewers converged on a sharpening: the researcher arrives with a *question*, not a
 patient, and the bottleneck is **assembling a cohort from fragmented records** — weeks of chart review. So

@@ -86,7 +86,7 @@ talking head competes with the captures, which are the evidence).
 2. **The self-correction / honesty story** as the differentiator — the video's climax (Beat 4) and a
    summary sentence; the one beat no competitor can fake. See [`SELF-CORRECTION.md`](SELF-CORRECTION.md).
 3. **Repo verifiability** — an async judge *will* click in: a top-level README that leads with the user +
-   copilot (not IL-6), green tests, `LICENSE` + `NOTICE`, `SELF-CORRECTION.md` linked. The repo must tell
+   navigator (not IL-6), green tests, `LICENSE` + `NOTICE`, `SELF-CORRECTION.md` linked. The repo must tell
    the same story as the video within 30 seconds of scrolling.
 
 **Biggest single risk:** a judge mis-slots this as a researcher-track "finding about IL-6." **Fix:** the

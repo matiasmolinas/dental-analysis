@@ -5,7 +5,7 @@ play. This folder has everything you need:
 
 - **`slides/s00.png … s10.png`** — the 12 slides with **thinned captions** (short phrases + numbers only),
   so they sit *under* narration without a read-vs-listen conflict. Use these as scene backgrounds.
-- **`HISTORA-demo-vo.mp4`** — the same thinned slides already assembled into a muted ~176.5s video (use it
+- **`HISTORA-demo-vo.mp4`** — the same thinned slides already assembled into a muted ~182s video (use it
   as a single background clip if HeyGen lets you overlay an avatar over a video).
 - **`HISTORA-presentation.pdf`** — the deck (one slide per page) for import or screen-recording.
 - The narration script is below, keyed to each slide with its duration.
@@ -21,12 +21,12 @@ play. This folder has everything you need:
    voice-only track. If you use an avatar, make it a **small corner talking-head**, not full-frame — the
    slide is the evidence and should stay dominant.
 4. Set each scene's **duration** to the value listed (or let HeyGen auto-time and nudge to match).
-5. Export. Total ≈ **176 s** (under the 3-minute cap). Add gentle cross-dissolves between scenes if offered.
+5. Export. Total ≈ **182 s** (under the 3-minute cap). Add gentle cross-dissolves between scenes if offered.
 
 **Honesty rules (do not deviate):** never say "treats" or "prevents"; only "window into / linked to". The
 Alzheimer's axis is **exploratory**. All output is **non-diagnostic / population-level**.
 
-## Script (first-person director voice) — ~305 words, ~176 s
+## Script (first-person director voice) — ~305 words, ~182 s
 
 | Scene | Slide | Dur | Say this |
 |---|---|---|---|

@@ -1,4 +1,4 @@
-# HISTORA — Clinical Research Copilot
+# HISTORA — Agentic Clinical Research Navigator
 
 **License:** [Apache-2.0](LICENSE) · A **non-diagnostic** research instrument (population-level, hypothesis-generating; not medical advice).
 
@@ -10,7 +10,7 @@
   Claude Science. <i>Image: RCSB PDB (rcsb.org).</i></sub>
 </p>
 
-> A **clinical-research copilot** that turns fragmented clinical data into a **research-ready cohort** — and
+> A **clinical-research navigator** that turns fragmented clinical data into a **research-ready cohort** — and
 > tells you honestly **what the data cannot answer**. From a real public corpus (NHANES) it builds an
 > eligibility funnel, flags every missing datum as a *collection gap it never imputes*, generates a
 > **falsifiable, uncertainty-quantified hypothesis** (never a conclusion), and exports a preliminary
@@ -37,17 +37,17 @@ flagship number: [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md).**
 
 ## ▶ 3-minute demo
 
-<video src="https://github.com/user-attachments/assets/cdb0938d-88b7-4fe8-85c5-57a7ef65fe1c" controls></video>
+<video src="https://github.com/user-attachments/assets/b7d275fc-414f-4507-a9ad-04e3415a3696" controls></video>
 
 The builder-track submission video (narrated + captioned, 1080p, ~2 min): the problem and the promise → how
-it was built (Claude Code, in a supervised autonomous loop, operating Claude Science) → the copilot building
+it was built (Claude Code, in a supervised autonomous loop, operating Claude Science) → the navigator building
 a real cohort → biology grounded live in Claude Science → the agent catching and fixing a bug in its own
 flagship number → the promise delivered. **▶ [Watch / download the full-quality (1080p) version](docs/assets/HISTORA-demo.mp4)**
 (MP4). Shot list, written summary, and the muted/voice-over + HeyGen kit: [`docs/SUBMISSION.md`](docs/SUBMISSION.md).
 
 ## What we demonstrate to win
 
-A **clinical-research copilot** that assembles a real cohort from fragmented data, **states what the data
+A **clinical-research navigator** that assembles a real cohort from fragmented data, **states what the data
 cannot answer**, and grounds one falsifiable hypothesis in genetics it runs live — then, operating its own
 pipeline under a **reviewer agent**, it **caught and fixed an error in its own flagship number** (a real
 LD-matrix bug; see [`docs/SELF-CORRECTION.md`](docs/SELF-CORRECTION.md)). The output is **coherent** (one
@@ -121,7 +121,7 @@ Pure Python (no GPU). The NHANES runners need `pandas` + network; the live Claud
 ```bash
 python demo/run_demo.py                 # the canonical end-to-end brief (offline)
 python demo/run_case_study.py           # the flagship research case — one falsifiable research line (offline)
-python demo/run_cohort.py               # the clinical-research copilot — a REAL cohort funnel over NHANES + protocol export (needs pandas+data)
+python demo/run_cohort.py               # the clinical-research navigator — a REAL cohort funnel over NHANES + protocol export (needs pandas+data)
 python src/run_benchmark.py             # S vs H comparative validation (offline); --live adds bare Claude
 python src/run_agent_metrics.py         # the agentic-AI metric card (offline)
 python src/run_physiology.py                 # Stage-3: all deepened mechanisms + "one lever, many axes" (--plot for figures)

@@ -294,7 +294,7 @@ def plot_stage3(report: dict, traj: dict, outdir: str = ".") -> list[str]:
 
 
 def plot_cohort(report: dict, path: str = "fig_cohort_funnel.png") -> str:
-    """The clinical-research-copilot figure: the cohort funnel (real N narrowing at each stage) + the
+    """The clinical-research-navigator figure: the cohort funnel (real N narrowing at each stage) + the
     research-integrity checklist + the honest 'what the corpus cannot answer'. Deterministic; stage-safe."""
     funnel = report["funnel"]
     labels = [s["stage"] for s in funnel]

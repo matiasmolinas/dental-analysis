@@ -13,7 +13,7 @@ instantly, before any biology.
 
 ## The objective we demonstrate to win
 
-> **HISTORA — a clinical-research copilot that turns fragmented clinical data into a research-ready
+> **HISTORA — an agentic clinical-research navigator that turns fragmented clinical data into a research-ready
 > cohort to test a mechanistic hypothesis.** The researcher arrives with a *question*; Claude filters the
 > corpus down to the eligible cohort, reconstructs what's there, **flags what's missing**, states plainly
 > what the data *cannot* answer, and exports a preliminary protocol. Everything it produces is

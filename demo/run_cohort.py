@@ -1,4 +1,4 @@
-"""HISTORA as a clinical-research copilot — build a research-ready cohort from a fragmented corpus.
+"""HISTORA as a clinical-research navigator — build a research-ready cohort from a fragmented corpus.
 
 The demo the expert reviewers asked for: a researcher arrives with a *question*; HISTORA filters the corpus
 down a funnel to the eligible cohort, reports what's present and — honestly — what the data cannot answer,
@@ -58,7 +58,7 @@ def main() -> None:
     protocol = preliminary_protocol(QUESTION, funnel, completeness)
     checklist = integrity_checklist(funnel, completeness)
 
-    print(_rule("HISTORA · clinical-research copilot — from fragmented records to a research-ready cohort"))
+    print(_rule("HISTORA · clinical-research navigator — from fragmented records to a research-ready cohort"))
     print("Researchers don't need another chatbot. They need an AI that builds research-ready cohorts")
     print("from fragmented clinical data. Everything below is REAL (NHANES 2009-2010) — nothing synthetic.")
 

@@ -38,11 +38,11 @@ revisores clínicos: primero el problema, después la solución, después la cie
 > data I need is missing."
 
 > **Say:** "Researchers don't need another chatbot. They need an AI that builds **research-ready cohorts**
-> from fragmented clinical data. That's HISTORA — a **clinical-research copilot**. It works *with* you."
+> from fragmented clinical data. That's HISTORA — a **clinical-research navigator**. It works *with* you."
 
 ---
 
-## 2. El demo que gana — el copiloto de cohortes · ~75 s
+## 2. El demo que gana — el navegador de cohortes · ~75 s
 
 *Dirección: corré esto PRIMERO (la capacidad que el jurado entiende al instante). Números 100% reales sobre
 NHANES 2009-2010 — nada sintético. Narrá el funnel mientras imprime.*
@@ -64,7 +64,7 @@ python demo/run_cohort.py
 > - **⑤ Export:** "One button — a **preliminary protocol**: variables, inclusion/exclusion, limitations.
 >   It prepares the study. It doesn't do the study."
 
-> **Say (remate):** "That's the copilot. Now — *why* is this cohort worth building? The biology." *(→ Act 3)*
+> **Say (remate):** "That's the navigator. Now — *why* is this cohort worth building? The biology." *(→ Act 3)*
 
 ---
 
